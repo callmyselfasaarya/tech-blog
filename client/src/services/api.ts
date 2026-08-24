@@ -9,6 +9,7 @@ import {
 } from '../data/mockData';
 
 import { INITIAL_USERS } from '../data/mockData';
+import { sanityFetch, GROQ_QUERIES } from '../lib/sanity';
 
 // Local storage key helpers
 const STORAGE_KEYS = {
@@ -164,7 +165,24 @@ export const api = {
   // Articles
   getArticles: async (category?: string, search?: string): Promise<Article[]> => {
     try {
-      // Attempt REST call if available with 200ms fast timeout fallback
+      // First attempt to query Sanity Studio CMS dataset
+      const sanityArticles = await sanityFetch<Article[]>(GROQ_QUERIES.ALL_ARTICLES);
+      if (sanityArticles && sanityArticles.length > 0) {
+        let filtered = sanityArticles;
+        if (category && category.toUpperCase() !== 'ALL') {
+          filtered = filtered.filter(a => a.category && a.category.toUpperCase() === category.toUpperCase());
+        }
+        if (search && search.trim()) {
+          const q = search.toLowerCase().trim();
+          filtered = filtered.filter(a => 
+            a.title.toLowerCase().includes(q) ||
+            a.excerpt.toLowerCase().includes(q)
+          );
+        }
+        return filtered;
+      }
+
+      // Attempt REST call if available
       const url = new URL('/api/articles', window.location.origin);
       if (category && category !== 'ALL') url.searchParams.set('category', category);
       if (search) url.searchParams.set('search', search);
@@ -182,6 +200,9 @@ export const api = {
 
   getAllArticlesAdmin: async (): Promise<Article[]> => {
     try {
+      const sanityArticles = await sanityFetch<Article[]>(GROQ_QUERIES.ALL_ARTICLES);
+      if (sanityArticles && sanityArticles.length > 0) return sanityArticles;
+
       const res = await fetch('/api/articles/admin', { 
         headers: getAuthHeaders(),
         credentials: 'include',
@@ -194,6 +215,9 @@ export const api = {
 
   getArticleBySlug: async (slug: string): Promise<Article | null> => {
     try {
+      const sanityArticle = await sanityFetch<Article>(GROQ_QUERIES.ARTICLE_BY_SLUG, { slug });
+      if (sanityArticle) return sanityArticle;
+
       const res = await fetch(`/api/articles/${slug}`, { signal: AbortSignal.timeout(FAST_TIMEOUT) });
       if (res.ok) return await res.json();
     } catch (e) {}

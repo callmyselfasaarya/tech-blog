@@ -23,6 +23,29 @@ Techniccal features a precision design system based on official brand guidelines
 
 ---
 
+## 🎨 Sanity Studio Headless CMS (`studio-techniccal`)
+
+Techniccal is integrated with **Sanity Studio v3** (`studio-techniccal`) as its primary Headless Content Management System:
+
+- **Project ID**: `pbxpf8xj`
+- **Dataset**: `production`
+- **Studio Directory**: `./studio-techniccal`
+- **Schema Types**:
+  - `article`: Long-form technical articles, slug, cover image, category & author references, tags, status.
+  - `category`: Category name, slug, description.
+  - `author`: Author profile, avatar, bio, role.
+  - `subscriber`: Newsletter subscriber records.
+  - `settings`: Global publication configuration.
+
+### Launching Sanity Studio
+```bash
+cd studio-techniccal
+npm install
+npm run dev
+```
+
+---
+
 ## 🏛️ System Architecture & Role Hierarchy
 
 ```text
