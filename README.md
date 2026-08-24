@@ -1,52 +1,93 @@
 # Techniccal — Software Architecture, AI & Engineering Journal
 
-> **Techniccal** is a modern, high-signal technology publication and full-stack editorial blog platform built with React 18, TypeScript, Vite, Tailwind CSS, Framer Motion, Node.js, Express, and MongoDB.
+> **Techniccal** is a modern, high-signal technology publication and headless CMS platform built with React 18, TypeScript, Vite, Tailwind CSS, Framer Motion, and Sanity Studio v3.
 
 ---
 
 ## 🎨 Brand Identity & Design System
 
-Techniccal features a precision design system based on official brand guidelines:
+Techniccal features a precision design system built around an engineering grid aesthetic:
 
-- **Geometric T Monogram**: A custom SVG vector monogram constructed on a geometric engineering grid.
-- **Brand Palette**:
-  - **Deep Black**: `#1C1C1E`
-  - **Warm White**: `#F6F5F0`
-  - **Soft Gray**: `#E1E1E1`
-  - **Graphite Blue**: `#4C586F`
-  - **Muted Electric Blue**: `#3B719F`
+- **Geometric T Monogram**: Custom SVG vector monogram constructed on an engineering grid.
+- **Brand Color Palette**:
+  - **Deep Black**: `#1C1C1E` (Primary dark background & text)
+  - **Warm White**: `#F6F5F0` (Editorial paper background)
+  - **Soft Gray**: `#E1E1E1` (Borders & dividers)
+  - **Graphite Blue**: `#4C586F` (Technical accents)
+  - **Muted Electric Blue**: `#3B719F` (Interactive elements)
 - **Typography System**:
   - **Headings & Display**: `Manrope` (Geometric Sans)
-  - **Editorial & Body**: `Source Serif 4` (Serif Accent & Long-Form Reading)
+  - **Editorial & Body**: `Source Serif 4` (Serif Accent for long-form reading)
   - **Interface UI**: `Inter`
   - **Code & Specs**: `JetBrains Mono`
 
 ---
 
+## 🏛️ Directory Structure & Workspace Architecture
+
+```text
+tech-blog/ (Workspace Root)
+├── client/                 # Web Application (React 18 + Vite + Tailwind CSS)
+│   ├── src/
+│   │   ├── components/     # UI, Layout, Logo & Navigation components
+│   │   ├── context/        # Auth, Theme, and Lenis smooth scroll providers
+│   │   ├── data/           # Initial mock datasets & fallbacks
+│   │   ├── lib/            # Sanity client & GROQ query helpers
+│   │   ├── pages/          # Public editorial views & member portal
+│   │   ├── services/       # Unified API client service layer
+│   │   └── types/          # TypeScript interfaces & types
+│   └── package.json
+│
+├── server/                 # Production API Backend (Express + MongoDB + JWT Auth)
+│   ├── middleware/         # Auth & RBAC guard middlewares
+│   ├── models/             # Mongoose schemas (User, Article, Category, Subscriber, Media)
+│   ├── routes/             # REST routes (auth, articles, categories, newsletter, user, media)
+│   ├── uploads/            # Media assets storage directory
+│   ├── server.js           # Production Express server entry point
+│   ├── seed.js             # Database seeding script for initial setup
+│   └── package.json
+│
+├── studio-techniccal/      # Standalone Headless CMS (Sanity Studio v3)
+│   ├── schemaTypes/        # Sanity TypeScript schemas (article, category, author, subscriber, settings)
+│   ├── sanity.config.ts    # Studio configuration (Project: pbxpf8xj, Dataset: production)
+│   ├── sanity.cli.ts       # CLI options & deployment config
+│   └── package.json
+│
+├── .env.example            # Master environment variable template
+└── README.md               # Master Project Documentation
+
+```
+
+---
+
 ## 🎨 Sanity Studio Headless CMS (`studio-techniccal`)
 
-Techniccal is integrated with **Sanity Studio v3** (`studio-techniccal`) as its primary Headless Content Management System:
+Content for Techniccal is authored and managed via **Sanity Studio v3**:
 
 - **Project ID**: `pbxpf8xj`
 - **Dataset**: `production`
 - **Studio Directory**: `./studio-techniccal`
-- **Schema Types**:
-  - `article`: Long-form technical articles, slug, cover image, category & author references, tags, status.
-  - `category`: Category name, slug, description.
-  - `author`: Author profile, avatar, bio, role.
-  - `subscriber`: Newsletter subscriber records.
-  - `settings`: Global publication configuration.
 
-### Launching Sanity Studio
+### Sanity TypeScript Schemas
+1. `article`: Title, slug, excerpt, content, cover image, category reference, author reference, tags, reading time, status (`published`, `draft`, `archived`), featured, pinned.
+2. `category`: Category name, slug, description.
+3. `author`: Author name, slug, avatar image, bio, role.
+4. `subscriber`: Newsletter subscriber records and status.
+5. `settings`: Global site title and publication description.
+
+### Running Sanity Studio
 ```bash
 cd studio-techniccal
 npm install
 npm run dev
 ```
+Studio will launch locally at `http://localhost:3333`.
 
 ---
 
-## 🏛️ System Architecture & Role Hierarchy
+## 👑 5-Tier Role-Based Access Control (RBAC)
+
+Techniccal enforces a strict 5-tier role hierarchy across the frontend and API layers:
 
 ```text
                     TECHNICCAL
@@ -58,178 +99,70 @@ npm run dev
        Articles / Search       ┌────┴─────┐
        Categories / About      │           │
        Newsletter             Reader      Admin
-                               │           │
-                            Member       Editor
+                                │           │
+                             Member       Editor
                                            │
                                         Admin
                                            │
                                       Super Admin
 ```
 
-### Access Control Matrix (RBAC)
+### Access Control Matrix
 
 | Role | Access Level | Description & Privileges |
 | :--- | :--- | :--- |
-| **Reader** | Public Website | Browse articles, view categories, search, read newsletter issues. |
+| **Reader** | Public Website | Browse articles, view categories, search dispatches, read newsletter issues. |
 | **Member** | Reader Track | Signed-in reader profile, saved articles reading list (`/account`), newsletter settings. |
 | **Editor** | Admin Track | CMS Access: Create and edit draft articles, upload media items. |
 | **Admin** | Admin Track | CMS Access: Create, edit, publish, pin, delete articles, manage categories & subscribers. |
 | **Super Admin** | System Admin | Full system control: Manage team users & roles (`/admin/users`), RBAC configuration. |
 
-### 🔐 Dual-Token Security Architecture (Access + Refresh Tokens)
+---
 
-```text
-                     LOGIN / REGISTER
-                            │
-               ┌────────────┴────────────┐
-               │                         │
-     Access Token (15 mins)     Refresh Token (7 days)
-     [In-Memory / Bearer]       [HTTP-only Cookie + DB]
-               │                         │
-               ▼                         │
-   API Request (Bearer Header)           │
-               │                         │
-      ┌────────┴────────┐                │
-      │                 │                │
-  200 OK           401 Expired           │
-                        │                │
-                        └───────┬────────┘
-                                │
-                      POST /api/auth/refresh
-                                │
-               ┌────────────────┴────────────────┐
-               │                                 │
-     New Access Token (15 mins)       Rotated Refresh Token (7 days)
-     [Returned to Client]             [New HTTP-only Cookie + DB]
-```
+## 🔐 Security Architecture
 
-- **Short-Lived Access Token**: 15 minutes (`JWT_ACCESS_SECRET`).
-- **Long-Lived Refresh Token**: 7 days (`JWT_REFRESH_SECRET`) stored in an `httpOnly`, `sameSite: 'lax'` cookie.
-- **Refresh Token Rotation**: Each refresh request revokes the used refresh token, issues a fresh 7-day refresh token cookie, and records active tokens in the DB to detect replay attacks.
-- **Silent Client Refresh**: Frontend automatically catches expired 401 tokens and fetches a fresh access token seamlessly.
+1. **Dual-Token System (Access + Refresh Tokens)**:
+   - **Access Token**: 15-minute lifespan, transmitted via `Authorization: Bearer <accessToken>` header.
+   - **Refresh Token**: 7-day lifespan, stored in a secure `httpOnly`, `sameSite: 'lax'` cookie.
+   - **Token Rotation**: Each refresh invalidates the previous refresh token and issues a rotated refresh token cookie to prevent replay attacks.
+2. **Dedicated Admin Authentication (`POST /api/auth/admin/login`)**:
+   - Separate endpoint that explicitly verifies `EDITOR`, `ADMIN`, or `SUPER_ADMIN` role privileges before issuing administrative sessions. Rejects `MEMBER` or `READER` roles with `403 Forbidden`.
+3. **SHA-256 Hashed Email Verification**:
+   - Verification tokens are generated using 32-byte crypto hex and hashed with SHA-256 before persisting (`emailVerificationTokenHash`). Raw tokens are never stored in the database.
+4. **Rate Limiting**:
+   - Sliding-window IP-based rate limiter protects authentication routes against brute-force attempts.
 
 ---
 
-## ✨ Features
+## ✨ Features & Pages
 
-- 📰 **Framer Memoir Inspired UI**: Warm off-white editorial aesthetic with a 3-column card grid, smooth hover arrows (`↗`), and sticky navigation sidebar.
-- ⚡ **Dual-Mode Data Architecture**: Queries the Node/Express MongoDB REST API with instant, automatic `localStorage` fallback for offline or zero-configuration development.
-- 🏷️ **Engineering Categories**: `Software Architecture`, `AI & Machine Learning`, `Systems Design`, `Cloud Infrastructure`, and `Developer Tools`.
-- 📖 **Long-Form Reading Experience**: Reading time calculation, dynamic Table of Contents (TOC), social sharing, and related essay recommendations.
-- 📬 **Techniccal Insider Membership**: Newsletter subscription widget, work email capture, and dedicated member sign-up flow.
-- 🛠️ **Full CMS Admin Dashboard (`/admin`)**:
-  - **Article Management**: Create, edit, publish, draft, pin, and delete technical articles.
-  - **Category Manager**: Create and manage technical category tags.
-  - **Subscriber Manager**: Track active newsletter dispatches and subscribers.
-  - **Media Library**: Asset upload and management.
-- 🌓 **Dark & Light Mode**: Seamless theme switcher preserving reader preference.
+- **Editorial Home (`/`)**: Featured hero article, pinned blueprints, latest dispatches, and newsletter signup.
+- **Article Reader (`/article/:slug`)**: High-readability serif typography, reading progress bar, code syntax highlighting, author details.
+- **Category Feeds (`/ai`, `/programming`, `/career`, `/tools`)**: Topic-specific dispatches and category navigation.
+- **Global Search (`Cmd+K`)**: Instant search overlay filtering articles across title, excerpt, category, and tags.
+- **Member Portal (`/account`)**: User account dashboard, saved articles reading list, and newsletter preferences.
+- **Security Views**: Password Reset (`/reset-password?token=...`) and Email Verification (`/verify-email?token=...`).
 
 ---
 
-## 🛠️ Tech Stack
-
-### Frontend (`/client`)
-- **Core**: React 18, TypeScript, Vite
-- **Styling**: Tailwind CSS v4, Custom CSS Design Tokens
-- **Animations**: Framer Motion
-- **Icons**: Lucide React + Custom Techniccal Vector Monogram
-- **Routing**: React Router DOM v6
-
-### Backend (`/server`)
-- **Core**: Node.js, Express.js
-- **Database**: MongoDB / Mongoose (with fallback local store)
-- **Middleware**: CORS, Morgan logging, Express JSON parser
-
----
-
-## 📁 Repository Structure
-
-```
-tech-blog/
-├── client/                     # Frontend Application (React + Vite)
-│   ├── src/
-│   │   ├── admin/             # CMS Admin Dashboard Components
-│   │   ├── components/        # Layout, Blog, and UI Components
-│   │   │   ├── blog/          # ArticleList, ArticleCard, ArticleHeader
-│   │   │   ├── layout/        # Sidebar, MobileHeader, Footer
-│   │   │   └── ui/            # TechniccalLogo, Monogram & Wordmark
-│   │   ├── context/           # Theme Context Provider
-│   │   ├── data/              # Initial Technical Mock Articles & Seed Data
-│   │   ├── pages/             # Home, About, ArticlePage, SignUp, Letters
-│   │   ├── services/          # REST API Service & LocalStorage Fallback Store
-│   │   └── types/             # TypeScript Interfaces & Definitions
-│   ├── index.html             # Google Fonts & SEO Meta Configuration
-│   └── package.json
-│
-├── server/                     # Backend REST API (Node + Express)
-│   ├── seed.js                # MongoDB Database Seeder (Techniccal Articles)
-│   ├── server.js              # Express REST Endpoints
-│   └── package.json
-└── README.md
-```
-
----
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-Ensure you have [Node.js](https://nodejs.org/) (v18 or higher) and `npm` installed.
-
----
-
-### 1. Installation
-
-Clone the repository and install dependencies for both `client` and `server`:
-
-```bash
-# Install client dependencies
-cd client
-npm install
-
-# Install server dependencies
-cd ../server
-npm install
-```
-
----
-
-### 2. Running Locally
-
-You can run both the client frontend and Express backend concurrently:
-
-#### Start Frontend (Client)
-```bash
-cd client
-npm run dev
-```
-The client app will launch at `http://localhost:5173/`.
-
-#### Start Backend (Server)
+### 1. API Backend Server (`server`)
 ```bash
 cd server
-npm start
+npm install
+npm run seed     # Populate database with initial users, articles & categories
+npm run dev      # Start Express API server at http://localhost:5000
 ```
-The Express backend server will run at `http://localhost:5000/`.
 
----
-
-### 3. Database Seeding (Optional)
-
-To seed your local MongoDB database with initial Techniccal articles and categories:
-
+### 2. Web Application (`client`)
 ```bash
-cd server
-node seed.js
+cd client
+npm install
+npm run dev      # Start React Vite frontend at http://localhost:5173
 ```
 
-> **Note**: If MongoDB is not running locally, the application automatically falls back to in-memory `localStorage` mock data so you can test the frontend seamlessly without database configuration.
-
-<!-- ---
-
-## 🔐 Admin Credentials
-
-Access the publication CMS at `http://localhost:5173/admin/login`:
-
-- **Email**: `editor@techniccal.com` (or `admin@aether.blog`)
-- **Password**: `admin123` -->
+### 3. Sanity Studio (`studio-techniccal`)
+```bash
+cd studio-techniccal
+npm install
+npm run dev      # Start Sanity Studio v3 CMS at http://localhost:3333
+```

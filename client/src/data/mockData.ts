@@ -193,14 +193,16 @@ Go's lightweight CSP concurrency model and fast compilation speed make it the id
 Rust provides memory safety without garbage collection overhead, enabling sub-millisecond execution predictability for storage engines and network proxies.
 `
   },
+    
   {
     id: 'art-05',
     title: 'Building Resilient Event-Driven Architectures with Kafka',
     slug: 'resilient-event-driven-architectures-kafka',
     excerpt: 'Best practices for consumer group offsets, idempotent producers, dead letter queues, and schema evolution in production.',
-    category: 'Software Architecture',
+    category: 'Programming',
     tags: ['Kafka', 'Event Driven', 'Architecture'],
     publishedAt: '2026-08-08',
+    updatedAt: '2026-08-24',
     readingTime: '7 min read',
     featured: false,
     pinned: false,
@@ -209,14 +211,151 @@ Rust provides memory safety without garbage collection overhead, enabling sub-mi
     coverImage: 'https://images.unsplash.com/photo-1504639725590-34d0984388bd?auto=format&fit=crop&w=800&q=80',
     author: INITIAL_AUTHOR,
     content: `
-## Event-Driven Resilience
+## Event-Driven Resilience in Microservices
 
 Building event-driven microservices requires explicit error handling strategies for schema changes, consumer crashes, and network partitions.
 
-### Core Production Rules
+### 1. Core Production Rules
 - Enable idempotent producer configs (\`enable.idempotence=true\`).
 - Enforce strict schema validation using Schema Registry.
 - Route malformed events to a dedicated Dead Letter Queue (DLQ).
+
+\`\`\`typescript
+// Idempotent Kafka Producer Configuration
+const producer = kafka.producer({
+  maxInFlightRequests: 1,
+  idempotent: true,
+  transactionalId: 'orders-tx-processor-01'
+});
+\`\`\`
+
+> "In event-driven architectures, state is not fixed; state is a continuous fold over stream events."
+
+![Architecture Diagram](https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80)
+`
+  },
+  {
+    id: 'art-06',
+    title: 'Cracking the Senior System Design Interview: A Principal Engineer Guide',
+    slug: 'cracking-senior-system-design-interview',
+    excerpt: 'A comprehensive playbook for navigating distributed systems interviews, back-of-the-envelope calculations, and architectural tradeoffs.',
+    category: 'Career',
+    tags: ['Career', 'System Design', 'Interviews', 'Leadership'],
+    publishedAt: '2026-08-20',
+    updatedAt: '2026-08-22',
+    readingTime: '10 min read',
+    featured: true,
+    pinned: false,
+    status: 'published',
+    views: 9240,
+    coverImage: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80',
+    author: {
+      name: 'Alex Rivera',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80',
+      bio: 'Principal Systems Architect specializing in distributed storage and high-frequency stream processing.',
+      role: 'Principal Systems Architect'
+    },
+    seo: {
+      title: 'Cracking the Senior System Design Interview — Techniccal',
+      description: 'A comprehensive playbook for navigating distributed systems interviews, back-of-the-envelope calculations, and architectural tradeoffs.',
+      keywords: ['career', 'jobs', 'interviews', 'system design']
+    },
+    content: `
+## Navigating High-Stakes Architecture Interviews
+
+Senior and Principal engineering interviews evaluate your ability to make structured trade-offs under uncertainty. Interviewers don't just want a working diagram; they assess your depth in fault tolerance, data replication, and scaling bottlenecks.
+
+### 1. The 4-Step System Design Framework
+1. **Requirements Clarification**: Establish QPS, storage retention, read/write ratio, and SLA constraints.
+2. **Back-of-the-Envelope Estimation**: Calculate throughput, bandwidth, and memory storage needs.
+3. **High-Level Architecture**: Sketch API gateways, load balancers, database storage tiers, and caching layers.
+4. **Deep-Dive Bottlenecks**: Address network partitioning (CAP theorem), cache invalidation, and single points of failure.
+
+\`\`\`python
+# Back-of-the-envelope calculation helper for QPS & Bandwidth
+def calculate_system_metrics(daily_active_users=10_000_000, requests_per_user=20, payload_kb=50):
+    total_daily_requests = daily_active_users * requests_per_user
+    avg_qps = total_daily_requests / 86400
+    peak_qps = avg_qps * 2.5
+    bandwidth_mb_sec = (peak_qps * payload_kb) / 1024
+    return {"avg_qps": round(avg_qps), "peak_qps": round(peak_qps), "bandwidth_mb_sec": round(bandwidth_mb_sec, 2)}
+\`\`\`
+
+> "Great architects do not pick the best technology; they choose the set of drawbacks they are willing to live with."
+
+![System Design Whiteboard](https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&w=800&q=80)
+`
+  },
+  {
+    id: 'art-07',
+    title: 'Building a High-Performance Rust In-Memory Key-Value Store',
+    slug: 'building-rust-in-memory-key-value-store',
+    excerpt: 'Step-by-step project tutorial on implementing a concurrent RESP-compatible key-value engine using Rust and Tokio.',
+    category: 'Projects',
+    tags: ['Rust', 'Projects', 'Tutorial', 'Database'],
+    publishedAt: '2026-08-18',
+    updatedAt: '2026-08-23',
+    readingTime: '12 min read',
+    featured: true,
+    pinned: false,
+    status: 'published',
+    views: 7410,
+    coverImage: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80',
+    author: INITIAL_AUTHOR,
+    seo: {
+      title: 'Building a High-Performance Rust Key-Value Store — Techniccal',
+      description: 'Step-by-step project tutorial on implementing a concurrent RESP-compatible key-value engine using Rust and Tokio.',
+      keywords: ['rust', 'project tutorial', 'database', 'tokio']
+    },
+    content: `
+## Project Walkthrough: Building an In-Memory Store
+
+In this hands-on tutorial, we will build a lock-free, concurrent key-value storage engine in Rust that implements a subset of the Redis RESP protocol.
+
+### 1. Project Initialization & Dependencies
+
+Add the following Tokio runtime dependencies to your \`Cargo.toml\`:
+
+\`\`\`toml
+[dependencies]
+tokio = { version = "1.35", features = ["full"] }
+bytes = "1.5"
+dashmap = "5.5"
+\`\`\`
+
+### 2. Implementing the Concurrent Storage Engine
+
+Using DashMap for lock-free sharded hash map storage:
+
+\`\`\`rust
+use dashmap::DashMap;
+use std::sync::Arc;
+
+#[derive(Clone)]
+pub struct DbStore {
+    entries: Arc<DashMap<String, Vec<u8>>>,
+}
+
+impl DbStore {
+    pub fn new() -> Self {
+        DbStore {
+            entries: Arc::new(DashMap::new()),
+        }
+    }
+
+    pub fn set(&self, key: String, value: Vec<u8>) {
+        self.entries.insert(key, value);
+    }
+
+    pub fn get(&self, key: &str) -> Option<Vec<u8>> {
+        self.entries.get(key).map(|v| v.value().clone())
+    }
+}
+\`\`\`
+
+> "Writing your own database storage engine is the fastest path to mastering concurrency and memory layout."
+
+![Rust Server Benchmarks](https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80)
 `
   }
 ];

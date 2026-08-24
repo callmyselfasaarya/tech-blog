@@ -143,7 +143,17 @@ export const api = {
   getArticlesSync: (category?: string, search?: string): Article[] => {
     let articles = LocalStore.getArticles().filter(a => a.status === 'published');
     if (category && category.toUpperCase() !== 'ALL') {
-      articles = articles.filter(a => a.category.toUpperCase() === category.toUpperCase());
+      const cat = category.toUpperCase();
+      articles = articles.filter(a => {
+        const artCat = (a.category || '').toUpperCase();
+        if (artCat === cat || artCat.includes(cat)) return true;
+        if (cat === 'AI' && (artCat.includes('AI') || artCat.includes('MACHINE LEARNING'))) return true;
+        if (cat === 'PROGRAMMING' && (artCat.includes('PROGRAMMING') || artCat.includes('SOFTWARE') || artCat.includes('SYSTEMS'))) return true;
+        if (cat === 'CAREER' && (artCat.includes('CAREER') || artCat.includes('JOBS') || artCat.includes('INTERVIEW'))) return true;
+        if (cat === 'PROJECTS' && (artCat.includes('PROJECT') || artCat.includes('TUTORIAL'))) return true;
+        if (cat === 'TOOLS' && (artCat.includes('TOOL') || artCat.includes('DEVELOPER'))) return true;
+        return false;
+      });
     }
     if (search && search.trim()) {
       const q = search.toLowerCase().trim();
@@ -170,7 +180,17 @@ export const api = {
       if (sanityArticles && sanityArticles.length > 0) {
         let filtered = sanityArticles;
         if (category && category.toUpperCase() !== 'ALL') {
-          filtered = filtered.filter(a => a.category && a.category.toUpperCase() === category.toUpperCase());
+          const cat = category.toUpperCase();
+          filtered = filtered.filter(a => {
+            const artCat = (a.category || '').toUpperCase();
+            if (artCat === cat || artCat.includes(cat)) return true;
+            if (cat === 'AI' && (artCat.includes('AI') || artCat.includes('MACHINE LEARNING'))) return true;
+            if (cat === 'PROGRAMMING' && (artCat.includes('PROGRAMMING') || artCat.includes('SOFTWARE') || artCat.includes('SYSTEMS'))) return true;
+            if (cat === 'CAREER' && (artCat.includes('CAREER') || artCat.includes('JOBS') || artCat.includes('INTERVIEW'))) return true;
+            if (cat === 'PROJECTS' && (artCat.includes('PROJECT') || artCat.includes('TUTORIAL'))) return true;
+            if (cat === 'TOOLS' && (artCat.includes('TOOL') || artCat.includes('DEVELOPER'))) return true;
+            return false;
+          });
         }
         if (search && search.trim()) {
           const q = search.toLowerCase().trim();

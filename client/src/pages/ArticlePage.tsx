@@ -132,13 +132,7 @@ export const ArticlePage: React.FC = () => {
 
             {/* Share Button Bar */}
             <div className="flex items-center gap-2">
-              <button
-                onClick={handleShare}
-                className="inline-flex items-center gap-1.5 text-xs font-medium text-[#1C1C1E] dark:text-[#F6F5F0] bg-[#E8E7E2] dark:bg-[#222225] border border-[#E1E1E1] dark:border-[#2C2C30] hover:opacity-80 px-3.5 py-1.5 rounded-full transition-opacity cursor-pointer shadow-xs"
-              >
-                {copied ? <Check className="w-3.5 h-3.5 text-green-500" /> : <Share2 className="w-3.5 h-3.5" />}
-                <span>{copied ? 'Copied' : 'Share'}</span>
-              </button>
+              <ShareButtons title={article.title} onCopy={handleShare} copied={copied} />
             </div>
           </div>
         </BlurFade>
@@ -183,7 +177,7 @@ export const ArticlePage: React.FC = () => {
               {/* Updated Date */}
               <div className="flex items-center gap-1 font-mono text-[#4C586F] dark:text-[#A0A9B8]">
                 <RefreshCw className="w-3 h-3 text-[#3B719F]" />
-                <span>Updated Aug 24, 2026</span>
+                <span>Updated {article.updatedAt || article.publishedAt}</span>
               </div>
             </div>
           </header>
@@ -208,133 +202,182 @@ export const ArticlePage: React.FC = () => {
         )}
 
         {/* Main Content Layout Container */}
-        <div className="max-w-[720px] mx-auto space-y-12">
-          {/* 7. Table of Contents */}
-          <BlurFade delay={0.3} yOffset={16}>
-            <TableOfContents content={article.content} />
-          </BlurFade>
-
-          {/* 8, 9, 10. Main Content Body + Code Examples + Diagrams */}
-          <BlurFade delay={0.35} yOffset={20}>
-            <div className="prose-editorial font-sans text-base sm:text-lg leading-relaxed text-[#1C1C1E] dark:text-[#F6F5F0]">
-              <ArticleContentRenderer content={article.content} />
-            </div>
-          </BlurFade>
-
-          {/* 12. Newsletter CTA Box */}
-          <BlurFade delay={0.4} yOffset={20}>
-            <div className="p-8 sm:p-10 rounded-3xl bg-[#E8E7E2]/60 dark:bg-[#222225] border border-[#E1E1E1] dark:border-[#2C2C30] text-center space-y-4 shadow-xs">
-              <div className="w-10 h-10 rounded-xl bg-white dark:bg-[#141416] flex items-center justify-center mx-auto text-[#1C1C1E] dark:text-white">
-                <Mail className="w-5 h-5 text-[#3B719F]" />
-              </div>
-              <h3 className="font-display font-semibold text-xl text-[#1C1C1E] dark:text-[#F6F5F0]">
-                Enjoyed this technical dispatch?
-              </h3>
-              <p className="text-xs sm:text-sm text-[#4C586F] dark:text-[#A0A9B8] max-w-md mx-auto">
-                Get our weekly software architecture breakdowns and system benchmarks delivered straight to your inbox.
-              </p>
-
-              {ctaSubscribed ? (
-                <div className="p-3 bg-green-500/10 border border-green-500/20 text-green-600 dark:text-green-400 text-xs rounded-2xl font-medium max-w-md mx-auto">
-                  Subscribed! Welcome to Techniccal Dispatch.
-                </div>
-              ) : (
-                <form onSubmit={handleCtaSubscribe} className="flex flex-col sm:flex-row items-center justify-center gap-2.5 max-w-md mx-auto">
-                  <input
-                    type="email"
-                    placeholder="Your work email"
-                    value={newsletterEmail}
-                    onChange={(e) => setNewsletterEmail(e.target.value)}
-                    required
-                    className="w-full px-4 py-2.5 text-xs rounded-xl bg-white dark:bg-[#141416] border border-[#E1E1E1] dark:border-[#2C2C30] text-[#1C1C1E] dark:text-[#F6F5F0] placeholder-[#7E8798] focus:outline-none focus:ring-1 focus:ring-[#1C1C1E]"
-                  />
-                  <button
-                    type="submit"
-                    className="w-full sm:w-auto px-6 py-2.5 text-xs font-semibold rounded-xl bg-[#1C1C1E] dark:bg-white text-white dark:text-[#1C1C1E] hover:opacity-90 transition-opacity cursor-pointer shrink-0"
-                  >
-                    Subscribe
-                  </button>
-                </form>
-              )}
-            </div>
-          </BlurFade>
-
-          {/* 13. Author Information Box */}
-          <BlurFade delay={0.45} yOffset={20}>
-            <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#222225] border border-[#E1E1E1] dark:border-[#2C2C30] shadow-sm flex flex-col sm:flex-row items-start sm:items-center gap-5">
-              <img
-                src={article.author.avatar}
-                alt={article.author.name}
-                className="w-16 h-16 rounded-2xl object-cover shrink-0 border border-[#E1E1E1] dark:border-[#2C2C30]"
-              />
-              <div className="space-y-1.5 flex-1">
-                <div className="flex items-center justify-between">
-                  <h4 className="font-display font-semibold text-base text-[#1C1C1E] dark:text-[#F6F5F0]">
-                    Written by {article.author.name}
-                  </h4>
-                  <span className="text-[11px] font-mono px-2 py-0.5 rounded-md bg-[#E8E7E2] dark:bg-[#141416] text-[#3B719F]">
-                    {article.author.role || 'Staff Architect'}
-                  </span>
-                </div>
-                <p className="text-xs text-[#4C586F] dark:text-[#A0A9B8] leading-relaxed">
-                  {article.author.bio}
-                </p>
-                <div className="flex items-center gap-3 pt-1 text-xs text-[#7E8798]">
-                  <a href="https://twitter.com" target="_blank" rel="noreferrer" className="hover:text-[#1C1C1E] dark:hover:text-white transition-colors flex items-center gap-1">
-                    <Twitter className="w-3.5 h-3.5" /> Twitter
-                  </a>
-                  <a href="https://github.com" target="_blank" rel="noreferrer" className="hover:text-[#1C1C1E] dark:hover:text-white transition-colors flex items-center gap-1">
-                    <Github className="w-3.5 h-3.5" /> GitHub
-                  </a>
-                  <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="hover:text-[#1C1C1E] dark:hover:text-white transition-colors flex items-center gap-1">
-                    <Linkedin className="w-3.5 h-3.5" /> LinkedIn
-                  </a>
-                </div>
-              </div>
-            </div>
-          </BlurFade>
-
-          {/* 14. Comments/Discussion Section */}
-          <ArticleComments articleId={article.id} articleTitle={article.title} />
-
-          {/* 11. Related Articles */}
-          {related.length > 0 && (
-            <BlurFade delay={0.5} yOffset={20}>
-              <section className="mt-16 pt-10 border-t border-[#E1E1E1] dark:border-[#2C2C30]">
-                <h3 className="text-xs font-mono tracking-widest text-[#7E8798] dark:text-[#A0A9B8] uppercase mb-6">
-                  MORE FROM {article.category.toUpperCase()}
-                </h3>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  {related.map((rel) => (
-                    <Link
-                      key={rel.id}
-                      to={`/article/${rel.slug}`}
-                      className="p-4 rounded-2xl bg-white dark:bg-[#222225] border border-[#E1E1E1] dark:border-[#2C2C30] hover:shadow-md transition-all group flex flex-col justify-between"
-                    >
-                      <div className="flex items-start justify-between gap-2">
-                        <h4 className="font-display font-semibold text-xs sm:text-sm text-[#1C1C1E] dark:text-[#F6F5F0] group-hover:text-[#3B719F] line-clamp-2">
-                          {rel.title}
-                        </h4>
-                        <div className="w-5 h-5 rounded-md bg-[#F4F2EE] dark:bg-[#2C2C30] flex items-center justify-center shrink-0">
-                          <ArrowUpRight className="w-3 h-3 text-[#7E8798]" />
-                        </div>
-                      </div>
-                      <span className="text-[11px] font-mono text-[#7E8798] mt-3">
-                        {rel.readingTime || '4 min'}
-                      </span>
-                    </Link>
-                  ))}
-                </div>
-              </section>
+        <div className="flex flex-col xl:flex-row items-start justify-center gap-12 max-w-6xl mx-auto">
+          {/* 7. Table of Contents (Mobile Collapsible) */}
+          <div className="w-full max-w-[720px] mx-auto space-y-12 flex-1">
+            <BlurFade delay={0.3} yOffset={16}>
+              <TableOfContents content={article.content} />
             </BlurFade>
-          )}
+
+            {/* 8, 9, 10. Main Content Body + Code Examples + Diagrams */}
+            <BlurFade delay={0.35} yOffset={20}>
+              <div className="prose-editorial font-sans text-base sm:text-lg leading-relaxed text-[#1C1C1E] dark:text-[#F6F5F0]">
+                <ArticleContentRenderer content={article.content} />
+              </div>
+            </BlurFade>
+
+            {/* 15. Bottom Share Bar */}
+            <BlurFade delay={0.38} yOffset={16}>
+              <div className="p-4 rounded-2xl bg-white dark:bg-[#222225] border border-[#E1E1E1] dark:border-[#2C2C30] flex flex-wrap items-center justify-between gap-4 shadow-xs">
+                <span className="text-xs font-mono text-[#7E8798]">Share this article</span>
+                <ShareButtons title={article.title} onCopy={handleShare} copied={copied} />
+              </div>
+            </BlurFade>
+
+            {/* 12. Newsletter CTA Box */}
+            <BlurFade delay={0.4} yOffset={20}>
+              <div className="p-8 sm:p-10 rounded-3xl bg-[#E8E7E2]/60 dark:bg-[#222225] border border-[#E1E1E1] dark:border-[#2C2C30] text-center space-y-4 shadow-xs">
+                <div className="w-10 h-10 rounded-xl bg-white dark:bg-[#141416] flex items-center justify-center mx-auto text-[#1C1C1E] dark:text-white">
+                  <Mail className="w-5 h-5 text-[#3B719F]" />
+                </div>
+                <h3 className="font-display font-semibold text-xl text-[#1C1C1E] dark:text-[#F6F5F0]">
+                  Enjoyed this technical dispatch?
+                </h3>
+                <p className="text-xs sm:text-sm text-[#4C586F] dark:text-[#A0A9B8] max-w-md mx-auto">
+                  Get our weekly software architecture breakdowns and system benchmarks delivered straight to your inbox.
+                </p>
+
+                {ctaSubscribed ? (
+                  <div className="p-3 bg-green-500/10 border border-green-500/20 text-green-600 dark:text-green-400 text-xs rounded-2xl font-medium max-w-md mx-auto">
+                    Subscribed! Welcome to Techniccal Dispatch.
+                  </div>
+                ) : (
+                  <form onSubmit={handleCtaSubscribe} className="flex flex-col sm:flex-row items-center justify-center gap-2.5 max-w-md mx-auto">
+                    <input
+                      type="email"
+                      placeholder="Your work email"
+                      value={newsletterEmail}
+                      onChange={(e) => setNewsletterEmail(e.target.value)}
+                      required
+                      className="w-full px-4 py-2.5 text-xs rounded-xl bg-white dark:bg-[#141416] border border-[#E1E1E1] dark:border-[#2C2C30] text-[#1C1C1E] dark:text-[#F6F5F0] placeholder-[#7E8798] focus:outline-none focus:ring-1 focus:ring-[#1C1C1E]"
+                    />
+                    <button
+                      type="submit"
+                      className="w-full sm:w-auto px-6 py-2.5 text-xs font-semibold rounded-xl bg-[#1C1C1E] dark:bg-white text-white dark:text-[#1C1C1E] hover:opacity-90 transition-opacity cursor-pointer shrink-0"
+                    >
+                      Subscribe
+                    </button>
+                  </form>
+                )}
+              </div>
+            </BlurFade>
+
+            {/* 13. Author Information Box */}
+            <BlurFade delay={0.45} yOffset={20}>
+              <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#222225] border border-[#E1E1E1] dark:border-[#2C2C30] shadow-sm flex flex-col sm:flex-row items-start sm:items-center gap-5">
+                <img
+                  src={article.author.avatar}
+                  alt={article.author.name}
+                  className="w-16 h-16 rounded-2xl object-cover shrink-0 border border-[#E1E1E1] dark:border-[#2C2C30]"
+                />
+                <div className="space-y-1.5 flex-1">
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-display font-semibold text-base text-[#1C1C1E] dark:text-[#F6F5F0]">
+                      Written by {article.author.name}
+                    </h4>
+                    <span className="text-[11px] font-mono px-2 py-0.5 rounded-md bg-[#E8E7E2] dark:bg-[#141416] text-[#3B719F]">
+                      {article.author.role || 'Staff Architect'}
+                    </span>
+                  </div>
+                  <p className="text-xs text-[#4C586F] dark:text-[#A0A9B8] leading-relaxed">
+                    {article.author.bio}
+                  </p>
+                  <div className="flex items-center gap-3 pt-1 text-xs text-[#7E8798]">
+                    <a href="https://twitter.com" target="_blank" rel="noreferrer" className="hover:text-[#1C1C1E] dark:hover:text-white transition-colors flex items-center gap-1">
+                      <Twitter className="w-3.5 h-3.5" /> Twitter
+                    </a>
+                    <a href="https://github.com" target="_blank" rel="noreferrer" className="hover:text-[#1C1C1E] dark:hover:text-white transition-colors flex items-center gap-1">
+                      <Github className="w-3.5 h-3.5" /> GitHub
+                    </a>
+                    <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="hover:text-[#1C1C1E] dark:hover:text-white transition-colors flex items-center gap-1">
+                      <Linkedin className="w-3.5 h-3.5" /> LinkedIn
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </BlurFade>
+
+            {/* 14. Comments/Discussion Section */}
+            <ArticleComments articleId={article.id} articleTitle={article.title} />
+
+            {/* 11. Related Articles */}
+            {related.length > 0 && (
+              <BlurFade delay={0.5} yOffset={20}>
+                <section className="mt-16 pt-10 border-t border-[#E1E1E1] dark:border-[#2C2C30]">
+                  <h3 className="text-xs font-mono tracking-widest text-[#7E8798] dark:text-[#A0A9B8] uppercase mb-6">
+                    MORE FROM {article.category.toUpperCase()}
+                  </h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    {related.map((rel) => (
+                      <Link
+                        key={rel.id}
+                        to={`/article/${rel.slug}`}
+                        className="p-4 rounded-2xl bg-white dark:bg-[#222225] border border-[#E1E1E1] dark:border-[#2C2C30] hover:shadow-md transition-all group flex flex-col justify-between"
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <h4 className="font-display font-semibold text-xs sm:text-sm text-[#1C1C1E] dark:text-[#F6F5F0] group-hover:text-[#3B719F] line-clamp-2">
+                            {rel.title}
+                          </h4>
+                          <div className="w-5 h-5 rounded-md bg-[#F4F2EE] dark:bg-[#2C2C30] flex items-center justify-center shrink-0">
+                            <ArrowUpRight className="w-3 h-3 text-[#7E8798]" />
+                          </div>
+                        </div>
+                        <span className="text-[11px] font-mono text-[#7E8798] mt-3">
+                          {rel.readingTime || '4 min'}
+                        </span>
+                      </Link>
+                    ))}
+                  </div>
+                </section>
+              </BlurFade>
+            )}
+          </div>
         </div>
       </article>
     </>
   );
 };
 
-/* Helper component to parse markdown content into styled HTML elements with Copy Code buttons */
+/* 15. Social Share Buttons Component */
+const ShareButtons: React.FC<{ title: string; onCopy: () => void; copied: boolean }> = ({ title, onCopy, copied }) => {
+  const currentUrl = encodeURIComponent(window.location.href);
+  const encodedTitle = encodeURIComponent(title);
+
+  return (
+    <div className="flex items-center gap-1.5">
+      <button
+        onClick={onCopy}
+        className="inline-flex items-center gap-1.5 text-xs font-medium text-[#1C1C1E] dark:text-[#F6F5F0] bg-[#E8E7E2] dark:bg-[#222225] border border-[#E1E1E1] dark:border-[#2C2C30] hover:opacity-80 px-3 py-1.5 rounded-full transition-opacity cursor-pointer shadow-xs"
+        title="Copy Link"
+      >
+        {copied ? <Check className="w-3.5 h-3.5 text-green-500" /> : <Copy className="w-3.5 h-3.5" />}
+        <span>{copied ? 'Copied' : 'Copy'}</span>
+      </button>
+
+      <a
+        href={`https://twitter.com/intent/tweet?url=${currentUrl}&text=${encodedTitle}`}
+        target="_blank"
+        rel="noreferrer"
+        className="p-1.5 text-xs font-medium text-[#1C1C1E] dark:text-[#F6F5F0] bg-[#E8E7E2] dark:bg-[#222225] border border-[#E1E1E1] dark:border-[#2C2C30] hover:opacity-80 rounded-full transition-opacity cursor-pointer shadow-xs"
+        title="Share on X / Twitter"
+      >
+        <Twitter className="w-3.5 h-3.5" />
+      </a>
+
+      <a
+        href={`https://www.linkedin.com/sharing/share-offsite/?url=${currentUrl}`}
+        target="_blank"
+        rel="noreferrer"
+        className="p-1.5 text-xs font-medium text-[#1C1C1E] dark:text-[#F6F5F0] bg-[#E8E7E2] dark:bg-[#222225] border border-[#E1E1E1] dark:border-[#2C2C30] hover:opacity-80 rounded-full transition-opacity cursor-pointer shadow-xs"
+        title="Share on LinkedIn"
+      >
+        <Linkedin className="w-3.5 h-3.5" />
+      </a>
+    </div>
+  );
+};
+
+/* Helper component to parse markdown content into styled HTML elements with Copy Code buttons & diagrams */
 const ArticleContentRenderer: React.FC<{ content: string }> = ({ content }) => {
   const paragraphs = content.split('\n\n').filter(Boolean);
   const [copiedIdx, setCopiedIdx] = useState<number | null>(null);
@@ -385,6 +428,27 @@ const ArticleContentRenderer: React.FC<{ content: string }> = ({ content }) => {
           );
         }
 
+        {/* 10. Images / Diagrams Rendering */}
+        if (trimmed.startsWith('![') && trimmed.includes('](')) {
+          const match = trimmed.match(/!\[(.*?)\]\((.*?)\)/);
+          if (match) {
+            const alt = match[1];
+            const src = match[2];
+            return (
+              <figure key={idx} className="my-8 text-center space-y-2">
+                <div className="rounded-2xl overflow-hidden border border-[#E1E1E1] dark:border-[#2C2C30] bg-[#E8E7E2] dark:bg-[#222225] shadow-sm">
+                  <img src={src} alt={alt} className="w-full h-auto object-cover max-h-[460px]" />
+                </div>
+                {alt && (
+                  <figcaption className="text-xs font-mono text-[#7E8798]">
+                    Figure — {alt}
+                  </figcaption>
+                )}
+              </figure>
+            );
+          }
+        }
+
         {/* 9. Code Examples Block with Interactive Copy Code Button */}
         if (trimmed.startsWith('```')) {
           const lines = trimmed.split('\n');
@@ -407,6 +471,20 @@ const ArticleContentRenderer: React.FC<{ content: string }> = ({ content }) => {
                 <code>{codeText}</code>
               </pre>
             </div>
+          );
+        }
+
+        {/* Unordered Lists */}
+        if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
+          const items = trimmed.split('\n').map((l) => l.replace(/^[-*]\s+/, ''));
+          return (
+            <ul key={idx} className="my-4 space-y-2 pl-6 list-disc text-[#1C1C1E] dark:text-[#F6F5F0]">
+              {items.map((item, i) => (
+                <li key={i} className="text-base sm:text-lg leading-relaxed">
+                  {item}
+                </li>
+              ))}
+            </ul>
           );
         }
 
