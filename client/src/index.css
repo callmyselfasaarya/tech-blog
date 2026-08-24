@@ -1,0 +1,189 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --bg-primary: #F4F2F0;
+    --bg-secondary: #EDEAE7;
+    --bg-card: #FFFFFF;
+    --border-subtle: #E8E4DF;
+    --border-strong: #DCD7D2;
+    --text-primary: #1A1918;
+    --text-secondary: #6E6862;
+    --text-muted: #99938B;
+    --accent: #1A1918;
+    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-display: 'Manrope', 'Inter', system-ui, sans-serif;
+    --font-serif: 'Source Serif 4', Georgia, serif;
+    --font-editorial: 'Source Serif 4', Georgia, serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  .dark {
+    --bg-primary: #161514;
+    --bg-secondary: #22201F;
+    --bg-card: #201E1D;
+    --border-subtle: #2C2927;
+    --border-strong: #3D3936;
+    --text-primary: #F4F2F0;
+    --text-secondary: #A8A29A;
+    --text-muted: #78736B;
+    --accent: #F4F2F0;
+  }
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+/* Editorial Typography Helpers */
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-serif {
+  font-family: var(--font-serif);
+}
+
+.font-editorial {
+  font-family: var(--font-editorial);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+/* Custom minimal scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(150, 150, 150, 0.25);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(150, 150, 150, 0.45);
+}
+
+/* Smooth Focus Rings */
+:focus-visible {
+  outline: 1.5px solid var(--text-primary);
+  outline-offset: 2px;
+}
+
+/* Prose Styling for Article Content */
+.prose-editorial {
+  font-size: 1.125rem;
+  line-height: 1.85;
+  color: var(--text-primary);
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.prose-editorial p {
+  margin-bottom: 1.75rem;
+  letter-spacing: -0.01em;
+}
+
+.prose-editorial h2 {
+  font-family: var(--font-serif);
+  font-size: 2rem;
+  font-weight: 600;
+  line-height: 1.25;
+  margin-top: 3rem;
+  margin-bottom: 1.25rem;
+  letter-spacing: -0.02em;
+}
+
+.prose-editorial h3 {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.3;
+  margin-top: 2.25rem;
+  margin-bottom: 1rem;
+}
+
+.prose-editorial blockquote {
+  border-left: 2px solid var(--border-strong);
+  padding-left: 1.5rem;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  font-style: italic;
+  color: var(--text-secondary);
+}
+
+.prose-editorial code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  background-color: var(--bg-secondary);
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+  border: 1px solid var(--border-subtle);
+}
+
+.prose-editorial pre {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 1.25rem;
+  overflow-x: auto;
+  margin-top: 1.75rem;
+  margin-bottom: 1.75rem;
+}
+
+.prose-editorial pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 0.9em;
+}
+
+.prose-editorial figure {
+  margin-top: 2.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.prose-editorial figcaption {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-align: center;
+  margin-top: 0.75rem;
+  font-style: italic;
+}
+
+.prose-editorial ul, .prose-editorial ol {
+  margin-top: 1.25rem;
+  margin-bottom: 1.75rem;
+  padding-left: 1.5rem;
+}
+
+.prose-editorial ul {
+  list-style-type: disc;
+}
+
+.prose-editorial ol {
+  list-style-type: decimal;
+}
+
+.prose-editorial li {
+  margin-bottom: 0.5rem;
+}
+
+.prose-editorial .callout {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-left: 3px solid var(--text-primary);
+  padding: 1.25rem 1.5rem;
+  border-radius: 4px;
+  margin: 2rem 0;
+  font-size: 1.05rem;
+}
