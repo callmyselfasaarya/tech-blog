@@ -63,6 +63,7 @@ export interface Subscriber {
   email: string;
   subscribedAt: string;
   status: 'active' | 'unsubscribed';
+  source?: string;
 }
 
 export interface User {

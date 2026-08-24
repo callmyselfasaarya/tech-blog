@@ -52,8 +52,12 @@ export const FeaturedArticle: React.FC<FeaturedArticleProps> = ({ article }) => 
               <img
                 src={article.coverImage}
                 alt={article.title}
-                className="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 group-hover:scale-[1.02] transition-all duration-500 ease-out"
+                width="800"
+                height="600"
                 loading="eager"
+                fetchPriority="high"
+                decoding="async"
+                className="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 group-hover:scale-[1.02] transition-all duration-500 ease-out"
               />
             </div>
           )}

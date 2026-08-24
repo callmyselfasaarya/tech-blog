@@ -235,15 +235,15 @@ export const INITIAL_SUBSCRIBERS: Subscriber[] = [
 ];
 
 export const INITIAL_MEDIA: MediaItem[] = [
-  { id: 'med-1', name: 'distributed-systems.jpg', url: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80', size: '1.4 MB', uploadedAt: '2026-08-23' },
-  { id: 'med-2', name: 'ai-architecture.jpg', url: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80', size: '2.1 MB', uploadedAt: '2026-08-21' },
+  { id: 'med-1', filename: 'distributed-systems.jpg', url: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80', mimeType: 'image/jpeg', size: 1468006, uploadedAt: '2026-08-23' },
+  { id: 'med-2', filename: 'ai-architecture.jpg', url: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80', mimeType: 'image/jpeg', size: 2202009, uploadedAt: '2026-08-21' },
 ];
 
 export const INITIAL_USER: User = {
   id: 'usr-1',
   name: 'Techniccal Admin',
   email: 'editor@techniccal.com',
-  role: 'admin',
+  role: 'ADMIN',
   avatar: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=300&q=80'
 };
 export const MOCK_USER = INITIAL_USER;

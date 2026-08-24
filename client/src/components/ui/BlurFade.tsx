@@ -13,15 +13,15 @@ interface BlurFadeProps {
 export const BlurFade: React.FC<BlurFadeProps> = ({
   children,
   delay = 0,
-  duration = 0.5,
-  yOffset = 18,
-  blur = '8px',
+  duration = 0.3,
+  yOffset = 10,
+  blur = '2px',
   className = '',
 }) => {
   return (
     <motion.div
       initial={{
-        opacity: 0,
+        opacity: 0.95,
         y: yOffset,
         filter: `blur(${blur})`,
       }}

@@ -28,7 +28,7 @@ export const Archive: React.FC = () => {
       articles.forEach((art) => {
         const date = new Date(art.publishedAt);
         const year = date.getFullYear().toString();
-        const month = date.toLocaleString('default', { month: 'Long' });
+        const month = date.toLocaleString('default', { month: 'long' });
 
         if (!map[year]) map[year] = {};
         if (!map[year][month]) map[year][month] = [];

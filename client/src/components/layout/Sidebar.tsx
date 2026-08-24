@@ -113,7 +113,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenSearch }) => {
   }
 
   return (
-    <aside className="w-[280px] h-screen sticky top-0 flex flex-col justify-between p-6 border-r border-[#E1E1E1] dark:border-[#2C2C30] bg-[#F6F5F0] dark:bg-[#141416] select-none shrink-0 overflow-y-auto font-poppins transition-all duration-300">
+    <aside data-lenis-prevent className="w-[280px] h-screen sticky top-0 flex flex-col justify-between p-6 border-r border-[#E1E1E1] dark:border-[#2C2C30] bg-[#F6F5F0] dark:bg-[#141416] select-none shrink-0 overflow-y-auto font-poppins transition-all duration-300">
       <div className="space-y-6">
         {/* Official Techniccal Header */}
         <div className="flex items-center justify-between pb-2">

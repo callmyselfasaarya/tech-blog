@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { ChevronDown, ChevronUp, List } from 'lucide-react';
+import { useLenis } from '../../context/LenisContext';
 
 interface TOCItem {
   id: string;
@@ -15,6 +16,7 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({ content }) => 
   const [headings, setHeadings] = useState<TOCItem[]>([]);
   const [activeId, setActiveId] = useState<string>('');
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const lenis = useLenis();
 
   // Extract headings from markdown content or HTML elements
   useEffect(() => {
@@ -59,21 +61,25 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({ content }) => 
   if (headings.length === 0) return null;
 
   const scrollToHeading = (id: string) => {
-    const el = document.getElementById(id);
-    if (el) {
-      const offset = 90;
-      const bodyRect = document.body.getBoundingClientRect().top;
-      const elementRect = el.getBoundingClientRect().top;
-      const elementPosition = elementRect - bodyRect;
-      const offsetPosition = elementPosition - offset;
+    if (lenis) {
+      lenis.scrollTo('#' + id, { offset: -90 });
+    } else {
+      const el = document.getElementById(id);
+      if (el) {
+        const offset = 90;
+        const bodyRect = document.body.getBoundingClientRect().top;
+        const elementRect = el.getBoundingClientRect().top;
+        const elementPosition = elementRect - bodyRect;
+        const offsetPosition = elementPosition - offset;
 
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
-      });
-      setActiveId(id);
-      setIsMobileOpen(false);
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
+      }
     }
+    setActiveId(id);
+    setIsMobileOpen(false);
   };
 
   return (

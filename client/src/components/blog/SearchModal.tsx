@@ -82,7 +82,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-24 px-4 bg-[#121212]/60 backdrop-blur-sm">
+      <div data-lenis-prevent className="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-24 px-4 bg-[#121212]/60 backdrop-blur-sm">
         <motion.div
           initial={{ opacity: 0, scale: 0.96, y: -10 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -110,7 +110,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
           </div>
 
           {/* Results List */}
-          <div className="max-h-[60vh] overflow-y-auto p-2 divide-y divide-[#F3F1EA] dark:divide-[#222222]">
+          <div data-lenis-prevent className="max-h-[60vh] overflow-y-auto p-2 divide-y divide-[#F3F1EA] dark:divide-[#222222]">
             {results.length === 0 ? (
               <div className="py-12 text-center text-xs font-mono text-[#9E9A8E] dark:text-[#6E6E6E]">
                 No articles matching "{query}"

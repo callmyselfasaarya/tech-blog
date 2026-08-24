@@ -55,9 +55,12 @@ export const ArticleList: React.FC<ArticleListProps> = ({ articles, isLoading })
                   <img
                     src={article.coverImage}
                     alt={article.title}
-                    className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-500"
+                    width="600"
+                    height="412"
                     loading={idx < 2 ? 'eager' : 'lazy'}
+                    fetchPriority={idx < 2 ? 'high' : 'auto'}
                     decoding="async"
+                    className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-500"
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-xs text-[#7E8798]">

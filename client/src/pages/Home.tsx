@@ -1,12 +1,13 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, lazy, Suspense } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Search, ChevronDown } from 'lucide-react';
-import { ArticleList } from '../components/blog/ArticleList';
 import { Article } from '../types';
 import { api } from '../services/api';
 import { TechniccalMonogram } from '../components/ui/TechniccalLogo';
 import { BlurFade } from '../components/ui/BlurFade';
+
+const ArticleList = lazy(() => import('../components/blog/ArticleList').then((m) => ({ default: m.ArticleList })));
 
 export const Home: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -68,14 +69,14 @@ export const Home: React.FC = () => {
       {/* Techniccal Top Hero Section with Blur Fade Animations */}
       <section className="text-center pt-8 pb-14">
         {/* Top Pill Badge */}
-        <BlurFade delay={0.05} yOffset={12}>
+        <BlurFade delay={0} yOffset={6}>
           <div className="inline-block px-4 py-1 mb-8 rounded-full bg-[#EAE7E2]/90 dark:bg-[#222225] border border-[#E1DDD7] dark:border-[#2C2C30] text-[13px] font-sans font-medium text-[#222120] dark:text-[#A0A9B8] shadow-xs">
             From the desk of Techniccal
           </div>
         </BlurFade>
 
         {/* Headline with Blur Fade */}
-        <BlurFade delay={0.15} yOffset={20}>
+        <BlurFade delay={0.02} yOffset={8}>
           <h1 className="font-display font-thin text-5xl sm:text-7xl lg:text-[76px] text-[#1C1C1E] dark:text-[#F6F5F0] tracking-[-0.04em] leading-[1.05] max-w-4xl mx-auto">
             Ideas and insights for
             <br className="hidden sm:inline" />
@@ -84,7 +85,7 @@ export const Home: React.FC = () => {
         </BlurFade>
 
         {/* Subscribe Bar with Blur Fade */}
-        <BlurFade delay={0.25} yOffset={24}>
+        <BlurFade delay={0.04} yOffset={10}>
           <div className="mt-10 max-w-xl mx-auto">
             {subscribed ? (
               <div className="p-3.5 bg-green-500/10 border border-green-500/20 text-green-600 dark:text-green-400 text-xs rounded-2xl font-medium">
@@ -116,7 +117,7 @@ export const Home: React.FC = () => {
       </section>
 
       {/* Filter and Search Bar with Blur Fade */}
-      <BlurFade delay={0.35} yOffset={16}>
+      <BlurFade delay={0.06} yOffset={10}>
         <section className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
           {/* Left: Search input */}
           <div className="relative w-full sm:w-72">
@@ -157,8 +158,10 @@ export const Home: React.FC = () => {
       </BlurFade>
 
       {/* Article Cards Grid with Blur Fade Cascade */}
-      <BlurFade delay={0.45} yOffset={20}>
-        <ArticleList articles={filteredArticles} isLoading={isLoading} />
+      <BlurFade delay={0.08} yOffset={10}>
+        <Suspense fallback={<div className="min-h-[300px]" />}>
+          <ArticleList articles={filteredArticles} isLoading={isLoading} />
+        </Suspense>
       </BlurFade>
     </div>
   );

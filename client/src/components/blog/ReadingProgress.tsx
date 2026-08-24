@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import { useLenis } from '../../context/LenisContext';
 
 export const ReadingProgress: React.FC = () => {
   const [progress, setProgress] = useState(0);
+
+  useLenis((e) => {
+    setProgress(e.progress * 100);
+  });
 
   useEffect(() => {
     const handleScroll = () => {

@@ -2,10 +2,17 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { TechniccalLogo } from '../ui/TechniccalLogo';
 import { BlurFade } from '../ui/BlurFade';
+import { useLenis } from '../../context/LenisContext';
 
 export const Footer: React.FC = () => {
+  const lenis = useLenis();
+
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (lenis) {
+      lenis.scrollTo(0);
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   return (
