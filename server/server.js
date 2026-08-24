@@ -20,6 +20,18 @@ app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+try {
+  const fs = require('fs');
+  const srcPath = 'C:/Users/91994/.gemini/antigravity-ide/brain/2f698e97-d93f-4a3b-9ddb-db434d813f10/media__1787568649883.jpg';
+  const destPath = path.join(__dirname, '../client/public/aarya-portrait.jpg');
+  if (fs.existsSync(srcPath)) {
+    fs.copyFileSync(srcPath, destPath);
+    console.log('Copied developer portrait to client/public/aarya-portrait.jpg');
+  }
+} catch (err) {
+  console.error('Portrait copy info:', err.message);
+}
+
 // Connect to MongoDB if available
 mongoose.connect(MONGODB_URI)
   .then(() => console.log('MongoDB connected successfully.'))

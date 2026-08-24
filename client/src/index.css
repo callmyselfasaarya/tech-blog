@@ -19,7 +19,7 @@
     --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
     --font-display: 'Manrope', 'Inter', system-ui, sans-serif;
     --font-poppins: 'Poppins', 'Inter', system-ui, sans-serif;
-    --font-signature: 'Sacramento', 'Alex Brush', 'Great Vibes', cursive;
+    --font-signature: 'Alex Brush', 'Allura', 'Great Vibes', cursive;
     --font-serif: 'Source Serif 4', Georgia, serif;
     --font-serif-italic: 'Instrument Serif', 'Source Serif 4', Georgia, serif;
     --font-editorial: 'Source Serif 4', Georgia, serif;
@@ -76,7 +76,7 @@ body {
 }
 
 .font-signature {
-  font-family: var(--font-signature);
+  font-family: 'Alex Brush', 'Allura', 'Great Vibes', cursive !important;
 }
 
 .font-serif {

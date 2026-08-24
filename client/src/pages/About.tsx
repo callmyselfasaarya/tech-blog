@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
 import { BlurFade } from '../components/ui/BlurFade';
-import { TechniccalWordmarkLogo } from '../components/ui/TechniccalLogo';
-import { Link } from 'react-router-dom';
 
 export const About: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -18,12 +15,12 @@ export const About: React.FC = () => {
   };
 
   const quickFireFacts = [
-    { label: 'Based in', value: 'London' },
-    { label: 'Current project', value: 'Building a course for writers & scaling Techniccal' },
-    { label: 'First win', value: '100 email subscribers in 30 days' },
-    { label: 'Tools I can\'t quit', value: 'Notion, Neovim, Go, Rust & React' },
-    { label: 'Writing vibe', value: 'Coffee with a friend' },
-    { label: 'Coffee order', value: 'Mocha' },
+    { label: 'Based in', value: 'India' },
+    { label: 'Current project', value: 'Building AI Agents for Myself' },
+    { label: 'First win', value: 'Existing' },
+    { label: 'Tools I can\'t quit', value: 'Notion, Canva, Github & React' },
+    { label: 'Writing vibe', value: 'Off-beat but honest' },
+    { label: 'Coffee order', value: '' },
   ];
 
   return (
@@ -59,7 +56,7 @@ export const About: React.FC = () => {
             {/* Handwritten Signature */}
             <BlurFade delay={0.28} yOffset={14}>
               <div className="pt-2">
-                <span className="font-signature text-5xl text-[#1C1C1E] dark:text-[#F6F5F0] select-none">
+                <span className="font-signature text-xl sm:text-7xl text-[#1C1C1E] dark:text-[#F6F5F0] select-none leading-none">
                   Aarya
                 </span>
               </div>
@@ -71,9 +68,9 @@ export const About: React.FC = () => {
             <BlurFade delay={0.25} yOffset={24}>
               <div className="overflow-hidden rounded-3xl border border-[#E1E1E1] dark:border-[#2C2C30] bg-[#E8E7E2] dark:bg-[#222225] aspect-[4/3] lg:aspect-[1/1.1] shadow-sm">
                 <img
-                  src="/@fs/C:/Users/91994/.gemini/antigravity-ide/brain/2f698e97-d93f-4a3b-9ddb-db434d813f10/media__1787568649883.jpg"
+                  src="/Aarya.jpeg"
                   alt="Aarya"
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover object-top"
                 />
               </div>
             </BlurFade>

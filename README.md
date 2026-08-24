@@ -146,9 +146,3 @@ Access the publication CMS at `http://localhost:5173/admin/login`:
 
 - **Email**: `editor@techniccal.com` (or `admin@aether.blog`)
 - **Password**: `admin123`
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License.
