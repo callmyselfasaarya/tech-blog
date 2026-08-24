@@ -18,10 +18,10 @@ export const Login: React.FC = () => {
     setLoading(true);
 
     try {
-      await api.login(email, password);
+      await api.adminLogin(email, password);
       navigate('/admin');
     } catch (err: any) {
-      setError(err.message || 'Invalid credentials');
+      setError(err.message || 'Invalid administrative credentials');
     } finally {
       setLoading(false);
     }
@@ -33,6 +33,25 @@ export const Login: React.FC = () => {
       navigate('/account');
     } else {
       navigate('/admin');
+    }
+  };
+
+  const [isForgotOpen, setIsForgotOpen] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState('');
+  const [forgotMessage, setForgotMessage] = useState<{ text: string; demoUrl?: string } | null>(null);
+  const [forgotLoading, setForgotLoading] = useState(false);
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!forgotEmail) return;
+    setForgotLoading(true);
+    try {
+      const res = await api.forgotPassword(forgotEmail);
+      setForgotMessage({ text: res.message, demoUrl: res.demoResetUrl });
+    } catch (err: any) {
+      setForgotMessage({ text: err.message || 'Failed to send reset link' });
+    } finally {
+      setForgotLoading(false);
     }
   };
 
@@ -114,9 +133,18 @@ export const Login: React.FC = () => {
           </div>
 
           <div>
-            <label className="block text-xs font-mono uppercase tracking-wider text-[#7E8798] mb-1">
-              PASSWORD
-            </label>
+            <div className="flex items-center justify-between mb-1">
+              <label className="block text-xs font-mono uppercase tracking-wider text-[#7E8798]">
+                PASSWORD
+              </label>
+              <button
+                type="button"
+                onClick={() => setIsForgotOpen(true)}
+                className="text-[11px] font-mono text-purple-600 dark:text-purple-400 hover:underline cursor-pointer"
+              >
+                Forgot password?
+              </button>
+            </div>
             <div className="relative">
               <input
                 type="password"
@@ -142,6 +170,72 @@ export const Login: React.FC = () => {
             Default Credentials: superadmin@techniccal.com / admin123
           </div>
         </form>
+
+        {/* Forgot Password Modal */}
+        {isForgotOpen && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4 z-50">
+            <div className="bg-white dark:bg-[#222225] border border-[#E1E1E1] dark:border-[#2C2C30] p-6 max-w-sm w-full rounded-2xl shadow-2xl font-mono text-xs">
+              <h3 className="text-sm font-bold text-[#1C1C1E] dark:text-[#F6F5F0] mb-2">
+                Reset Account Password
+              </h3>
+              <p className="text-[11px] text-[#7E8798] mb-4">
+                Enter your email address to receive a password reset link.
+              </p>
+
+              {forgotMessage ? (
+                <div className="p-3 bg-purple-500/10 border border-purple-500/20 text-purple-700 dark:text-purple-300 rounded-xl space-y-2">
+                  <p>{forgotMessage.text}</p>
+                  {forgotMessage.demoUrl && (
+                    <Link
+                      to={forgotMessage.demoUrl.replace('http://localhost:5173', '')}
+                      onClick={() => setIsForgotOpen(false)}
+                      className="block underline font-bold text-xs hover:opacity-80"
+                    >
+                      Click here to reset password now (Demo Link)
+                    </Link>
+                  )}
+                  <button
+                    onClick={() => { setIsForgotOpen(false); setForgotMessage(null); }}
+                    className="w-full mt-2 py-1.5 bg-[#1C1C1E] dark:bg-white text-white dark:text-[#1C1C1E] rounded-lg text-center font-semibold uppercase text-[10px]"
+                  >
+                    Close
+                  </button>
+                </div>
+              ) : (
+                <form onSubmit={handleForgotPassword} className="space-y-3">
+                  <div>
+                    <label className="block text-[10px] text-[#7E8798] uppercase mb-1">Email Address</label>
+                    <input
+                      type="email"
+                      required
+                      placeholder="user@techniccal.com"
+                      value={forgotEmail}
+                      onChange={(e) => setForgotEmail(e.target.value)}
+                      className="w-full p-2 bg-[#F6F5F0] dark:bg-[#141416] border border-[#E1E1E1] dark:border-[#2C2C30] rounded-xl focus:outline-none"
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-end gap-2 pt-2">
+                    <button
+                      type="button"
+                      onClick={() => setIsForgotOpen(false)}
+                      className="px-3 py-1.5 text-[#7E8798]"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={forgotLoading}
+                      className="px-4 py-1.5 bg-[#1C1C1E] dark:bg-white text-white dark:text-[#1C1C1E] rounded-xl font-semibold uppercase text-[10px]"
+                    >
+                      {forgotLoading ? 'Sending...' : 'Send Reset Link'}
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
+          </div>
+        )}
       </motion.div>
     </div>
   );

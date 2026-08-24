@@ -53,6 +53,38 @@ Techniccal features a precision design system based on official brand guidelines
 | **Admin** | Admin Track | CMS Access: Create, edit, publish, pin, delete articles, manage categories & subscribers. |
 | **Super Admin** | System Admin | Full system control: Manage team users & roles (`/admin/users`), RBAC configuration. |
 
+### 🔐 Dual-Token Security Architecture (Access + Refresh Tokens)
+
+```text
+                     LOGIN / REGISTER
+                            │
+               ┌────────────┴────────────┐
+               │                         │
+     Access Token (15 mins)     Refresh Token (7 days)
+     [In-Memory / Bearer]       [HTTP-only Cookie + DB]
+               │                         │
+               ▼                         │
+   API Request (Bearer Header)           │
+               │                         │
+      ┌────────┴────────┐                │
+      │                 │                │
+  200 OK           401 Expired           │
+                        │                │
+                        └───────┬────────┘
+                                │
+                      POST /api/auth/refresh
+                                │
+               ┌────────────────┴────────────────┐
+               │                                 │
+     New Access Token (15 mins)       Rotated Refresh Token (7 days)
+     [Returned to Client]             [New HTTP-only Cookie + DB]
+```
+
+- **Short-Lived Access Token**: 15 minutes (`JWT_ACCESS_SECRET`).
+- **Long-Lived Refresh Token**: 7 days (`JWT_REFRESH_SECRET`) stored in an `httpOnly`, `sameSite: 'lax'` cookie.
+- **Refresh Token Rotation**: Each refresh request revokes the used refresh token, issues a fresh 7-day refresh token cookie, and records active tokens in the DB to detect replay attacks.
+- **Silent Client Refresh**: Frontend automatically catches expired 401 tokens and fetches a fresh access token seamlessly.
+
 ---
 
 ## ✨ Features

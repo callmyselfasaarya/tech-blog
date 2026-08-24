@@ -101,8 +101,41 @@ export function slugify(text: string): string {
     .replace(/^-+|-+$/g, '');
 }
 
+// Password Strength Validator Utility
+export function validatePasswordStrength(password: string): { isValid: boolean; errors: string[] } {
+  const errors: string[] = [];
+  if (!password || password.length < 8) {
+    errors.push('At least 8 characters long');
+  }
+  if (!/[A-Z]/.test(password)) {
+    errors.push('One uppercase letter (A-Z)');
+  }
+  if (!/[a-z]/.test(password)) {
+    errors.push('One lowercase letter (a-z)');
+  }
+  if (!/[0-9]/.test(password)) {
+    errors.push('One number (0-9)');
+  }
+  if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+    errors.push('One special symbol (!@#$%^&*)');
+  }
+  return {
+    isValid: errors.length === 0,
+    errors
+  };
+}
+
 // Fast 200ms API timeout signal helper
 const FAST_TIMEOUT = 200;
+
+// Helper to construct Auth headers for API calls
+function getAuthHeaders(headers: Record<string, string> = {}): Record<string, string> {
+  const token = localStorage.getItem(STORAGE_KEYS.AUTH);
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  return headers;
+}
 
 // API Service Interface (Dual Mode: REST backend -> Local Storage Fallback)
 export const api = {
@@ -149,7 +182,11 @@ export const api = {
 
   getAllArticlesAdmin: async (): Promise<Article[]> => {
     try {
-      const res = await fetch('/api/articles/admin', { signal: AbortSignal.timeout(FAST_TIMEOUT) });
+      const res = await fetch('/api/articles/admin', { 
+        headers: getAuthHeaders(),
+        credentials: 'include',
+        signal: AbortSignal.timeout(FAST_TIMEOUT) 
+      });
       if (res.ok) return await res.json();
     } catch (e) {}
     return LocalStore.getArticles();
@@ -176,11 +213,16 @@ export const api = {
     try {
       const res = await fetch('/api/articles', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders({ 'Content-Type': 'application/json' }),
+        credentials: 'include',
         body: JSON.stringify(articleData)
       });
-      if (res.ok) return await res.json();
-    } catch (e) {}
+      const data = await res.json();
+      if (res.ok) return data;
+      if (res.status === 403) throw new Error(data.error || 'Access denied: Editor role cannot perform this action');
+    } catch (e: any) {
+      if (e.message && !e.message.includes('fetch')) throw e;
+    }
 
     const articles = LocalStore.getArticles();
     const title = articleData.title || 'Untitled Article';
@@ -219,11 +261,16 @@ export const api = {
     try {
       const res = await fetch(`/api/articles/${id}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders({ 'Content-Type': 'application/json' }),
+        credentials: 'include',
         body: JSON.stringify(updates)
       });
-      if (res.ok) return await res.json();
-    } catch (e) {}
+      const data = await res.json();
+      if (res.ok) return data;
+      if (res.status === 403) throw new Error(data.error || 'Access denied: Insufficient role privileges');
+    } catch (e: any) {
+      if (e.message && !e.message.includes('fetch')) throw e;
+    }
 
     const articles = LocalStore.getArticles();
     const index = articles.findIndex(a => a.id === id);
@@ -243,9 +290,19 @@ export const api = {
 
   deleteArticle: async (id: string): Promise<boolean> => {
     try {
-      const res = await fetch(`/api/articles/${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/articles/${id}`, { 
+        method: 'DELETE',
+        headers: getAuthHeaders(),
+        credentials: 'include'
+      });
       if (res.ok) return true;
-    } catch (e) {}
+      if (res.status === 403) {
+        const data = await res.json();
+        throw new Error(data.error || 'Access denied: Editor role cannot delete articles. Requires Admin or Super Admin.');
+      }
+    } catch (e: any) {
+      if (e.message && !e.message.includes('fetch')) throw e;
+    }
 
     const articles = LocalStore.getArticles();
     const filtered = articles.filter(a => a.id !== id);
@@ -266,11 +323,16 @@ export const api = {
     try {
       const res = await fetch('/api/categories', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders({ 'Content-Type': 'application/json' }),
+        credentials: 'include',
         body: JSON.stringify({ name, description })
       });
-      if (res.ok) return await res.json();
-    } catch (e) {}
+      const data = await res.json();
+      if (res.ok) return data;
+      if (res.status === 403) throw new Error(data.error || 'Access denied: Requires Admin or Super Admin role');
+    } catch (e: any) {
+      if (e.message && !e.message.includes('fetch')) throw e;
+    }
 
     const categories = LocalStore.getCategories();
     const newCat: Category = {
@@ -287,9 +349,19 @@ export const api = {
 
   deleteCategory: async (id: string): Promise<boolean> => {
     try {
-      const res = await fetch(`/api/categories/${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/categories/${id}`, { 
+        method: 'DELETE',
+        headers: getAuthHeaders(),
+        credentials: 'include'
+      });
       if (res.ok) return true;
-    } catch (e) {}
+      if (res.status === 403) {
+        const data = await res.json();
+        throw new Error(data.error || 'Access denied: Requires Admin or Super Admin role');
+      }
+    } catch (e: any) {
+      if (e.message && !e.message.includes('fetch')) throw e;
+    }
 
     const categories = LocalStore.getCategories();
     const filtered = categories.filter(c => c.id !== id);
@@ -312,7 +384,7 @@ export const api = {
     const subscribers = LocalStore.getSubscribers();
     const existing = subscribers.find(s => s.email.toLowerCase() === email.toLowerCase());
     if (existing) {
-      return { success: true, message: 'You are already subscribed to Aether Letters.' };
+      return { success: true, message: 'You are already subscribed to Techniccal Insider.' };
     }
 
     subscribers.unshift({
@@ -323,18 +395,31 @@ export const api = {
     });
     LocalStore.saveSubscribers(subscribers);
 
-    return { success: true, message: 'Welcome to Aether Letters. Check your inbox soon.' };
+    return { success: true, message: 'Welcome to Techniccal Insider. Check your inbox soon.' };
   },
 
   getSubscribers: async (): Promise<Subscriber[]> => {
     try {
-      const res = await fetch('/api/admin/subscribers');
+      const res = await fetch('/api/admin/subscribers', {
+        headers: getAuthHeaders(),
+        credentials: 'include',
+        signal: AbortSignal.timeout(FAST_TIMEOUT)
+      });
       if (res.ok) return await res.json();
     } catch (e) {}
     return LocalStore.getSubscribers();
   },
 
   deleteSubscriber: async (id: string): Promise<boolean> => {
+    try {
+      const res = await fetch(`/api/admin/subscribers/${id}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders(),
+        credentials: 'include'
+      });
+      if (res.ok) return true;
+    } catch (e) {}
+
     const subs = LocalStore.getSubscribers();
     LocalStore.saveSubscribers(subs.filter(s => s.id !== id));
     return true;
@@ -346,6 +431,14 @@ export const api = {
 
   // Media Library
   getMedia: async (): Promise<MediaItem[]> => {
+    try {
+      const res = await fetch('/api/admin/media', {
+        headers: getAuthHeaders(),
+        credentials: 'include',
+        signal: AbortSignal.timeout(FAST_TIMEOUT)
+      });
+      if (res.ok) return await res.json();
+    } catch (e) {}
     return LocalStore.getMedia();
   },
 
@@ -366,6 +459,15 @@ export const api = {
   },
 
   deleteMedia: async (id: string): Promise<boolean> => {
+    try {
+      const res = await fetch(`/api/admin/media/${id}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders(),
+        credentials: 'include'
+      });
+      if (res.ok) return true;
+    } catch (e) {}
+
     const media = LocalStore.getMedia();
     LocalStore.saveMedia(media.filter(m => m.id !== id));
     return true;
@@ -374,7 +476,11 @@ export const api = {
   // User Management (Super Admin RBAC)
   getUsers: async (): Promise<User[]> => {
     try {
-      const res = await fetch('/api/admin/users', { signal: AbortSignal.timeout(FAST_TIMEOUT) });
+      const res = await fetch('/api/admin/users', { 
+        headers: getAuthHeaders(),
+        credentials: 'include',
+        signal: AbortSignal.timeout(FAST_TIMEOUT) 
+      });
       if (res.ok) return await res.json();
     } catch (e) {}
     return LocalStore.getUsers();
@@ -384,11 +490,16 @@ export const api = {
     try {
       const res = await fetch('/api/admin/users', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders({ 'Content-Type': 'application/json' }),
+        credentials: 'include',
         body: JSON.stringify(userData)
       });
-      if (res.ok) return await res.json();
-    } catch (e) {}
+      const data = await res.json();
+      if (res.ok) return data;
+      if (res.status === 403) throw new Error(data.error || 'Access denied: Requires Super Admin role');
+    } catch (e: any) {
+      if (e.message && !e.message.includes('fetch')) throw e;
+    }
 
     const users = LocalStore.getUsers();
     const newUser: User = {
@@ -408,11 +519,16 @@ export const api = {
     try {
       const res = await fetch(`/api/admin/users/${userId}/role`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders({ 'Content-Type': 'application/json' }),
+        credentials: 'include',
         body: JSON.stringify({ role })
       });
-      if (res.ok) return await res.json();
-    } catch (e) {}
+      const data = await res.json();
+      if (res.ok) return data;
+      if (res.status === 403) throw new Error(data.error || 'Access denied: Only Super Admin can modify user roles');
+    } catch (e: any) {
+      if (e.message && !e.message.includes('fetch')) throw e;
+    }
 
     const users = LocalStore.getUsers();
     const idx = users.findIndex(u => u.id === userId);
@@ -426,30 +542,125 @@ export const api = {
 
   deleteUser: async (userId: string): Promise<boolean> => {
     try {
-      const res = await fetch(`/api/admin/users/${userId}`, { method: 'DELETE' });
+      const res = await fetch(`/api/admin/users/${userId}`, { 
+        method: 'DELETE',
+        headers: getAuthHeaders(),
+        credentials: 'include'
+      });
       if (res.ok) return true;
-    } catch (e) {}
+      if (res.status === 403) {
+        const data = await res.json();
+        throw new Error(data.error || 'Access denied: Only Super Admin can delete users');
+      }
+    } catch (e: any) {
+      if (e.message && !e.message.includes('fetch')) throw e;
+    }
 
     const users = LocalStore.getUsers();
     LocalStore.saveUsers(users.filter(u => u.id !== userId));
     return true;
   },
 
-  // Auth & Roles
+  // Auth & Security
+  register: async (name: string, email: string, password: string): Promise<{ token: string; user: User; message?: string }> => {
+    try {
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ name, email, password })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Registration failed');
+      }
+      localStorage.setItem(STORAGE_KEYS.AUTH, data.token);
+      setStored(STORAGE_KEYS.ACTIVE_USER, data.user);
+      return data;
+    } catch (e: any) {
+      if (e.message && !e.message.includes('fetch')) throw e;
+    }
+
+    // Local simulation fallback
+    const users = LocalStore.getUsers();
+    const existing = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+    if (existing) {
+      throw new Error('Email address is already registered');
+    }
+
+    const newUser: User = {
+      id: `usr-${Date.now()}`,
+      name,
+      email,
+      role: 'MEMBER',
+      membershipStatus: 'free',
+      savedArticles: [],
+      createdAt: new Date().toISOString().split('T')[0]
+    };
+    users.unshift(newUser);
+    LocalStore.saveUsers(users);
+
+    const token = `mock-token-member-${Date.now()}`;
+    localStorage.setItem(STORAGE_KEYS.AUTH, token);
+    setStored(STORAGE_KEYS.ACTIVE_USER, newUser);
+    return { token, user: newUser, message: 'Account created successfully.' };
+  },
+
+  adminLogin: async (email: string, password: string): Promise<{ token: string; user: User }> => {
+    try {
+      const res = await fetch('/api/auth/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ email, password })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        localStorage.setItem(STORAGE_KEYS.AUTH, data.token || data.accessToken);
+        setStored(STORAGE_KEYS.ACTIVE_USER, data.user);
+        return data;
+      } else {
+        throw new Error(data.error || 'Administrative authentication failed');
+      }
+    } catch (e: any) {
+      if (e.message && !e.message.includes('fetch')) throw e;
+    }
+
+    // Local simulation fallback for admin login
+    const users = LocalStore.getUsers();
+    const found = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+    if (found) {
+      if (!['EDITOR', 'ADMIN', 'SUPER_ADMIN'].includes(found.role)) {
+        throw new Error(`Access Denied: Account role '${found.role}' lacks administrative CMS access.`);
+      }
+      const token = `mock-token-${found.role.toLowerCase()}-${Date.now()}`;
+      localStorage.setItem(STORAGE_KEYS.AUTH, token);
+      setStored(STORAGE_KEYS.ACTIVE_USER, found);
+      return { token, user: found };
+    }
+
+    throw new Error('Invalid email or password. Select an administrative role button.');
+  },
+
   login: async (email: string, password: string): Promise<{ token: string; user: User }> => {
     try {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ email, password })
       });
+      const data = await res.json();
       if (res.ok) {
-        const data = await res.json();
         localStorage.setItem(STORAGE_KEYS.AUTH, data.token);
         setStored(STORAGE_KEYS.ACTIVE_USER, data.user);
         return data;
+      } else {
+        throw new Error(data.error || 'Invalid credentials');
       }
-    } catch (e) {}
+    } catch (e: any) {
+      if (e.message && !e.message.includes('fetch')) throw e;
+    }
 
     // Mock multi-tier role verification fallback
     const users = LocalStore.getUsers();
@@ -485,15 +696,123 @@ export const api = {
     return target;
   },
 
+  refreshAccessToken: async (): Promise<{ accessToken: string; user: User } | null> => {
+    try {
+      const res = await fetch('/api/auth/refresh', {
+        method: 'POST',
+        credentials: 'include'
+      });
+      if (res.ok) {
+        const data = await res.json();
+        localStorage.setItem(STORAGE_KEYS.AUTH, data.accessToken);
+        setStored(STORAGE_KEYS.ACTIVE_USER, data.user);
+        return { accessToken: data.accessToken, user: data.user };
+      }
+    } catch (e) {}
+    return null;
+  },
+
+  getMe: async (): Promise<User | null> => {
+    const token = localStorage.getItem(STORAGE_KEYS.AUTH);
+    try {
+      const headers: Record<string, string> = {};
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+
+      let res = await fetch('/api/auth/me', {
+        headers,
+        credentials: 'include',
+        signal: AbortSignal.timeout(FAST_TIMEOUT)
+      });
+
+      if (res.status === 401) {
+        // Access Token expired: attempt silent refresh token rotation
+        const refreshed = await api.refreshAccessToken();
+        if (refreshed) {
+          return refreshed.user;
+        }
+      }
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.authenticated && data.user) {
+          setStored(STORAGE_KEYS.ACTIVE_USER, data.user);
+          return data.user;
+        }
+      }
+    } catch (e) {}
+
+    return api.getCurrentUser();
+  },
+
   getCurrentUser: (): User | null => {
     const token = localStorage.getItem(STORAGE_KEYS.AUTH);
     if (!token) return null;
     return getStored<User | null>(STORAGE_KEYS.ACTIVE_USER, INITIAL_USERS[0]);
   },
 
-  logout: (): void => {
+  logout: async (): Promise<void> => {
+    try {
+      await fetch('/api/auth/logout', { 
+        method: 'POST', 
+        credentials: 'include' 
+      });
+    } catch (e) {}
     localStorage.removeItem(STORAGE_KEYS.AUTH);
     localStorage.removeItem(STORAGE_KEYS.ACTIVE_USER);
+  },
+
+  forgotPassword: async (email: string): Promise<{ success: boolean; message: string; demoResetUrl?: string }> => {
+    try {
+      const res = await fetch('/api/auth/forgot-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ email })
+      });
+      if (res.ok) return await res.json();
+    } catch (e) {}
+
+    return { 
+      success: true, 
+      message: 'If an account exists with that email, a password reset link has been dispatched.',
+      demoResetUrl: `http://localhost:5173/reset-password?token=demo-token-${Date.now()}`
+    };
+  },
+
+  resetPassword: async (token: string, newPassword: string): Promise<{ success: boolean; message: string }> => {
+    try {
+      const res = await fetch('/api/auth/reset-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ token, newPassword })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Password reset failed');
+      return data;
+    } catch (e: any) {
+      if (e.message && !e.message.includes('fetch')) throw e;
+    }
+
+    return { success: true, message: 'Your password has been reset successfully. Please log in.' };
+  },
+
+  verifyEmail: async (token: string): Promise<{ success: boolean; message: string }> => {
+    try {
+      const res = await fetch('/api/auth/verify-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ token })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Verification failed');
+      return data;
+    } catch (e: any) {
+      if (e.message && !e.message.includes('fetch')) throw e;
+    }
+
+    return { success: true, message: 'Email address verified successfully!' };
   },
 
   // Member Bookmark / Saved Articles

@@ -29,7 +29,8 @@ export const AdminLayout: React.FC = () => {
 
   useEffect(() => {
     const currentUser = api.getCurrentUser();
-    if (!currentUser) {
+    const adminRoles = ['SUPER_ADMIN', 'ADMIN', 'EDITOR'];
+    if (!currentUser || !adminRoles.includes(currentUser.role)) {
       navigate('/admin/login');
     } else {
       setUser(currentUser);

@@ -12,7 +12,17 @@ const UserSchema = new mongoose.Schema({
   },
   avatar: { type: String },
   membershipStatus: { type: String, enum: ['free', 'pro', 'insider'], default: 'free' },
-  savedArticles: [{ type: String }]
+  savedArticles: [{ type: String }],
+  isVerified: { type: Boolean, default: false },
+  emailVerified: { type: Boolean, default: false },
+  emailVerificationTokenHash: { type: String },
+  emailVerificationExpiresAt: { type: Date },
+  resetPasswordToken: { type: String },
+  resetPasswordExpires: { type: Date },
+  refreshTokens: [{
+    token: { type: String, required: true },
+    createdAt: { type: Date, default: Date.now }
+  }]
 }, { timestamps: true });
 
 UserSchema.pre('save', async function (next) {

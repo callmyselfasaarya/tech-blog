@@ -3,6 +3,7 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from './context/ThemeContext';
 import { LenisProvider } from './context/LenisContext';
+import { AuthProvider } from './context/AuthContext';
 
 // Layout Components
 import { Sidebar } from './components/layout/Sidebar';
@@ -27,6 +28,8 @@ const Letters = lazy(() => import('./pages/Letters').then((m) => ({ default: m.L
 const Archive = lazy(() => import('./pages/Archive').then((m) => ({ default: m.Archive })));
 const SignUp = lazy(() => import('./pages/SignUp').then((m) => ({ default: m.SignUp })));
 const MemberPortal = lazy(() => import('./pages/MemberPortal').then((m) => ({ default: m.MemberPortal })));
+const ResetPassword = lazy(() => import('./pages/ResetPassword').then((m) => ({ default: m.ResetPassword })));
+const VerifyEmail = lazy(() => import('./pages/VerifyEmail').then((m) => ({ default: m.VerifyEmail })));
 const NotFound = lazy(() => import('./pages/NotFound').then((m) => ({ default: m.NotFound })));
 
 // Lazy Loaded Admin CMS Components
@@ -58,7 +61,8 @@ export const App: React.FC = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <LenisProvider>
-        <ThemeProvider>
+        <AuthProvider>
+          <ThemeProvider>
           <Suspense fallback={<div className="min-h-screen bg-[#F4F2F0] dark:bg-[#161514]" />}>
             {isAdminRoute ? (
               /* Admin CMS Routing Frame */
@@ -142,6 +146,8 @@ export const App: React.FC = () => {
                       <Route path="/archive" element={<Archive />} />
                       <Route path="/sign-up" element={<SignUp />} />
                       <Route path="/account" element={<MemberPortal />} />
+                      <Route path="/reset-password" element={<ResetPassword />} />
+                      <Route path="/verify-email" element={<VerifyEmail />} />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                   </div>
@@ -162,8 +168,9 @@ export const App: React.FC = () => {
             )}
           </Suspense>
         </ThemeProvider>
-      </LenisProvider>
-    </QueryClientProvider>
+      </AuthProvider>
+    </LenisProvider>
+  </QueryClientProvider>
   );
 };
 
