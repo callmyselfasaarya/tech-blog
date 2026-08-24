@@ -12,33 +12,33 @@ export const Home: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const selectedCategory = searchParams.get('category') || 'All';
 
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [categories, setCategories] = useState<string[]>(['All']);
+  const [articles, setArticles] = useState<Article[]>(() => api.getArticlesSync('ALL'));
+  const [categories, setCategories] = useState<string[]>(() => ['All', ...api.getCategoriesSync().map(c => c.name)]);
   const [searchQuery, setSearchQuery] = useState('');
   const [heroEmail, setHeroEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    let isMounted = true;
     const fetchData = async () => {
-      setIsLoading(true);
       try {
         const [catsData, articlesData] = await Promise.all([
           api.getCategories(),
           api.getArticles('ALL')
         ]);
-        
-        const catNames = ['All', ...catsData.map(c => c.name)];
-        setCategories(catNames);
-        setArticles(articlesData);
+        if (isMounted) {
+          const catNames = ['All', ...catsData.map(c => c.name)];
+          setCategories(catNames);
+          setArticles(articlesData);
+        }
       } catch (e) {
         console.error('Error fetching home data:', e);
-      } finally {
-        setIsLoading(false);
       }
     };
 
     fetchData();
+    return () => { isMounted = false; };
   }, []);
 
   const handleSubscribe = (e: React.FormEvent) => {

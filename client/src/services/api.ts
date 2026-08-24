@@ -89,30 +89,16 @@ export function slugify(text: string): string {
     .replace(/^-+|-+$/g, '');
 }
 
+// Fast 200ms API timeout signal helper
+const FAST_TIMEOUT = 200;
+
 // API Service Interface (Dual Mode: REST backend -> Local Storage Fallback)
 export const api = {
-  // Articles
-  getArticles: async (category?: string, search?: string): Promise<Article[]> => {
-    try {
-      // Attempt REST call if available with quick timeout fallback
-      const url = new URL('/api/articles', window.location.origin);
-      if (category && category !== 'ALL') url.searchParams.set('category', category);
-      if (search) url.searchParams.set('search', search);
-
-      const res = await fetch(url.toString(), { signal: AbortSignal.timeout(1500) });
-      if (res.ok) {
-        return await res.json();
-      }
-    } catch (e) {
-      // Fallback to LocalStore
-    }
-
+  getArticlesSync: (category?: string, search?: string): Article[] => {
     let articles = LocalStore.getArticles().filter(a => a.status === 'published');
-
     if (category && category.toUpperCase() !== 'ALL') {
       articles = articles.filter(a => a.category.toUpperCase() === category.toUpperCase());
     }
-
     if (search && search.trim()) {
       const q = search.toLowerCase().trim();
       articles = articles.filter(a => 
@@ -123,13 +109,35 @@ export const api = {
         a.content.toLowerCase().includes(q)
       );
     }
-
     return articles;
+  },
+
+  getCategoriesSync: (): Category[] => {
+    return LocalStore.getCategories();
+  },
+
+  // Articles
+  getArticles: async (category?: string, search?: string): Promise<Article[]> => {
+    try {
+      // Attempt REST call if available with 200ms fast timeout fallback
+      const url = new URL('/api/articles', window.location.origin);
+      if (category && category !== 'ALL') url.searchParams.set('category', category);
+      if (search) url.searchParams.set('search', search);
+
+      const res = await fetch(url.toString(), { signal: AbortSignal.timeout(FAST_TIMEOUT) });
+      if (res.ok) {
+        return await res.json();
+      }
+    } catch (e) {
+      // Fallback to LocalStore
+    }
+
+    return api.getArticlesSync(category, search);
   },
 
   getAllArticlesAdmin: async (): Promise<Article[]> => {
     try {
-      const res = await fetch('/api/articles/admin', { signal: AbortSignal.timeout(1500) });
+      const res = await fetch('/api/articles/admin', { signal: AbortSignal.timeout(FAST_TIMEOUT) });
       if (res.ok) return await res.json();
     } catch (e) {}
     return LocalStore.getArticles();
@@ -137,7 +145,7 @@ export const api = {
 
   getArticleBySlug: async (slug: string): Promise<Article | null> => {
     try {
-      const res = await fetch(`/api/articles/${slug}`, { signal: AbortSignal.timeout(1500) });
+      const res = await fetch(`/api/articles/${slug}`, { signal: AbortSignal.timeout(FAST_TIMEOUT) });
       if (res.ok) return await res.json();
     } catch (e) {}
 
@@ -236,7 +244,7 @@ export const api = {
   // Categories
   getCategories: async (): Promise<Category[]> => {
     try {
-      const res = await fetch('/api/categories');
+      const res = await fetch('/api/categories', { signal: AbortSignal.timeout(FAST_TIMEOUT) });
       if (res.ok) return await res.json();
     } catch (e) {}
     return LocalStore.getCategories();

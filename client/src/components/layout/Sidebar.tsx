@@ -1,6 +1,27 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home as HomeIcon, Info, BookOpen, Github, Twitter, MessageSquare, UserPlus, ArrowUpRight, Sun, Moon, ChevronLeft, ChevronRight } from 'lucide-react';
+import {
+  Home as HomeIcon,
+  BookOpen,
+  Info,
+  UserPlus,
+  Moon,
+  Sun,
+  Search,
+  ChevronLeft,
+  ChevronRight,
+  ArrowUpRight,
+  Github,
+  Twitter,
+  MessageSquare,
+  Cpu,
+  Terminal,
+  Briefcase,
+  Code,
+  Wrench,
+  Mail,
+  Send
+} from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import { TechniccalLogo, TechniccalMonogram } from '../ui/TechniccalLogo';
 
@@ -8,7 +29,7 @@ interface SidebarProps {
   onOpenSearch?: () => void;
 }
 
-export const Sidebar: React.FC<SidebarProps> = () => {
+export const Sidebar: React.FC<SidebarProps> = ({ onOpenSearch }) => {
   const location = useLocation();
   const { theme, toggleTheme } = useTheme();
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -28,32 +49,58 @@ export const Sidebar: React.FC<SidebarProps> = () => {
 
   if (isCollapsed) {
     return (
-      <aside className="w-16 h-screen sticky top-0 flex flex-col justify-between items-center py-6 border-r border-[#E1E1E1] dark:border-[#2C2C30] bg-[#F6F5F0] dark:bg-[#141416] select-none shrink-0 transition-all duration-300">
-        <div className="flex flex-col items-center gap-4">
-          <Link to="/" className="w-8 h-8 rounded-lg bg-[#1C1C1E] text-white flex items-center justify-center p-1.5 shadow-sm">
-            <TechniccalMonogram color="#FFFFFF" className="w-5 h-5" />
-          </Link>
-
+      <aside className="w-18 h-screen sticky top-0 flex flex-col justify-between items-center py-6 px-2 border-r border-[#E1E1E1] dark:border-[#2C2C30] bg-[#F6F5F0] dark:bg-[#141416] select-none shrink-0 transition-all duration-300 font-poppins">
+        <div className="flex flex-col items-center space-y-6">
           <button
             onClick={() => setIsCollapsed(false)}
-            className="p-1.5 rounded-full bg-[#E8E7E2] dark:bg-[#1C1C1E] hover:bg-[#E1E1E1] dark:hover:bg-[#2C2C30] text-[#1C1C1E] dark:text-[#F6F5F0] transition-colors cursor-pointer mt-2"
+            className="w-9 h-9 rounded-xl bg-white dark:bg-[#222225] border border-[#E1E1E1] dark:border-[#2C2C30] flex items-center justify-center hover:opacity-80 transition-opacity cursor-pointer shadow-xs"
             title="Expand Sidebar"
           >
-            <ChevronRight className="w-4 h-4" />
+            <TechniccalMonogram className="w-5 h-5 text-[#1C1C1E] dark:text-white" />
           </button>
-        </div>
 
-        <nav className="space-y-4 flex flex-col items-center">
-          <Link to="/" className={`p-2 rounded-xl ${isActive('/') ? 'bg-white dark:bg-[#222225] shadow-sm' : 'text-[#4C586F]'}`}>
-            <HomeIcon className="w-5 h-5" />
-          </Link>
-          <Link to="/about" className={`p-2 rounded-xl ${isActive('/about') ? 'bg-white dark:bg-[#222225] shadow-sm' : 'text-[#4C586F]'}`}>
-            <Info className="w-5 h-5" />
-          </Link>
-          <Link to="/letters" className={`p-2 rounded-xl ${isActive('/letters') ? 'bg-white dark:bg-[#222225] shadow-sm' : 'text-[#4C586F]'}`}>
-            <BookOpen className="w-5 h-5" />
-          </Link>
-        </nav>
+          <nav className="flex flex-col items-center space-y-3">
+            <Link
+              to="/"
+              className={`p-2.5 rounded-xl transition-all ${
+                isActive('/') ? 'bg-white dark:bg-[#222225] text-[#1C1C1E] dark:text-white shadow-xs' : 'text-[#4C586F] dark:text-[#A0A9B8]'
+              }`}
+              title="Home"
+            >
+              <HomeIcon className="w-4 h-4" />
+            </Link>
+
+            <Link
+              to="/blog"
+              className={`p-2.5 rounded-xl transition-all ${
+                isActive('/blog') ? 'bg-white dark:bg-[#222225] text-[#1C1C1E] dark:text-white shadow-xs' : 'text-[#4C586F] dark:text-[#A0A9B8]'
+              }`}
+              title="All Articles"
+            >
+              <BookOpen className="w-4 h-4" />
+            </Link>
+
+            <Link
+              to="/ai"
+              className={`p-2.5 rounded-xl transition-all ${
+                isActive('/ai') ? 'bg-white dark:bg-[#222225] text-[#1C1C1E] dark:text-white shadow-xs' : 'text-[#4C586F] dark:text-[#A0A9B8]'
+              }`}
+              title="AI Articles"
+            >
+              <Cpu className="w-4 h-4" />
+            </Link>
+
+            <Link
+              to="/about"
+              className={`p-2.5 rounded-xl transition-all ${
+                isActive('/about') ? 'bg-white dark:bg-[#222225] text-[#1C1C1E] dark:text-white shadow-xs' : 'text-[#4C586F] dark:text-[#A0A9B8]'
+              }`}
+              title="About"
+            >
+              <Info className="w-4 h-4" />
+            </Link>
+          </nav>
+        </div>
 
         <button
           onClick={toggleTheme}
@@ -98,6 +145,18 @@ export const Sidebar: React.FC<SidebarProps> = () => {
           </Link>
 
           <Link
+            to="/blog"
+            className={`flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium transition-all ${
+              isActive('/blog')
+                ? 'bg-white dark:bg-[#222225] text-[#1C1C1E] dark:text-[#F6F5F0] shadow-sm font-semibold'
+                : 'text-[#4C586F] dark:text-[#A0A9B8] hover:bg-[#E8E7E2]/60 dark:hover:bg-[#1C1C1E]/60'
+            }`}
+          >
+            <BookOpen className="w-4 h-4" />
+            <span>All Articles</span>
+          </Link>
+
+          <Link
             to="/about"
             className={`flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium transition-all ${
               isActive('/about')
@@ -110,22 +169,97 @@ export const Sidebar: React.FC<SidebarProps> = () => {
           </Link>
 
           <Link
-            to="/letters"
-            className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-all ${
-              isActive('/letters')
+            to="/contact"
+            className={`flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium transition-all ${
+              isActive('/contact')
                 ? 'bg-white dark:bg-[#222225] text-[#1C1C1E] dark:text-[#F6F5F0] shadow-sm font-semibold'
                 : 'text-[#4C586F] dark:text-[#A0A9B8] hover:bg-[#E8E7E2]/60 dark:hover:bg-[#1C1C1E]/60'
             }`}
           >
-            <div className="flex items-center gap-3">
-              <BookOpen className="w-4 h-4" />
-              <span>Dispatches</span>
-            </div>
-            <span className="text-[10px] font-mono px-1.5 py-0.5 rounded-full bg-[#E1E1E1] dark:bg-[#2C2C30] text-[#1C1C1E] dark:text-[#F6F5F0] font-semibold">
-              6
-            </span>
+            <Send className="w-4 h-4" />
+            <span>Contact</span>
           </Link>
         </nav>
+
+        {/* TOPICS & SECTIONS */}
+        <div>
+          <div className="text-[10px] font-mono tracking-widest text-[#7E8798] dark:text-[#6B7485] uppercase mb-2 px-3">
+            TOPICS & SECTIONS
+          </div>
+          <div className="space-y-0.5">
+            <Link
+              to="/ai"
+              className={`flex items-center gap-3 px-3 py-1.5 rounded-xl text-xs font-medium transition-all ${
+                isActive('/ai')
+                  ? 'bg-white dark:bg-[#222225] text-[#1C1C1E] dark:text-[#F6F5F0] shadow-xs'
+                  : 'text-[#4C586F] dark:text-[#A0A9B8] hover:bg-[#E8E7E2]/50 dark:hover:bg-[#1C1C1E]/50'
+              }`}
+            >
+              <Cpu className="w-3.5 h-3.5 text-[#3B719F]" />
+              <span>AI Articles</span>
+            </Link>
+
+            <Link
+              to="/programming"
+              className={`flex items-center gap-3 px-3 py-1.5 rounded-xl text-xs font-medium transition-all ${
+                isActive('/programming')
+                  ? 'bg-white dark:bg-[#222225] text-[#1C1C1E] dark:text-[#F6F5F0] shadow-xs'
+                  : 'text-[#4C586F] dark:text-[#A0A9B8] hover:bg-[#E8E7E2]/50 dark:hover:bg-[#1C1C1E]/50'
+              }`}
+            >
+              <Terminal className="w-3.5 h-3.5" />
+              <span>Programming</span>
+            </Link>
+
+            <Link
+              to="/career"
+              className={`flex items-center gap-3 px-3 py-1.5 rounded-xl text-xs font-medium transition-all ${
+                isActive('/career')
+                  ? 'bg-white dark:bg-[#222225] text-[#1C1C1E] dark:text-[#F6F5F0] shadow-xs'
+                  : 'text-[#4C586F] dark:text-[#A0A9B8] hover:bg-[#E8E7E2]/50 dark:hover:bg-[#1C1C1E]/50'
+              }`}
+            >
+              <Briefcase className="w-3.5 h-3.5 text-[#4C586F]" />
+              <span>Jobs / Career</span>
+            </Link>
+
+            <Link
+              to="/projects"
+              className={`flex items-center gap-3 px-3 py-1.5 rounded-xl text-xs font-medium transition-all ${
+                isActive('/projects')
+                  ? 'bg-white dark:bg-[#222225] text-[#1C1C1E] dark:text-[#F6F5F0] shadow-xs'
+                  : 'text-[#4C586F] dark:text-[#A0A9B8] hover:bg-[#E8E7E2]/50 dark:hover:bg-[#1C1C1E]/50'
+              }`}
+            >
+              <Code className="w-3.5 h-3.5 text-[#3B719F]" />
+              <span>Projects</span>
+            </Link>
+
+            <Link
+              to="/tools"
+              className={`flex items-center gap-3 px-3 py-1.5 rounded-xl text-xs font-medium transition-all ${
+                isActive('/tools')
+                  ? 'bg-white dark:bg-[#222225] text-[#1C1C1E] dark:text-[#F6F5F0] shadow-xs'
+                  : 'text-[#4C586F] dark:text-[#A0A9B8] hover:bg-[#E8E7E2]/50 dark:hover:bg-[#1C1C1E]/50'
+              }`}
+            >
+              <Wrench className="w-3.5 h-3.5" />
+              <span>Tools</span>
+            </Link>
+
+            <Link
+              to="/newsletter"
+              className={`flex items-center gap-3 px-3 py-1.5 rounded-xl text-xs font-medium transition-all ${
+                isActive('/newsletter')
+                  ? 'bg-white dark:bg-[#222225] text-[#1C1C1E] dark:text-[#F6F5F0] shadow-xs'
+                  : 'text-[#4C586F] dark:text-[#A0A9B8] hover:bg-[#E8E7E2]/50 dark:hover:bg-[#1C1C1E]/50'
+              }`}
+            >
+              <Mail className="w-3.5 h-3.5 text-[#3B719F]" />
+              <span>Newsletter</span>
+            </Link>
+          </div>
+        </div>
 
         {/* COMMUNITY & SOCIAL */}
         <div>
@@ -158,19 +292,6 @@ export const Sidebar: React.FC<SidebarProps> = () => {
               </div>
               <ArrowUpRight className="w-3.5 h-3.5 opacity-60" />
             </a>
-
-            <a
-              href="https://discord.com"
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center justify-between px-3 py-1.5 rounded-xl text-xs text-[#4C586F] dark:text-[#A0A9B8] hover:text-[#1C1C1E] dark:hover:text-[#F6F5F0] hover:bg-[#E8E7E2]/50 dark:hover:bg-[#1C1C1E]/50 transition-colors"
-            >
-              <div className="flex items-center gap-3">
-                <MessageSquare className="w-4 h-4" />
-                <span>Discord</span>
-              </div>
-              <ArrowUpRight className="w-3.5 h-3.5 opacity-60" />
-            </a>
           </div>
         </div>
 
@@ -181,93 +302,27 @@ export const Sidebar: React.FC<SidebarProps> = () => {
           </div>
           <Link
             to="/sign-up"
-            className={`flex items-center gap-3 px-3 py-1.5 rounded-xl text-xs transition-colors ${
-              isActive('/sign-up')
-                ? 'bg-white dark:bg-[#222225] text-[#1C1C1E] dark:text-[#F6F5F0] font-semibold'
-                : 'text-[#4C586F] dark:text-[#A0A9B8] hover:bg-[#E8E7E2]/50 dark:hover:bg-[#1C1C1E]/50'
-            }`}
+            className="flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium text-[#4C586F] dark:text-[#A0A9B8] hover:bg-[#E8E7E2]/60 dark:hover:bg-[#1C1C1E]/60 transition-colors"
           >
             <UserPlus className="w-4 h-4" />
             <span>Join Insider</span>
           </Link>
         </div>
-
-        {/* FEATURED ESSAY */}
-        <div>
-          <div className="text-[10px] font-mono tracking-widest text-[#7E8798] dark:text-[#6B7485] uppercase mb-2 px-3">
-            FEATURED ESSAY
-          </div>
-          <Link
-            to="/article/designing-high-throughput-distributed-systems"
-            className="block p-3 rounded-2xl bg-white dark:bg-[#222225] border border-[#E1E1E1] dark:border-[#2C2C30] hover:shadow-md transition-all group"
-          >
-            <div className="overflow-hidden rounded-xl mb-2.5 aspect-[16/10] bg-[#E8E7E2]">
-              <img
-                src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80"
-                alt="Designing High-Throughput Distributed Systems"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-              />
-            </div>
-            <div className="flex items-start justify-between gap-1">
-              <h3 className="font-display font-semibold text-xs text-[#1C1C1E] dark:text-[#F6F5F0] leading-snug line-clamp-2">
-                Designing High-Throughput Distributed Systems
-              </h3>
-              <ArrowUpRight className="w-3.5 h-3.5 text-[#7E8798] shrink-0 group-hover:text-[#1C1C1E] dark:group-hover:text-[#F6F5F0] transition-colors" />
-            </div>
-          </Link>
-        </div>
-
-        {/* Subscribe to Techniccal */}
-        <div className="pt-2">
-          <h3 className="font-display font-semibold text-xs text-[#1C1C1E] dark:text-[#F6F5F0] mb-2 px-1">
-            Subscribe to Techniccal
-          </h3>
-          {subscribed ? (
-            <div className="p-3 bg-[#3B719F]/10 border border-[#3B719F]/30 text-[#3B719F] dark:text-blue-400 text-xs rounded-xl font-medium text-center">
-              Subscribed to Tech Dispatch!
-            </div>
-          ) : (
-            <form onSubmit={handleSubscribe} className="space-y-2">
-              <input
-                type="email"
-                placeholder="work@company.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="w-full px-3 py-2 text-xs rounded-xl bg-white dark:bg-[#222225] border border-[#E1E1E1] dark:border-[#2C2C30] text-[#1C1C1E] dark:text-[#F6F5F0] placeholder-[#7E8798] focus:outline-none focus:ring-1 focus:ring-[#1C1C1E] dark:focus:ring-white transition-all"
-              />
-              <button
-                type="submit"
-                className="w-full py-2 px-4 text-xs font-semibold rounded-xl bg-[#1C1C1E] dark:bg-white text-white dark:text-[#1C1C1E] hover:opacity-90 transition-opacity cursor-pointer"
-              >
-                Subscribe
-              </button>
-            </form>
-          )}
-        </div>
       </div>
 
-      {/* Footer details */}
-      <div className="pt-4 mt-6 border-t border-[#E1E1E1] dark:border-[#2C2C30] space-y-3">
-        <div className="flex items-center justify-between">
-          <span className="text-[10px] text-[#7E8798] dark:text-[#6B7485]">
-            Theme Mode
-          </span>
-          <button
-            onClick={toggleTheme}
-            className="p-1 text-[#4C586F] dark:text-[#A0A9B8] hover:text-[#1C1C1E] dark:hover:text-[#F6F5F0] transition-colors cursor-pointer"
-            aria-label="Toggle Theme"
-          >
-            {theme === 'dark' ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
-          </button>
-        </div>
+      {/* Footer Controls */}
+      <div className="pt-6 border-t border-[#E1E1E1] dark:border-[#2C2C30] flex items-center justify-between">
+        <button
+          onClick={toggleTheme}
+          className="flex items-center gap-2 text-xs font-mono text-[#7E8798] hover:text-[#1C1C1E] dark:hover:text-[#F6F5F0] cursor-pointer"
+        >
+          {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+          <span>Theme Mode</span>
+        </button>
 
-        <div className="flex items-center justify-between text-[10px] text-[#7E8798] dark:text-[#6B7485]">
-          <span>© 2026 Techniccal Inc.</span>
-          <Link to="/admin" className="hover:underline hover:text-[#1C1C1E] dark:hover:text-[#F6F5F0]">
-            CMS
-          </Link>
-        </div>
+        <Link to="/admin/login" className="text-[10px] font-mono text-[#7E8798] hover:underline">
+          CMS
+        </Link>
       </div>
     </aside>
   );

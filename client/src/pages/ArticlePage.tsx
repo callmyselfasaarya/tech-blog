@@ -1,11 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Share2, Check, ArrowUpRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import {
+  ArrowLeft,
+  Share2,
+  Check,
+  ArrowUpRight,
+  ChevronLeft,
+  Calendar,
+  Clock,
+  RefreshCw,
+  Copy,
+  Mail,
+  Github,
+  Twitter,
+  Linkedin,
+  UserCheck
+} from 'lucide-react';
 import { Article } from '../types';
 import { api } from '../services/api';
 import { ReadingProgress } from '../components/blog/ReadingProgress';
 import { TableOfContents } from '../components/blog/TableOfContents';
+import { ArticleComments } from '../components/blog/ArticleComments';
 import { Skeleton } from '../components/ui/Skeleton';
 import { BlurFade } from '../components/ui/BlurFade';
 
@@ -16,6 +32,8 @@ export const ArticlePage: React.FC = () => {
   const [related, setRelated] = useState<Article[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [ctaSubscribed, setCtaSubscribed] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -27,8 +45,9 @@ export const ArticlePage: React.FC = () => {
         if (found) {
           setArticle(found);
           const all = await api.getArticles('ALL');
-          setRelated(all.filter(a => a.id !== found.id && a.category === found.category).slice(0, 3));
-
+          setRelated(
+            all.filter((a) => a.id !== found.id && a.category === found.category).slice(0, 3)
+          );
           document.title = found.seo?.title || `${found.title} — Techniccal`;
         } else {
           setArticle(null);
@@ -49,6 +68,15 @@ export const ArticlePage: React.FC = () => {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const handleCtaSubscribe = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newsletterEmail) {
+      setCtaSubscribed(true);
+      setTimeout(() => setCtaSubscribed(false), 4000);
+      setNewsletterEmail('');
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="max-w-3xl mx-auto px-4 py-12 space-y-6">
@@ -63,11 +91,16 @@ export const ArticlePage: React.FC = () => {
   if (!article) {
     return (
       <div className="max-w-xl mx-auto px-4 py-24 text-center">
-        <h2 className="font-display font-bold text-2xl mb-3 text-[#1A1918] dark:text-[#F4F2F0]">Article Not Found</h2>
-        <p className="text-xs text-[#99938B] mb-6">
+        <h2 className="font-display font-bold text-2xl mb-3 text-[#1C1C1E] dark:text-[#F6F5F0]">
+          Article Not Found
+        </h2>
+        <p className="text-xs text-[#7E8798] mb-6">
           The essay you are looking for may have been renamed or moved.
         </p>
-        <Link to="/" className="inline-flex items-center gap-2 text-xs font-semibold px-4 py-2 rounded-full bg-[#1A1918] text-white dark:bg-white dark:text-[#1A1918]">
+        <Link
+          to="/"
+          className="inline-flex items-center gap-2 text-xs font-semibold px-5 py-2.5 rounded-full bg-[#1C1C1E] text-white dark:bg-white dark:text-[#1C1C1E]"
+        >
           <ArrowLeft className="w-3.5 h-3.5" /> Return to Home
         </Link>
       </div>
@@ -84,7 +117,7 @@ export const ArticlePage: React.FC = () => {
           <div className="flex items-center justify-between gap-4 mb-8">
             {/* Back Pill */}
             <button
-              onClick={() => navigate('/')}
+              onClick={() => navigate(-1)}
               className="inline-flex items-center gap-1.5 text-xs font-medium text-[#1C1C1E] dark:text-[#F6F5F0] bg-[#E8E7E2] dark:bg-[#222225] border border-[#E1E1E1] dark:border-[#2C2C30] hover:opacity-80 px-3.5 py-1.5 rounded-full transition-opacity cursor-pointer shadow-xs"
             >
               <ChevronLeft className="w-3.5 h-3.5" /> Back
@@ -97,106 +130,220 @@ export const ArticlePage: React.FC = () => {
               <span>{article.readingTime || '4 min read'}</span>
             </div>
 
-            {/* Share Button */}
-            <button
-              onClick={handleShare}
-              className="inline-flex items-center gap-1.5 text-xs font-medium text-[#1C1C1E] dark:text-[#F6F5F0] bg-[#E8E7E2] dark:bg-[#222225] border border-[#E1E1E1] dark:border-[#2C2C30] hover:opacity-80 px-3.5 py-1.5 rounded-full transition-opacity cursor-pointer shadow-xs"
-            >
-              {copied ? <Check className="w-3.5 h-3.5 text-green-500" /> : <Share2 className="w-3.5 h-3.5" />}
-              <span>{copied ? 'Copied' : 'Share'}</span>
-            </button>
+            {/* Share Button Bar */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleShare}
+                className="inline-flex items-center gap-1.5 text-xs font-medium text-[#1C1C1E] dark:text-[#F6F5F0] bg-[#E8E7E2] dark:bg-[#222225] border border-[#E1E1E1] dark:border-[#2C2C30] hover:opacity-80 px-3.5 py-1.5 rounded-full transition-opacity cursor-pointer shadow-xs"
+              >
+                {copied ? <Check className="w-3.5 h-3.5 text-green-500" /> : <Share2 className="w-3.5 h-3.5" />}
+                <span>{copied ? 'Copied' : 'Share'}</span>
+              </button>
+            </div>
           </div>
         </BlurFade>
 
-        {/* Article Title */}
+        {/* 1. Article Title Header & Metadata */}
         <BlurFade delay={0.15} yOffset={20}>
           <header className="max-w-3xl mx-auto text-center mb-8">
-            <h1 className="font-display font-semibold text-3xl sm:text-5xl text-[#1C1C1E] dark:text-[#F6F5F0] leading-[1.12] tracking-tight mb-4">
+            {/* 1. Title */}
+            <h1 className="font-display font-semibold text-3xl sm:text-5xl text-[#1C1C1E] dark:text-[#F6F5F0] leading-[1.12] tracking-tight mb-5">
               {article.title}
             </h1>
 
-            <p className="text-base sm:text-lg text-[#4C586F] dark:text-[#A0A9B8] font-sans leading-relaxed max-w-2xl mx-auto">
+            {/* 6. Introduction Excerpt */}
+            <p className="text-base sm:text-lg text-[#4C586F] dark:text-[#A0A9B8] font-sans leading-relaxed max-w-2xl mx-auto mb-6">
               {article.excerpt}
             </p>
+
+            {/* 2, 3, 4. Author, Published Date & Updated Date Metadata Bar */}
+            <div className="inline-flex flex-wrap items-center justify-center gap-3 sm:gap-5 px-5 py-2.5 rounded-2xl bg-white dark:bg-[#222225] border border-[#E1E1E1] dark:border-[#2C2C30] text-xs text-[#7E8798] dark:text-[#A0A9B8]">
+              {/* Author Info */}
+              <div className="flex items-center gap-2">
+                <img
+                  src={article.author.avatar}
+                  alt={article.author.name}
+                  className="w-5 h-5 rounded-full object-cover"
+                />
+                <span className="font-semibold text-[#1C1C1E] dark:text-[#F6F5F0]">
+                  {article.author.name}
+                </span>
+              </div>
+
+              <span>•</span>
+
+              {/* Published Date */}
+              <div className="flex items-center gap-1 font-mono">
+                <Calendar className="w-3.5 h-3.5" />
+                <span>Published {article.publishedAt}</span>
+              </div>
+
+              <span>•</span>
+
+              {/* Updated Date */}
+              <div className="flex items-center gap-1 font-mono text-[#4C586F] dark:text-[#A0A9B8]">
+                <RefreshCw className="w-3 h-3 text-[#3B719F]" />
+                <span>Updated Aug 24, 2026</span>
+              </div>
+            </div>
           </header>
         </BlurFade>
 
-        {/* Hero Cover Image */}
+        {/* 5. Featured Hero Cover Image */}
         {article.coverImage && (
           <BlurFade delay={0.25} yOffset={24}>
-            <div className="max-w-4xl mx-auto mb-12 rounded-3xl overflow-hidden border border-[#E1E1E1] dark:border-[#2C2C30] bg-[#E8E7E2] dark:bg-[#222225] aspect-[16/9] shadow-sm">
-              <img
-                src={article.coverImage}
-                alt={article.title}
-                className="w-full h-full object-cover"
-              />
+            <div className="max-w-4xl mx-auto mb-12 space-y-2">
+              <div className="rounded-3xl overflow-hidden border border-[#E1E1E1] dark:border-[#2C2C30] bg-[#E8E7E2] dark:bg-[#222225] aspect-[16/9] shadow-sm">
+                <img
+                  src={article.coverImage}
+                  alt={article.title}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <p className="text-center text-[11px] font-mono text-[#7E8798]">
+                Figure 1.0 — Architecture diagram and runtime flow for {article.title}
+              </p>
             </div>
           </BlurFade>
         )}
 
-        {/* Main Content Body */}
-        <BlurFade delay={0.35} yOffset={20}>
-          <div className="max-w-[720px] mx-auto">
-          <TableOfContents content={article.content} />
+        {/* Main Content Layout Container */}
+        <div className="max-w-[720px] mx-auto space-y-12">
+          {/* 7. Table of Contents */}
+          <BlurFade delay={0.3} yOffset={16}>
+            <TableOfContents content={article.content} />
+          </BlurFade>
 
-          <div className="prose-editorial font-sans text-base sm:text-lg leading-relaxed text-[#1A1918] dark:text-[#F4F2F0]">
-            <ArticleContentRenderer content={article.content} />
-          </div>
-
-          {/* Author Box */}
-          <div className="mt-16 p-6 rounded-2xl bg-white dark:bg-[#201E1D] border border-[#EDEAE7] dark:border-[#2C2927] flex items-center gap-4">
-            <img
-              src={article.author.avatar}
-              alt={article.author.name}
-              className="w-12 h-12 rounded-full object-cover shrink-0"
-            />
-            <div>
-              <h4 className="font-display font-semibold text-sm text-[#1A1918] dark:text-[#F4F2F0]">
-                Written by {article.author.name}
-              </h4>
-              <p className="text-xs text-[#6E6862] dark:text-[#A8A29A] leading-relaxed mt-0.5">
-                {article.author.bio}
-              </p>
+          {/* 8, 9, 10. Main Content Body + Code Examples + Diagrams */}
+          <BlurFade delay={0.35} yOffset={20}>
+            <div className="prose-editorial font-sans text-base sm:text-lg leading-relaxed text-[#1C1C1E] dark:text-[#F6F5F0]">
+              <ArticleContentRenderer content={article.content} />
             </div>
-          </div>
+          </BlurFade>
 
-          {/* Related Articles */}
-          {related.length > 0 && (
-            <section className="mt-16 pt-10 border-t border-[#EDEAE7] dark:border-[#2C2927]">
-              <h3 className="text-xs font-mono tracking-widest text-[#99938B] dark:text-[#78736B] uppercase mb-6">
-                MORE FROM {article.category.toUpperCase()}
-              </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {related.map((rel) => (
-                  <Link
-                    key={rel.id}
-                    to={`/article/${rel.slug}`}
-                    className="p-4 rounded-2xl bg-white dark:bg-[#201E1D] border border-[#EDEAE7] dark:border-[#2C2927] hover:shadow-md transition-all group flex flex-col justify-between"
-                  >
-                    <div className="flex items-start justify-between gap-2">
-                      <h4 className="font-display font-semibold text-sm text-[#1A1918] dark:text-[#F4F2F0] group-hover:text-black dark:group-hover:text-white line-clamp-2">
-                        {rel.title}
-                      </h4>
-                      <ArrowUpRight className="w-4 h-4 text-[#99938B] shrink-0 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                    </div>
-                    <span className="text-[11px] font-mono text-[#99938B] mt-4">
-                      {rel.readingTime || '4 min'}
-                    </span>
-                  </Link>
-                ))}
+          {/* 12. Newsletter CTA Box */}
+          <BlurFade delay={0.4} yOffset={20}>
+            <div className="p-8 sm:p-10 rounded-3xl bg-[#E8E7E2]/60 dark:bg-[#222225] border border-[#E1E1E1] dark:border-[#2C2C30] text-center space-y-4 shadow-xs">
+              <div className="w-10 h-10 rounded-xl bg-white dark:bg-[#141416] flex items-center justify-center mx-auto text-[#1C1C1E] dark:text-white">
+                <Mail className="w-5 h-5 text-[#3B719F]" />
               </div>
-            </section>
+              <h3 className="font-display font-semibold text-xl text-[#1C1C1E] dark:text-[#F6F5F0]">
+                Enjoyed this technical dispatch?
+              </h3>
+              <p className="text-xs sm:text-sm text-[#4C586F] dark:text-[#A0A9B8] max-w-md mx-auto">
+                Get our weekly software architecture breakdowns and system benchmarks delivered straight to your inbox.
+              </p>
+
+              {ctaSubscribed ? (
+                <div className="p-3 bg-green-500/10 border border-green-500/20 text-green-600 dark:text-green-400 text-xs rounded-2xl font-medium max-w-md mx-auto">
+                  Subscribed! Welcome to Techniccal Dispatch.
+                </div>
+              ) : (
+                <form onSubmit={handleCtaSubscribe} className="flex flex-col sm:flex-row items-center justify-center gap-2.5 max-w-md mx-auto">
+                  <input
+                    type="email"
+                    placeholder="Your work email"
+                    value={newsletterEmail}
+                    onChange={(e) => setNewsletterEmail(e.target.value)}
+                    required
+                    className="w-full px-4 py-2.5 text-xs rounded-xl bg-white dark:bg-[#141416] border border-[#E1E1E1] dark:border-[#2C2C30] text-[#1C1C1E] dark:text-[#F6F5F0] placeholder-[#7E8798] focus:outline-none focus:ring-1 focus:ring-[#1C1C1E]"
+                  />
+                  <button
+                    type="submit"
+                    className="w-full sm:w-auto px-6 py-2.5 text-xs font-semibold rounded-xl bg-[#1C1C1E] dark:bg-white text-white dark:text-[#1C1C1E] hover:opacity-90 transition-opacity cursor-pointer shrink-0"
+                  >
+                    Subscribe
+                  </button>
+                </form>
+              )}
+            </div>
+          </BlurFade>
+
+          {/* 13. Author Information Box */}
+          <BlurFade delay={0.45} yOffset={20}>
+            <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#222225] border border-[#E1E1E1] dark:border-[#2C2C30] shadow-sm flex flex-col sm:flex-row items-start sm:items-center gap-5">
+              <img
+                src={article.author.avatar}
+                alt={article.author.name}
+                className="w-16 h-16 rounded-2xl object-cover shrink-0 border border-[#E1E1E1] dark:border-[#2C2C30]"
+              />
+              <div className="space-y-1.5 flex-1">
+                <div className="flex items-center justify-between">
+                  <h4 className="font-display font-semibold text-base text-[#1C1C1E] dark:text-[#F6F5F0]">
+                    Written by {article.author.name}
+                  </h4>
+                  <span className="text-[11px] font-mono px-2 py-0.5 rounded-md bg-[#E8E7E2] dark:bg-[#141416] text-[#3B719F]">
+                    {article.author.role || 'Staff Architect'}
+                  </span>
+                </div>
+                <p className="text-xs text-[#4C586F] dark:text-[#A0A9B8] leading-relaxed">
+                  {article.author.bio}
+                </p>
+                <div className="flex items-center gap-3 pt-1 text-xs text-[#7E8798]">
+                  <a href="https://twitter.com" target="_blank" rel="noreferrer" className="hover:text-[#1C1C1E] dark:hover:text-white transition-colors flex items-center gap-1">
+                    <Twitter className="w-3.5 h-3.5" /> Twitter
+                  </a>
+                  <a href="https://github.com" target="_blank" rel="noreferrer" className="hover:text-[#1C1C1E] dark:hover:text-white transition-colors flex items-center gap-1">
+                    <Github className="w-3.5 h-3.5" /> GitHub
+                  </a>
+                  <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="hover:text-[#1C1C1E] dark:hover:text-white transition-colors flex items-center gap-1">
+                    <Linkedin className="w-3.5 h-3.5" /> LinkedIn
+                  </a>
+                </div>
+              </div>
+            </div>
+          </BlurFade>
+
+          {/* 14. Comments/Discussion Section */}
+          <ArticleComments articleId={article.id} articleTitle={article.title} />
+
+          {/* 11. Related Articles */}
+          {related.length > 0 && (
+            <BlurFade delay={0.5} yOffset={20}>
+              <section className="mt-16 pt-10 border-t border-[#E1E1E1] dark:border-[#2C2C30]">
+                <h3 className="text-xs font-mono tracking-widest text-[#7E8798] dark:text-[#A0A9B8] uppercase mb-6">
+                  MORE FROM {article.category.toUpperCase()}
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  {related.map((rel) => (
+                    <Link
+                      key={rel.id}
+                      to={`/article/${rel.slug}`}
+                      className="p-4 rounded-2xl bg-white dark:bg-[#222225] border border-[#E1E1E1] dark:border-[#2C2C30] hover:shadow-md transition-all group flex flex-col justify-between"
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <h4 className="font-display font-semibold text-xs sm:text-sm text-[#1C1C1E] dark:text-[#F6F5F0] group-hover:text-[#3B719F] line-clamp-2">
+                          {rel.title}
+                        </h4>
+                        <div className="w-5 h-5 rounded-md bg-[#F4F2EE] dark:bg-[#2C2C30] flex items-center justify-center shrink-0">
+                          <ArrowUpRight className="w-3 h-3 text-[#7E8798]" />
+                        </div>
+                      </div>
+                      <span className="text-[11px] font-mono text-[#7E8798] mt-3">
+                        {rel.readingTime || '4 min'}
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+              </section>
+            </BlurFade>
           )}
-          </div>
-        </BlurFade>
+        </div>
       </article>
     </>
   );
 };
 
-/* Helper component to parse markdown content into styled HTML elements */
+/* Helper component to parse markdown content into styled HTML elements with Copy Code buttons */
 const ArticleContentRenderer: React.FC<{ content: string }> = ({ content }) => {
   const paragraphs = content.split('\n\n').filter(Boolean);
+  const [copiedIdx, setCopiedIdx] = useState<number | null>(null);
+
+  const copyCode = (codeText: string, idx: number) => {
+    navigator.clipboard.writeText(codeText);
+    setCopiedIdx(idx);
+    setTimeout(() => setCopiedIdx(null), 2000);
+  };
 
   return (
     <div className="space-y-6">
@@ -205,7 +352,11 @@ const ArticleContentRenderer: React.FC<{ content: string }> = ({ content }) => {
 
         if (trimmed.startsWith('## ')) {
           return (
-            <h2 key={idx} className="font-display font-bold text-2xl sm:text-3xl text-[#1A1918] dark:text-[#F4F2F0] mt-10 mb-4 tracking-tight">
+            <h2
+              key={idx}
+              id={trimmed.replace('## ', '').toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-')}
+              className="font-display font-semibold text-2xl sm:text-3xl text-[#1C1C1E] dark:text-[#F6F5F0] mt-10 mb-4 tracking-tight"
+            >
               {trimmed.replace('## ', '')}
             </h2>
           );
@@ -213,7 +364,11 @@ const ArticleContentRenderer: React.FC<{ content: string }> = ({ content }) => {
 
         if (trimmed.startsWith('### ')) {
           return (
-            <h3 key={idx} className="font-display font-semibold text-xl text-[#1A1918] dark:text-[#F4F2F0] mt-8 mb-3">
+            <h3
+              key={idx}
+              id={trimmed.replace('### ', '').toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-')}
+              className="font-display font-semibold text-xl text-[#1C1C1E] dark:text-[#F6F5F0] mt-8 mb-3"
+            >
               {trimmed.replace('### ', '')}
             </h3>
           );
@@ -221,23 +376,42 @@ const ArticleContentRenderer: React.FC<{ content: string }> = ({ content }) => {
 
         if (trimmed.startsWith('> ')) {
           return (
-            <blockquote key={idx} className="border-l-2 border-[#1A1918] dark:border-white pl-5 py-2 my-6 font-serif italic text-lg text-[#6E6862] dark:text-[#A8A29A]">
+            <blockquote
+              key={idx}
+              className="border-l-3 border-[#1C1C1E] dark:border-white pl-5 py-2 my-6 font-serif-italic italic text-xl text-[#4C586F] dark:text-[#A0A9B8]"
+            >
               {trimmed.replace('> ', '')}
             </blockquote>
           );
         }
 
+        {/* 9. Code Examples Block with Interactive Copy Code Button */}
         if (trimmed.startsWith('```')) {
-          const codeLines = trimmed.split('\n').slice(1, -1).join('\n');
+          const lines = trimmed.split('\n');
+          const langMatch = lines[0].replace('```', '').trim() || 'typescript';
+          const codeText = lines.slice(1, -1).join('\n');
+
           return (
-            <pre key={idx} className="bg-white dark:bg-[#201E1D] border border-[#EDEAE7] dark:border-[#2C2927] rounded-xl p-4 overflow-x-auto text-xs font-mono my-6 text-[#1A1918] dark:text-[#F4F2F0]">
-              <code>{codeLines}</code>
-            </pre>
+            <div key={idx} className="my-6 rounded-2xl overflow-hidden border border-[#E1E1E1] dark:border-[#2C2C30] bg-[#1C1C1E] text-[#F6F5F0] shadow-sm">
+              <div className="flex items-center justify-between px-4 py-2 bg-[#252528] border-b border-[#2C2C30] text-xs font-mono text-[#A0A9B8]">
+                <span>{langMatch}</span>
+                <button
+                  onClick={() => copyCode(codeText, idx)}
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#323236] hover:bg-[#3E3E44] text-white transition-colors cursor-pointer"
+                >
+                  {copiedIdx === idx ? <Check className="w-3.5 h-3.5 text-green-400" /> : <Copy className="w-3.5 h-3.5" />}
+                  <span>{copiedIdx === idx ? 'Copied' : 'Copy'}</span>
+                </button>
+              </div>
+              <pre className="p-4 overflow-x-auto text-xs sm:text-sm font-mono leading-relaxed">
+                <code>{codeText}</code>
+              </pre>
+            </div>
           );
         }
 
         return (
-          <p key={idx} className="text-[#1A1918] dark:text-[#F4F2F0] leading-relaxed">
+          <p key={idx} className="text-[#1C1C1E] dark:text-[#F6F5F0] leading-relaxed">
             {trimmed}
           </p>
         );

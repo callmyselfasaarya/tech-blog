@@ -1,7 +1,23 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Search, Sun, Moon, Home as HomeIcon, Info, BookOpen, UserPlus, Github, Twitter } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import {
+  Menu,
+  X,
+  Search,
+  Moon,
+  Sun,
+  Home,
+  BookOpen,
+  Info,
+  UserPlus,
+  Cpu,
+  Terminal,
+  Briefcase,
+  Code,
+  Wrench,
+  Mail,
+  Send
+} from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import { TechniccalLogo } from '../ui/TechniccalLogo';
 
@@ -14,13 +30,12 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({ onOpenSearch }) => {
   const location = useLocation();
   const { theme, toggleTheme } = useTheme();
 
-  const closeMenu = () => setIsOpen(false);
+  const isActive = (path: string) => location.pathname === path;
 
   return (
-    <>
-      {/* Mobile Top Header */}
-      <header className="lg:hidden sticky top-0 z-40 flex items-center justify-between px-5 py-3 bg-[#F6F5F0]/90 dark:bg-[#141416]/90 backdrop-blur-md border-b border-[#E1E1E1] dark:border-[#2C2C30]">
-        <Link to="/" onClick={closeMenu}>
+    <header className="lg:hidden sticky top-0 z-40 bg-[#F6F5F0]/90 dark:bg-[#141416]/90 backdrop-blur-md border-b border-[#E1E1E1] dark:border-[#2C2C30] px-4 py-3 font-poppins">
+      <div className="flex items-center justify-between">
+        <Link to="/" className="flex items-center gap-2">
           <TechniccalLogo size="sm" />
         </Link>
 
@@ -28,121 +43,137 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({ onOpenSearch }) => {
           {onOpenSearch && (
             <button
               onClick={onOpenSearch}
-              className="p-2 text-[#4C586F] dark:text-[#A0A9B8] hover:text-[#1C1C1E] dark:hover:text-[#F6F5F0]"
-              aria-label="Open Search"
+              className="p-2 rounded-xl text-[#4C586F] dark:text-[#A0A9B8] hover:bg-[#E8E7E2] dark:hover:bg-[#222225]"
             >
-              <Search className="w-4 h-4" />
+              <Search className="w-5 h-5" />
             </button>
           )}
+
           <button
-            onClick={() => setIsOpen(true)}
-            className="p-2 text-[#1C1C1E] dark:text-[#F6F5F0]"
-            aria-label="Open Navigation Menu"
+            onClick={() => setIsOpen(!isOpen)}
+            className="p-2 rounded-xl text-[#1C1C1E] dark:text-[#F6F5F0] hover:bg-[#E8E7E2] dark:hover:bg-[#222225]"
           >
-            <Menu className="w-5 h-5" />
+            {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
-      </header>
+      </div>
 
-      {/* Slide-over Fullscreen Navigation Panel */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-50 bg-[#F6F5F0] dark:bg-[#141416] flex flex-col justify-between p-6 overflow-y-auto font-poppins"
-          >
-            <div>
-              {/* Menu Top Action Bar */}
-              <div className="flex items-center justify-between pb-6 border-b border-[#E1E1E1] dark:border-[#2C2C30]">
-                <Link to="/" onClick={closeMenu}>
-                  <TechniccalLogo size="md" />
-                </Link>
+      {/* Mobile Drawer */}
+      {isOpen && (
+        <div className="fixed inset-x-0 top-[57px] bg-[#F6F5F0] dark:bg-[#141416] border-b border-[#E1E1E1] dark:border-[#2C2C30] p-6 shadow-xl space-y-6 max-h-[85vh] overflow-y-auto">
+          <nav className="space-y-1">
+            <Link
+              to="/"
+              onClick={() => setIsOpen(false)}
+              className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium ${
+                isActive('/') ? 'bg-white dark:bg-[#222225] font-semibold text-[#1C1C1E] dark:text-white' : 'text-[#4C586F] dark:text-[#A0A9B8]'
+              }`}
+            >
+              <Home className="w-4 h-4" /> Home
+            </Link>
 
-                <div className="flex items-center gap-3">
-                  <button
-                    onClick={toggleTheme}
-                    className="p-2 text-[#4C586F] dark:text-[#A0A9B8] hover:text-[#1C1C1E] dark:hover:text-[#F6F5F0]"
-                  >
-                    {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-                  </button>
-                  <button
-                    onClick={closeMenu}
-                    className="p-2 text-[#1C1C1E] dark:text-[#F6F5F0]"
-                  >
-                    <X className="w-6 h-6" />
-                  </button>
-                </div>
-              </div>
+            <Link
+              to="/blog"
+              onClick={() => setIsOpen(false)}
+              className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium ${
+                isActive('/blog') ? 'bg-white dark:bg-[#222225] font-semibold text-[#1C1C1E] dark:text-white' : 'text-[#4C586F] dark:text-[#A0A9B8]'
+              }`}
+            >
+              <BookOpen className="w-4 h-4" /> All Articles
+            </Link>
 
-              {/* Main Links */}
-              <nav className="mt-6 space-y-2">
-                <Link
-                  to="/"
-                  onClick={closeMenu}
-                  className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-white dark:bg-[#222225] text-sm font-semibold text-[#1C1C1E] dark:text-[#F6F5F0]"
-                >
-                  <HomeIcon className="w-5 h-5" />
-                  <span>Home</span>
-                </Link>
+            <Link
+              to="/ai"
+              onClick={() => setIsOpen(false)}
+              className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium ${
+                isActive('/ai') ? 'bg-white dark:bg-[#222225] font-semibold text-[#1C1C1E] dark:text-white' : 'text-[#4C586F] dark:text-[#A0A9B8]'
+              }`}
+            >
+              <Cpu className="w-4 h-4 text-[#3B719F]" /> AI Articles
+            </Link>
 
-                <Link
-                  to="/about"
-                  onClick={closeMenu}
-                  className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-white dark:bg-[#222225] text-sm font-semibold text-[#1C1C1E] dark:text-[#F6F5F0]"
-                >
-                  <Info className="w-5 h-5" />
-                  <span>About Techniccal</span>
-                </Link>
+            <Link
+              to="/programming"
+              onClick={() => setIsOpen(false)}
+              className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium ${
+                isActive('/programming') ? 'bg-white dark:bg-[#222225] font-semibold text-[#1C1C1E] dark:text-white' : 'text-[#4C586F] dark:text-[#A0A9B8]'
+              }`}
+            >
+              <Terminal className="w-4 h-4" /> Programming
+            </Link>
 
-                <Link
-                  to="/letters"
-                  onClick={closeMenu}
-                  className="flex items-center justify-between px-4 py-3 rounded-2xl bg-white dark:bg-[#222225] text-sm font-semibold text-[#1C1C1E] dark:text-[#F6F5F0]"
-                >
-                  <div className="flex items-center gap-3">
-                    <BookOpen className="w-5 h-5" />
-                    <span>Dispatches</span>
-                  </div>
-                  <span className="text-xs font-mono px-2 py-0.5 rounded-full bg-[#E1E1E1] dark:bg-[#2C2C30]">
-                    6
-                  </span>
-                </Link>
+            <Link
+              to="/career"
+              onClick={() => setIsOpen(false)}
+              className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium ${
+                isActive('/career') ? 'bg-white dark:bg-[#222225] font-semibold text-[#1C1C1E] dark:text-white' : 'text-[#4C586F] dark:text-[#A0A9B8]'
+              }`}
+            >
+              <Briefcase className="w-4 h-4 text-[#4C586F]" /> Jobs / Career
+            </Link>
 
-                <Link
-                  to="/sign-up"
-                  onClick={closeMenu}
-                  className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-white dark:bg-[#222225] text-sm font-semibold text-[#1C1C1E] dark:text-[#F6F5F0]"
-                >
-                  <UserPlus className="w-5 h-5" />
-                  <span>Join Insider</span>
-                </Link>
-              </nav>
+            <Link
+              to="/projects"
+              onClick={() => setIsOpen(false)}
+              className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium ${
+                isActive('/projects') ? 'bg-white dark:bg-[#222225] font-semibold text-[#1C1C1E] dark:text-white' : 'text-[#4C586F] dark:text-[#A0A9B8]'
+              }`}
+            >
+              <Code className="w-4 h-4 text-[#3B719F]" /> Projects
+            </Link>
 
-              {/* Social Links */}
-              <div className="mt-8 pt-6 border-t border-[#E1E1E1] dark:border-[#2C2C30]">
-                <div className="text-[10px] font-mono tracking-widest text-[#7E8798] uppercase mb-3">
-                  COMMUNITY
-                </div>
-                <div className="flex items-center gap-4 text-[#4C586F] dark:text-[#A0A9B8]">
-                  <a href="https://github.com" target="_blank" rel="noreferrer" className="flex items-center gap-2 text-xs">
-                    <Github className="w-4 h-4" /> GitHub
-                  </a>
-                  <a href="https://twitter.com" target="_blank" rel="noreferrer" className="flex items-center gap-2 text-xs">
-                    <Twitter className="w-4 h-4" /> X / Twitter
-                  </a>
-                </div>
-              </div>
-            </div>
+            <Link
+              to="/tools"
+              onClick={() => setIsOpen(false)}
+              className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium ${
+                isActive('/tools') ? 'bg-white dark:bg-[#222225] font-semibold text-[#1C1C1E] dark:text-white' : 'text-[#4C586F] dark:text-[#A0A9B8]'
+              }`}
+            >
+              <Wrench className="w-4 h-4" /> Tools
+            </Link>
 
-            <div className="pt-6 text-xs text-[#7E8798] text-center">
-              © 2026 Techniccal Media Inc.
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
+            <Link
+              to="/newsletter"
+              onClick={() => setIsOpen(false)}
+              className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium ${
+                isActive('/newsletter') ? 'bg-white dark:bg-[#222225] font-semibold text-[#1C1C1E] dark:text-white' : 'text-[#4C586F] dark:text-[#A0A9B8]'
+              }`}
+            >
+              <Mail className="w-4 h-4 text-[#3B719F]" /> Newsletter
+            </Link>
+
+            <Link
+              to="/about"
+              onClick={() => setIsOpen(false)}
+              className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium ${
+                isActive('/about') ? 'bg-white dark:bg-[#222225] font-semibold text-[#1C1C1E] dark:text-white' : 'text-[#4C586F] dark:text-[#A0A9B8]'
+              }`}
+            >
+              <Info className="w-4 h-4" /> About
+            </Link>
+
+            <Link
+              to="/contact"
+              onClick={() => setIsOpen(false)}
+              className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium ${
+                isActive('/contact') ? 'bg-white dark:bg-[#222225] font-semibold text-[#1C1C1E] dark:text-white' : 'text-[#4C586F] dark:text-[#A0A9B8]'
+              }`}
+            >
+              <Send className="w-4 h-4" /> Contact
+            </Link>
+          </nav>
+
+          <div className="pt-4 border-t border-[#E1E1E1] dark:border-[#2C2C30] flex items-center justify-between">
+            <button
+              onClick={toggleTheme}
+              className="flex items-center gap-2 text-xs font-mono text-[#7E8798]"
+            >
+              {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              <span>Toggle Theme</span>
+            </button>
+          </div>
+        </div>
+      )}
+    </header>
   );
 };

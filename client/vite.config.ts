@@ -20,4 +20,18 @@ export default defineConfig({
       },
     },
   },
+  build: {
+    target: 'esnext',
+    cssCodeSplit: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          'vendor-query': ['@tanstack/react-query'],
+          'vendor-framer': ['framer-motion'],
+          'vendor-icons': ['lucide-react'],
+        },
+      },
+    },
+  },
 });
