@@ -1,237 +1,249 @@
 import { Article, Category, NewsletterIssue, Subscriber, User, MediaItem } from '../types';
 
 export const INITIAL_AUTHOR = {
-  name: "Skylar Rowe",
-  avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80",
-  bio: "Writer and digital creator sharing what I learn about building an independent career online.",
-  role: "Writer & Digital Creator"
+  name: "Techniccal Editorial Team",
+  avatar: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=300&q=80",
+  bio: "Engineering research and technical analysis publication exploring software architecture, AI systems, and cloud engineering.",
+  role: "Techniccal Editorial Desk"
 };
 
 export const INITIAL_CATEGORIES: Category[] = [
-  { id: '1', name: 'Business', slug: 'business', description: 'Strategies on audience, income, and scaling.', count: 3 },
-  { id: '2', name: 'Mindset', slug: 'mindset', description: 'Mental frameworks for creators and writers.', count: 2 },
-  { id: '3', name: 'Design', slug: 'design', description: 'Aesthetics, tools, and digital craftsmanship.', count: 2 },
-  { id: '4', name: 'Systems', slug: 'systems', description: 'Productivity routines and content workflows.', count: 1 },
+  { id: '1', name: 'Software Architecture', slug: 'software-architecture', description: 'System patterns, microservices, and distributed architecture.', count: 4 },
+  { id: '2', name: 'AI & Machine Learning', slug: 'ai-machine-learning', description: 'LLM reasoning engines, vector databases, and AI agent systems.', count: 3 },
+  { id: '3', name: 'Systems Design', slug: 'systems-design', description: 'Low-latency protocols, concurrency models, and performance tuning.', count: 3 },
+  { id: '4', name: 'Cloud Infrastructure', slug: 'cloud-infrastructure', description: 'Kubernetes, serverless, CI/CD, and DevOps automation.', count: 2 },
+  { id: '5', name: 'Developer Tools', slug: 'developer-tools', description: 'Compilers, Rust, Go, and developer workflow tooling.', count: 2 },
 ];
 
 export const INITIAL_ARTICLES: Article[] = [
   {
     id: 'art-pinned-01',
-    title: 'The Only Writing Tools I Actually Use',
-    slug: 'the-only-writing-tools-i-actually-use',
-    excerpt: 'A curated look inside my daily setup for drafting, organizing thoughts, and publishing long-form essays without distraction.',
-    category: 'Design',
-    tags: ['Tools', 'Writing', 'Design', 'Productivity'],
-    publishedAt: '2026-08-22',
-    readingTime: '3 min read',
+    title: 'Designing High-Throughput Distributed Systems at Scale',
+    slug: 'designing-high-throughput-distributed-systems',
+    excerpt: 'A deep-dive into event-driven patterns, backpressure strategies, and partitioning techniques for scaling modern data pipelines.',
+    category: 'Software Architecture',
+    tags: ['Distributed Systems', 'Kafka', 'Architecture', 'Performance'],
+    publishedAt: '2026-08-23',
+    readingTime: '8 min read',
     featured: true,
     pinned: true,
     status: 'published',
-    views: 5210,
-    coverImage: 'https://images.unsplash.com/photo-1517842645767-c639042777db?auto=format&fit=crop&w=800&q=80',
-    author: INITIAL_AUTHOR,
+    views: 8420,
+    coverImage: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80',
+    author: {
+      name: 'Alex Rivera',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80',
+      bio: 'Principal Systems Architect specializing in distributed storage and high-frequency stream processing.',
+      role: 'Principal Systems Architect'
+    },
     seo: {
-      title: 'The Only Writing Tools I Actually Use — Memoir',
-      description: 'A curated look inside my daily setup for drafting, organizing thoughts, and publishing long-form essays without distraction.',
-      keywords: ['writing', 'tools', 'notion', 'creators']
+      title: 'Designing High-Throughput Distributed Systems — Techniccal',
+      description: 'A deep-dive into event-driven patterns, backpressure strategies, and partitioning techniques for scaling modern data pipelines.',
+      keywords: ['distributed systems', 'architecture', 'kafka', 'scalability']
     },
     content: `
-## Simplify Your Stack
+## The Foundations of Scalable Systems
 
-Over the past three years of publishing online, I have tested dozens of markdown editors, note-taking apps, and complex database systems. Eventually, I realized that more tools rarely translate to better writing.
+As application workloads scale into millions of events per second, monolithic request-response models break down under network latency and concurrency bottlenecks. Building resilient infrastructure requires shifting toward decoupled, event-driven architectures.
 
-The tools that stuck are the ones that get out of the way.
+### 1. Partitioning and Sharding Strategies
+Consistent hashing allows systems to distribute data evenly across cluster nodes while minimizing rebalancing costs when nodes join or fail.
 
-> "Perfection is achieved, not when there is nothing more to add, but when there is nothing left to take away." — Antoine de Saint-Exupéry
+\`\`\`typescript
+interface ClusterNode {
+  id: string;
+  hashRange: [number, number];
+  status: 'HEALTHY' | 'REBALANCING' | 'OFFLINE';
+}
 
-### 1. Minimalist Markdown Drafting
-For initial drafts, speed and zero distraction are everything. I write initial notes in plain text before moving them into a structured database.
-
-### 2. An Intuitive Idea Inbox
-Ideas don't happen on schedule. Having a single friction-free inbox captured on phone or desktop ensures no good thought gets lost.
-
-\`\`\`markdown
-- Capture quickly
-- Review weekly
-- Draft deliberately
+function assignKeyToNode(key: string, nodes: ClusterNode[]): ClusterNode {
+  const hash = computeMurmur3(key);
+  return nodes.find(n => hash >= n.hashRange[0] && hash <= n.hashRange[1]) || nodes[0];
+}
 \`\`\`
 
-### 3. Clean Publishing Canvas
-When it's time to publish, clean typography and responsive layouts make reading an enjoyable ritual for your audience.
+> "System design is not about avoiding failure; it's about designing architectures where failure is a expected, non-fatal event."
+
+### 2. Handling Backpressure in Stream Pipelines
+When producers publish data faster than consumers can process it, unbuffered memory allocation leads to Out-Of-Memory (OOM) crashes. Implementing reactive stream backpressure ensures consumers signal capacity before receiving payloads.
 `
   },
   {
     id: 'art-01',
-    title: 'The Truth About Sharing My Earnings Online',
-    slug: 'sharing-numbers',
-    excerpt: 'Sharing your earnings and stats online can feel risky, but it\'s been a game-changer for my growth and trust with readers. Here\'s what I\'ve learned from being transparent.',
-    category: 'Business',
-    tags: ['Business', 'Transparency', 'Growth'],
-    publishedAt: '2026-08-20',
-    readingTime: '5 min read',
-    featured: false,
-    pinned: false,
-    status: 'published',
-    views: 4320,
-    coverImage: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=800&q=80',
-    author: INITIAL_AUTHOR,
-    seo: {
-      title: 'The Truth About Sharing My Earnings Online — Memoir',
-      description: 'Sharing your earnings and stats online can feel risky, but it\'s been a game-changer for my growth and trust with readers.',
-      keywords: ['transparency', 'earnings', 'creators', 'business']
-    },
-    content: `
-## Why I Started Sharing My Numbers
-
-Sharing financial metrics online can feel uncomfortable. For a long time, I worried it would seem like bragging or create unnecessary pressure. But when done authentically, radical transparency builds unmatched trust with your audience.
-
-### 1. Trust Over Hype
-Readers are tired of generic advice. When you share exact numbers, lessons from failures, and genuine conversion rates, your content instantly separates itself from internet noise.
-
-### 2. Accountability
-Public goals force disciplined execution. Knowing my progress will be shared in my monthly newsletter keeps me focused on high-leverage projects.
-
-\`\`\`typescript
-const metric = {
-  transparency: 100,
-  trustMultiplier: 2.5,
-  growthRate: "Consistent"
-};
-\`\`\`
-
-> "Transparency breeds trust, and trust is the ultimate currency of the internet."
-`
-  },
-  {
-    id: 'art-02',
-    title: 'How I Turned a Hobby Into Real Income',
-    slug: 'turned-hobby-into-real-income',
-    excerpt: 'From publishing quiet weekend notes to generating consistent revenue online. Here is the honest roadmap and mistakes to avoid.',
-    category: 'Business',
-    tags: ['Business', 'Side Project', 'Monetization'],
-    publishedAt: '2026-08-18',
-    readingTime: '4 min read',
-    featured: false,
-    pinned: false,
-    status: 'published',
-    views: 3890,
-    coverImage: 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=800&q=80',
-    author: INITIAL_AUTHOR,
-    content: `
-## From Weekend Notes to Sustainable Revenue
-
-Turning a passion for writing into a real digital business doesn't happen overnight. It starts with finding your specific niche and committing to serving a core group of readers.
-
-### Phase 1: Establish Your Signal
-Before worrying about monetization, focus on clarity and resonance. Write essays that answer real questions your target audience asks every day.
-
-### Phase 2: Build a Direct Line
-Social media platforms rent audiences; newsletters own relationships. Convert curious readers into email subscribers as early as possible.
-`
-  },
-  {
-    id: 'art-03',
-    title: 'The Unsexy Truth About Consistent Content',
-    slug: 'unsexy-truth-about-consistent-content',
-    excerpt: 'Consistency is rarely glamorous. It is mostly showing up on empty document days, overcoming doubt, and doing the baseline work.',
-    category: 'Mindset',
-    tags: ['Mindset', 'Consistency', 'Writing'],
-    publishedAt: '2026-08-15',
-    readingTime: '4 min read',
-    featured: false,
-    pinned: false,
-    status: 'published',
-    views: 3120,
-    coverImage: 'https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=800&q=80',
-    author: INITIAL_AUTHOR,
-    content: `
-## The Myth of Constant Inspiration
-
-Inspiration is a bonus, not a requirement. High performers in creative fields build systems so they can produce quality work even on uninspired days.
-
-### Micro-Habits for Long-Term Writing
-- Write 300 words before checking email.
-- Keep an active swipe file of ideas.
-- Publish on a fixed weekly schedule.
-`
-  },
-  {
-    id: 'art-04',
-    title: 'Designing for Longevity in Digital Publishing',
-    slug: 'designing-for-longevity',
-    excerpt: 'Why minimalist design and clean typography create timeless reading experiences for modern creators.',
-    category: 'Design',
-    tags: ['Design', 'Typography', 'Minimalism'],
-    publishedAt: '2026-08-10',
+    title: 'Understanding LLM Reasoning Engines & Agentic Workflows',
+    slug: 'llm-reasoning-engines-agentic-workflows',
+    excerpt: 'How modern AI architectures are moving from simple text generation to multi-step autonomous planning, tool usage, and reflection loops.',
+    category: 'AI & Machine Learning',
+    tags: ['AI', 'LLM', 'Agentic Workflows', 'Machine Learning'],
+    publishedAt: '2026-08-21',
     readingTime: '6 min read',
     featured: false,
     pinned: false,
     status: 'published',
-    views: 2940,
-    coverImage: 'https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=800&q=80',
-    author: INITIAL_AUTHOR,
+    views: 6710,
+    coverImage: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80',
+    author: {
+      name: 'Dr. Sarah Chen',
+      avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&q=80',
+      bio: 'AI Research Engineer focused on autonomous agent frameworks and LLM evaluation architectures.',
+      role: 'AI Research Lead'
+    },
+    seo: {
+      title: 'Understanding LLM Reasoning Engines & Agentic Workflows — Techniccal',
+      description: 'How modern AI architectures are moving from simple text generation to multi-step autonomous planning, tool usage, and reflection loops.',
+      keywords: ['AI', 'agents', 'LLM', 'reasoning']
+    },
     content: `
-## Timeless Design Aesthetics
+## Beyond Simple Text Completion
 
-Trends fade quickly, but clean serif typography, generous whitespace, and responsive layouts remain engaging for decades.
+The paradigm shift in artificial intelligence is moving from passive text generation to active reasoning engines. Agentic systems execute complex workflows by dynamically selecting tools, reflecting on intermediate outputs, and correcting errors in real time.
 
-### Core Principles
-1. **Prioritize Legibility**: High contrast, readable line length (60-75 characters per line).
-2. **Remove Visual Noise**: Eliminate unnecessary banners and popups that ruin focus.
-3. **Pace the Content**: Use section headings and quotes to create visual rhythm.
+### The ReAct Pattern (Reasoning + Acting)
+1. **Thought**: The model evaluates current context and determines the next sub-goal.
+2. **Action**: The agent calls an external API, executes a database query, or runs code.
+3. **Observation**: The system parses the tool return payload and updates memory.
+
+\`\`\`python
+class AgentLoop:
+    def run(self, user_prompt: str):
+        context = [user_prompt]
+        while not self.is_completed():
+            thought = self.reason(context)
+            action = self.select_tool(thought)
+            result = action.execute()
+            context.append(result)
+        return self.synthesize_answer(context)
+\`\`\`
 `
   },
   {
-    id: 'art-05',
-    title: 'Building a Creator Operating System',
-    slug: 'creator-operating-system',
-    excerpt: 'How to organize research, newsletter drafts, and project tasks into a frictionless weekly workflow.',
-    category: 'Systems',
-    tags: ['Systems', 'Workflow', 'Productivity'],
-    publishedAt: '2026-08-05',
+    id: 'art-02',
+    title: 'The Engineering Behind Low-Latency Real-Time Streaming',
+    slug: 'engineering-low-latency-real-time-streaming',
+    excerpt: 'An architectural analysis of zero-copy buffer allocations, ring buffers, and WebSockets vs gRPC for sub-10ms event delivery.',
+    category: 'Systems Design',
+    tags: ['Low Latency', 'Networking', 'gRPC', 'Performance'],
+    publishedAt: '2026-08-19',
     readingTime: '5 min read',
     featured: false,
     pinned: false,
     status: 'published',
-    views: 2450,
-    coverImage: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&w=800&q=80',
+    views: 5120,
+    coverImage: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80',
     author: INITIAL_AUTHOR,
     content: `
-## Workflows That Save Time
+## Eliminating Microsecond Bottlenecks
 
-A personal operating system allows you to manage research, draft articles, and distribute newsletters without feeling overwhelmed.
+In financial trading engines, real-time analytics, and gaming backends, latency is measured in microseconds. Achieving consistent sub-10ms tail latencies requires optimizing data structures, transport protocols, and memory allocation strategies.
 
-### The 3-Stage Pipeline
-- **Capture**: Save highlights and links into a central repository.
-- **Synthesize**: Outline notes into clear thesis points.
-- **Distribute**: Publish across your blog and email list effortlessly.
+### Protocol Comparison: WebSockets vs gRPC Stream
+- **gRPC (HTTP/2 Multiplexing)**: Binary Protobuf serialization reduces payload sizes by up to 60% compared to JSON over WebSockets.
+- **Ring Buffers (Disruptor Pattern)**: Lock-free ring buffers eliminate thread contention on shared memory queues.
+`
+  },
+  {
+    id: 'art-03',
+    title: 'Kubernetes vs Serverless: Cost & Performance Tradeoffs in 2026',
+    slug: 'kubernetes-vs-serverless-tradeoffs-2026',
+    excerpt: 'Comparing cold start latencies, egress network costs, and developer velocity across container orchestration and cloud functions.',
+    category: 'Cloud Infrastructure',
+    tags: ['Kubernetes', 'Serverless', 'DevOps', 'Cloud'],
+    publishedAt: '2026-08-16',
+    readingTime: '6 min read',
+    featured: false,
+    pinned: false,
+    status: 'published',
+    views: 4890,
+    coverImage: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80',
+    author: INITIAL_AUTHOR,
+    content: `
+## Navigating Cloud Infrastructure Choices
+
+Deciding between Kubernetes (EKS/GKE) and Serverless (AWS Lambda/Cloud Run) is no longer an all-or-nothing choice. Modern production setups often leverage hybrid infrastructure models.
+
+### Key Factors to Evaluate
+1. **Traffic Predictability**: Steady-state workloads favor Kubernetes reserved instances for cost efficiency.
+2. **Cold Start Budget**: Latency-sensitive APIs require provisioned concurrency or lightweight WebAssembly (Wasm) runtimes.
+`
+  },
+  {
+    id: 'art-04',
+    title: 'Why Rust and Go Dominate Modern Infrastructure Systems',
+    slug: 'why-rust-and-go-dominate-infrastructure',
+    excerpt: 'Examining memory safety, garbage collection pauses, compilation speeds, and why cloud-native tooling is built almost exclusively in Go and Rust.',
+    category: 'Developer Tools',
+    tags: ['Rust', 'Golang', 'Infrastructure', 'Compilers'],
+    publishedAt: '2026-08-12',
+    readingTime: '5 min read',
+    featured: false,
+    pinned: false,
+    status: 'published',
+    views: 4210,
+    coverImage: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=800&q=80',
+    author: INITIAL_AUTHOR,
+    content: `
+## Language Choices in Systems Programming
+
+From Docker and Kubernetes (written in Go) to Envoy, TiKV, and Cloudflare workers (written in Rust), modern infrastructure codebases have migrated away from legacy C/C++.
+
+### Go: Goroutines and Simplicity
+Go's lightweight CSP concurrency model and fast compilation speed make it the ideal language for network servers and microservices.
+
+### Rust: Ownership and Zero-Cost Abstractions
+Rust provides memory safety without garbage collection overhead, enabling sub-millisecond execution predictability for storage engines and network proxies.
+`
+  },
+  {
+    id: 'art-05',
+    title: 'Building Resilient Event-Driven Architectures with Kafka',
+    slug: 'resilient-event-driven-architectures-kafka',
+    excerpt: 'Best practices for consumer group offsets, idempotent producers, dead letter queues, and schema evolution in production.',
+    category: 'Software Architecture',
+    tags: ['Kafka', 'Event Driven', 'Architecture'],
+    publishedAt: '2026-08-08',
+    readingTime: '7 min read',
+    featured: false,
+    pinned: false,
+    status: 'published',
+    views: 3950,
+    coverImage: 'https://images.unsplash.com/photo-1504639725590-34d0984388bd?auto=format&fit=crop&w=800&q=80',
+    author: INITIAL_AUTHOR,
+    content: `
+## Event-Driven Resilience
+
+Building event-driven microservices requires explicit error handling strategies for schema changes, consumer crashes, and network partitions.
+
+### Core Production Rules
+- Enable idempotent producer configs (\`enable.idempotence=true\`).
+- Enforce strict schema validation using Schema Registry.
+- Route malformed events to a dedicated Dead Letter Queue (DLQ).
 `
   }
 ];
 
 export const INITIAL_ISSUES: NewsletterIssue[] = [
-  { id: '1', issueNumber: 'Issue #024', title: 'The Power of Independent Media', publishedAt: '2026-08-18', excerpt: 'Reflections on building direct relationships with your audience in 2026.', readTime: '4 min' },
-  { id: '2', issueNumber: 'Issue #023', title: 'Monetizing Attention Authentically', publishedAt: '2026-08-11', excerpt: 'How to monetize your writing without compromising intellectual integrity.', readTime: '5 min' },
-  { id: '3', issueNumber: 'Issue #022', title: 'The Minimalist Creator Stack', publishedAt: '2026-08-04', excerpt: 'The exact software stack I use to run my editorial publication.', readTime: '3 min' },
+  { id: '1', issueNumber: 'Dispatch #048', title: 'The Future of Distributed Databases', publishedAt: '2026-08-18', excerpt: 'Deep dive into Spanner, CockroachDB, and multi-region consensus algorithms.', readTime: '5 min' },
+  { id: '2', issueNumber: 'Dispatch #047', title: 'Benchmarking AI Inference Runtimes', publishedAt: '2026-08-11', excerpt: 'Comparing vLLM, TensorRT-LLM, and Ollama throughput under concurrency.', readTime: '6 min' },
+  { id: '3', issueNumber: 'Dispatch #046', title: 'Zero-Trust Cloud Network Security', publishedAt: '2026-08-04', excerpt: 'Implementing eBPF-based network policies in Kubernetes with Cilium.', readTime: '4 min' },
 ];
 export const INITIAL_NEWSLETTER_ISSUES = INITIAL_ISSUES;
 
 export const INITIAL_SUBSCRIBERS: Subscriber[] = [
-  { id: 'sub-1', email: 'alex.dev@example.com', subscribedAt: '2026-08-01', status: 'active', source: 'Homepage' },
-  { id: 'sub-2', email: 'sarah.design@example.com', subscribedAt: '2026-08-05', status: 'active', source: 'Sidebar' },
-  { id: 'sub-3', email: 'marcus.w@example.com', subscribedAt: '2026-08-12', status: 'active', source: 'Article Footer' }
+  { id: 'sub-1', email: 'architect@techcorp.com', subscribedAt: '2026-08-01', status: 'active', source: 'Homepage' },
+  { id: 'sub-2', email: 'lead.dev@cloudlab.io', subscribedAt: '2026-08-05', status: 'active', source: 'Sidebar' },
+  { id: 'sub-3', email: 'ai.researcher@lab.org', subscribedAt: '2026-08-12', status: 'active', source: 'Article Footer' }
 ];
 
 export const INITIAL_MEDIA: MediaItem[] = [
-  { id: 'med-1', name: 'desk-setup.jpg', url: 'https://images.unsplash.com/photo-1517842645767-c639042777db?auto=format&fit=crop&w=800&q=80', size: '1.2 MB', uploadedAt: '2026-08-22' },
-  { id: 'med-2', name: 'skylar-portrait.jpg', url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80', size: '2.4 MB', uploadedAt: '2026-08-20' },
+  { id: 'med-1', name: 'distributed-systems.jpg', url: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80', size: '1.4 MB', uploadedAt: '2026-08-23' },
+  { id: 'med-2', name: 'ai-architecture.jpg', url: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80', size: '2.1 MB', uploadedAt: '2026-08-21' },
 ];
 
 export const INITIAL_USER: User = {
   id: 'usr-1',
-  name: 'Skylar Rowe',
-  email: 'skylar@memoir.blog',
+  name: 'Techniccal Admin',
+  email: 'editor@techniccal.com',
   role: 'admin',
-  avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80'
+  avatar: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=300&q=80'
 };
 export const MOCK_USER = INITIAL_USER;

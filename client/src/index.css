@@ -2,33 +2,45 @@
 
 @layer base {
   :root {
-    --bg-primary: #F4F2F0;
-    --bg-secondary: #EDEAE7;
+    --bg-primary: #F6F5F0;
+    --bg-secondary: #E8E7E2;
     --bg-card: #FFFFFF;
-    --border-subtle: #E8E4DF;
-    --border-strong: #DCD7D2;
-    --text-primary: #1A1918;
-    --text-secondary: #6E6862;
-    --text-muted: #99938B;
-    --accent: #1A1918;
+    --border-subtle: #E1E1E1;
+    --border-strong: #D4D4CE;
+    --text-primary: #1C1C1E;
+    --text-secondary: #4C586F;
+    --text-muted: #7E8798;
+    --accent: #3B719F;
+    --brand-black: #1C1C1E;
+    --brand-white: #F6F5F0;
+    --brand-gray: #E1E1E1;
+    --brand-graphite: #4C586F;
+    --brand-blue: #3B719F;
     --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
     --font-display: 'Manrope', 'Inter', system-ui, sans-serif;
+    --font-poppins: 'Poppins', 'Inter', system-ui, sans-serif;
+    --font-signature: 'Sacramento', 'Alex Brush', 'Great Vibes', cursive;
     --font-serif: 'Source Serif 4', Georgia, serif;
+    --font-serif-italic: 'Instrument Serif', 'Source Serif 4', Georgia, serif;
     --font-editorial: 'Source Serif 4', Georgia, serif;
     --font-mono: 'JetBrains Mono', monospace;
   }
 
   .dark {
-    --bg-primary: #161514;
-    --bg-secondary: #22201F;
-    --bg-card: #201E1D;
-    --border-subtle: #2C2927;
-    --border-strong: #3D3936;
-    --text-primary: #F4F2F0;
-    --text-secondary: #A8A29A;
-    --text-muted: #78736B;
-    --accent: #F4F2F0;
+    --bg-primary: #141416;
+    --bg-secondary: #1C1C1E;
+    --bg-card: #222225;
+    --border-subtle: #2C2C30;
+    --border-strong: #3E3E44;
+    --text-primary: #F6F5F0;
+    --text-secondary: #A0A9B8;
+    --text-muted: #6B7485;
+    --accent: #3B719F;
   }
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
@@ -37,9 +49,34 @@ body {
   color: var(--text-primary);
 }
 
+@keyframes blurFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+    filter: blur(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0px);
+  }
+}
+
+.animate-blur-fade-up {
+  animation: blurFadeUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
 /* Editorial Typography Helpers */
 .font-display {
   font-family: var(--font-display);
+}
+
+.font-poppins {
+  font-family: var(--font-poppins);
+}
+
+.font-signature {
+  font-family: var(--font-signature);
 }
 
 .font-serif {
@@ -186,4 +223,10 @@ body {
   border-radius: 4px;
   margin: 2rem 0;
   font-size: 1.05rem;
+}
+
+.font-serif-italic {
+  font-family: var(--font-serif-italic);
+  font-style: italic;
+  font-weight: 400;
 }

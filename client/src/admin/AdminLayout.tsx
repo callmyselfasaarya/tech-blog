@@ -17,6 +17,8 @@ import { api } from '../services/api';
 import { User } from '../types';
 import { useTheme } from '../context/ThemeContext';
 
+import { TechniccalLogo } from '../components/ui/TechniccalLogo';
+
 export const AdminLayout: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const location = useLocation();
@@ -56,10 +58,10 @@ export const AdminLayout: React.FC = () => {
           {/* Header */}
           <div className="flex items-center justify-between pb-6 mb-6 border-b border-[#E8E5DC] dark:border-[#262626]">
             <div>
-              <Link to="/admin" className="font-editorial text-2xl tracking-tight text-[#1A1A1A] dark:text-[#ECECEC]">
-                ÆTHER <span className="text-xs font-mono font-normal opacity-60">CMS</span>
+              <Link to="/admin" className="block">
+                <TechniccalLogo size="sm" />
               </Link>
-              <p className="text-[10px] font-mono text-[#9E9A8E] uppercase mt-0.5">
+              <p className="text-[10px] font-mono text-[#7E8798] uppercase mt-1">
                 ROLE: {user?.role}
               </p>
             </div>

@@ -4,51 +4,51 @@ const Category = require('./models/Category');
 const Subscriber = require('./models/Subscriber');
 const User = require('./models/User');
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/aether_blog';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/techniccal_blog';
 
 const seedArticles = [
   {
-    title: 'The Art of Thinking Clearly in an Era of Noise',
-    slug: 'the-art-of-thinking-clearly',
-    excerpt: 'A foundational reflection on deliberate learning, technological craftsmanship, and the quiet power of building things that outlast the news cycle.',
-    category: 'WRITING',
-    tags: ['Learning', 'Philosophy', 'Craftsmanship', 'Focus'],
-    publishedAt: '2026-08-20',
+    title: 'Designing High-Throughput Distributed Systems at Scale',
+    slug: 'designing-high-throughput-distributed-systems',
+    excerpt: 'A deep-dive into event-driven patterns, backpressure strategies, and partitioning techniques for scaling modern data pipelines.',
+    category: 'Software Architecture',
+    tags: ['Distributed Systems', 'Kafka', 'Architecture', 'Performance'],
+    publishedAt: '2026-08-23',
     readingTime: '8 min read',
     featured: true,
     pinned: true,
     status: 'published',
-    views: 4120,
-    coverImage: 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=1200&q=80',
-    content: `## Introduction\n\nWe live in a cultural moment dominated by velocity...`
+    views: 8420,
+    coverImage: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80',
+    content: `## The Foundations of Scalable Systems\n\nAs application workloads scale into millions of events per second, monolithic request-response models break down under network latency and concurrency bottlenecks. Building resilient infrastructure requires shifting toward decoupled, event-driven architectures.`
   },
   {
-    title: 'Why Building Slowly Is Sometimes Faster',
-    slug: 'why-building-slowly-is-faster',
-    excerpt: 'A reflection on patience, deliberate practice, and the hidden compound advantages of taking your time to establish firm foundations.',
-    category: 'WRITING',
-    tags: ['Patience', 'Engineering', 'Productivity'],
-    publishedAt: '2026-08-18',
+    title: 'Understanding LLM Reasoning Engines & Agentic Workflows',
+    slug: 'llm-reasoning-engines-agentic-workflows',
+    excerpt: 'How modern AI architectures are moving from simple text generation to multi-step autonomous planning, tool usage, and reflection loops.',
+    category: 'AI & Machine Learning',
+    tags: ['AI', 'LLM', 'Agentic Workflows'],
+    publishedAt: '2026-08-21',
     readingTime: '6 min read',
     status: 'published',
-    views: 2840,
-    coverImage: 'https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1200&q=80',
-    content: `## The Paradox of Speed\n\nThere is a well-known military proverb...`
+    views: 6710,
+    coverImage: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80',
+    content: `## Beyond Simple Text Completion\n\nThe paradigm shift in artificial intelligence is moving from passive text generation to active reasoning engines.`
   }
 ];
 
 const seedCategories = [
-  { name: 'WRITING', slug: 'writing', description: 'Thoughts on clarity, prose, and expression.', count: 4 },
-  { name: 'TECHNOLOGY', slug: 'technology', description: 'Architectural perspectives on software & AI.', count: 5 },
-  { name: 'DESIGN', slug: 'design', description: 'Minimalist aesthetics and user experience.', count: 3 },
-  { name: 'MINDSET', slug: 'mindset', description: 'Mental models for long-term execution.', count: 3 },
-  { name: 'SYSTEMS', slug: 'systems', description: 'Engineering simple structures for complex ideas.', count: 4 }
+  { name: 'Software Architecture', slug: 'software-architecture', description: 'System patterns, microservices, and distributed architecture.', count: 4 },
+  { name: 'AI & Machine Learning', slug: 'ai-machine-learning', description: 'LLM reasoning engines, vector databases, and AI agent systems.', count: 3 },
+  { name: 'Systems Design', slug: 'systems-design', description: 'Low-latency protocols, concurrency models, and performance tuning.', count: 3 },
+  { name: 'Cloud Infrastructure', slug: 'cloud-infrastructure', description: 'Kubernetes, serverless, CI/CD, and DevOps automation.', count: 2 },
+  { name: 'Developer Tools', slug: 'developer-tools', description: 'Compilers, Rust, Go, and developer workflow tooling.', count: 2 }
 ];
 
 async function seedDB() {
   try {
     await mongoose.connect(MONGODB_URI);
-    console.log('Connected to MongoDB for seeding...');
+    console.log('Connected to MongoDB for seeding Techniccal DB...');
 
     await Article.deleteMany({});
     await Category.deleteMany({});
@@ -57,7 +57,7 @@ async function seedDB() {
     await Article.insertMany(seedArticles);
     await Category.insertMany(seedCategories);
 
-    console.log('Seeding completed successfully!');
+    console.log('Techniccal DB seeding completed successfully!');
     process.exit(0);
   } catch (err) {
     console.error('Seeding error:', err);

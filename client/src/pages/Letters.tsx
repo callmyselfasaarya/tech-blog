@@ -39,7 +39,7 @@ export const Letters: React.FC = () => {
           Weekly Dispatches & Reflections
         </h1>
         <p className="text-sm text-[#6E6862] dark:text-[#A8A29A] font-sans leading-relaxed">
-          Chronological archive of past newsletter editions written by Skylar.
+          Chronological archive of past newsletter editions written by Aarya Lekshmanan.
         </p>
       </header>
 

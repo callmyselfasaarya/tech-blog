@@ -7,6 +7,7 @@ import { api } from '../services/api';
 import { ReadingProgress } from '../components/blog/ReadingProgress';
 import { TableOfContents } from '../components/blog/TableOfContents';
 import { Skeleton } from '../components/ui/Skeleton';
+import { BlurFade } from '../components/ui/BlurFade';
 
 export const ArticlePage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -28,7 +29,7 @@ export const ArticlePage: React.FC = () => {
           const all = await api.getArticles('ALL');
           setRelated(all.filter(a => a.id !== found.id && a.category === found.category).slice(0, 3));
 
-          document.title = found.seo?.title || `${found.title} — Memoir`;
+          document.title = found.seo?.title || `${found.title} — Techniccal`;
         } else {
           setArticle(null);
         }
@@ -77,63 +78,65 @@ export const ArticlePage: React.FC = () => {
     <>
       <ReadingProgress />
 
-      <motion.article 
-        initial={{ opacity: 0, y: 6 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-        className="max-w-5xl mx-auto px-4 sm:px-8 py-8"
-      >
+      <article className="max-w-5xl mx-auto px-4 sm:px-8 py-8">
         {/* Memoir Top Action Bar */}
-        <div className="flex items-center justify-between gap-4 mb-8">
-          {/* Back Pill */}
-          <button
-            onClick={() => navigate('/')}
-            className="inline-flex items-center gap-1.5 text-xs font-medium text-[#1A1918] dark:text-[#F4F2F0] bg-[#EDEAE7] dark:bg-[#201E1D] border border-[#E8E4DF] dark:border-[#2C2927] hover:opacity-80 px-3.5 py-1.5 rounded-full transition-opacity cursor-pointer"
-          >
-            <ChevronLeft className="w-3.5 h-3.5" /> Back
-          </button>
+        <BlurFade delay={0.05} yOffset={12}>
+          <div className="flex items-center justify-between gap-4 mb-8">
+            {/* Back Pill */}
+            <button
+              onClick={() => navigate('/')}
+              className="inline-flex items-center gap-1.5 text-xs font-medium text-[#1C1C1E] dark:text-[#F6F5F0] bg-[#E8E7E2] dark:bg-[#222225] border border-[#E1E1E1] dark:border-[#2C2C30] hover:opacity-80 px-3.5 py-1.5 rounded-full transition-opacity cursor-pointer shadow-xs"
+            >
+              <ChevronLeft className="w-3.5 h-3.5" /> Back
+            </button>
 
-          {/* Center Category & Read time Pill */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#EDEAE7] dark:bg-[#201E1D] border border-[#E8E4DF] dark:border-[#2C2927] text-xs font-mono text-[#6E6862] dark:text-[#A8A29A]">
-            <span>{article.category}</span>
-            <span>•</span>
-            <span>{article.readingTime || '4 min read'}</span>
+            {/* Center Category & Read time Pill */}
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#E8E7E2] dark:bg-[#222225] border border-[#E1E1E1] dark:border-[#2C2C30] text-xs font-mono text-[#4C586F] dark:text-[#A0A9B8]">
+              <span>{article.category}</span>
+              <span>•</span>
+              <span>{article.readingTime || '4 min read'}</span>
+            </div>
+
+            {/* Share Button */}
+            <button
+              onClick={handleShare}
+              className="inline-flex items-center gap-1.5 text-xs font-medium text-[#1C1C1E] dark:text-[#F6F5F0] bg-[#E8E7E2] dark:bg-[#222225] border border-[#E1E1E1] dark:border-[#2C2C30] hover:opacity-80 px-3.5 py-1.5 rounded-full transition-opacity cursor-pointer shadow-xs"
+            >
+              {copied ? <Check className="w-3.5 h-3.5 text-green-500" /> : <Share2 className="w-3.5 h-3.5" />}
+              <span>{copied ? 'Copied' : 'Share'}</span>
+            </button>
           </div>
-
-          {/* Share Button */}
-          <button
-            onClick={handleShare}
-            className="inline-flex items-center gap-1.5 text-xs font-medium text-[#1A1918] dark:text-[#F4F2F0] bg-[#EDEAE7] dark:bg-[#201E1D] border border-[#E8E4DF] dark:border-[#2C2927] hover:opacity-80 px-3.5 py-1.5 rounded-full transition-opacity cursor-pointer"
-          >
-            {copied ? <Check className="w-3.5 h-3.5 text-green-500" /> : <Share2 className="w-3.5 h-3.5" />}
-            <span>{copied ? 'Copied' : 'Share'}</span>
-          </button>
-        </div>
+        </BlurFade>
 
         {/* Article Title */}
-        <header className="max-w-3xl mx-auto text-center mb-8">
-          <h1 className="font-display font-extrabold text-3xl sm:text-5xl text-[#1A1918] dark:text-[#F4F2F0] leading-[1.12] tracking-tight mb-4">
-            {article.title}
-          </h1>
+        <BlurFade delay={0.15} yOffset={20}>
+          <header className="max-w-3xl mx-auto text-center mb-8">
+            <h1 className="font-display font-semibold text-3xl sm:text-5xl text-[#1C1C1E] dark:text-[#F6F5F0] leading-[1.12] tracking-tight mb-4">
+              {article.title}
+            </h1>
 
-          <p className="text-base sm:text-lg text-[#6E6862] dark:text-[#A8A29A] font-sans leading-relaxed max-w-2xl mx-auto">
-            {article.excerpt}
-          </p>
-        </header>
+            <p className="text-base sm:text-lg text-[#4C586F] dark:text-[#A0A9B8] font-sans leading-relaxed max-w-2xl mx-auto">
+              {article.excerpt}
+            </p>
+          </header>
+        </BlurFade>
 
         {/* Hero Cover Image */}
         {article.coverImage && (
-          <div className="max-w-4xl mx-auto mb-12 rounded-3xl overflow-hidden border border-[#EDEAE7] dark:border-[#2C2927] bg-[#EDEAE7] dark:bg-[#201E1D] aspect-[16/9] shadow-sm">
-            <img
-              src={article.coverImage}
-              alt={article.title}
-              className="w-full h-full object-cover"
-            />
-          </div>
+          <BlurFade delay={0.25} yOffset={24}>
+            <div className="max-w-4xl mx-auto mb-12 rounded-3xl overflow-hidden border border-[#E1E1E1] dark:border-[#2C2C30] bg-[#E8E7E2] dark:bg-[#222225] aspect-[16/9] shadow-sm">
+              <img
+                src={article.coverImage}
+                alt={article.title}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          </BlurFade>
         )}
 
         {/* Main Content Body */}
-        <div className="max-w-[720px] mx-auto">
+        <BlurFade delay={0.35} yOffset={20}>
+          <div className="max-w-[720px] mx-auto">
           <TableOfContents content={article.content} />
 
           <div className="prose-editorial font-sans text-base sm:text-lg leading-relaxed text-[#1A1918] dark:text-[#F4F2F0]">
@@ -184,8 +187,9 @@ export const ArticlePage: React.FC = () => {
               </div>
             </section>
           )}
-        </div>
-      </motion.article>
+          </div>
+        </BlurFade>
+      </article>
     </>
   );
 };

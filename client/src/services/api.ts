@@ -10,12 +10,12 @@ import {
 
 // Local storage key helpers
 const STORAGE_KEYS = {
-  ARTICLES: 'aether_articles',
-  CATEGORIES: 'aether_categories',
-  NEWSLETTER: 'aether_newsletter',
-  SUBSCRIBERS: 'aether_subscribers',
-  MEDIA: 'aether_media',
-  AUTH: 'aether_auth_token'
+  ARTICLES: 'techniccal_v2_articles',
+  CATEGORIES: 'techniccal_v2_categories',
+  NEWSLETTER: 'techniccal_v2_newsletter',
+  SUBSCRIBERS: 'techniccal_v2_subscribers',
+  MEDIA: 'techniccal_v2_media',
+  AUTH: 'techniccal_v2_auth_token'
 };
 
 // Initialize Storage with mock data if empty
@@ -94,12 +94,12 @@ export const api = {
   // Articles
   getArticles: async (category?: string, search?: string): Promise<Article[]> => {
     try {
-      // Attempt REST call if available
+      // Attempt REST call if available with quick timeout fallback
       const url = new URL('/api/articles', window.location.origin);
       if (category && category !== 'ALL') url.searchParams.set('category', category);
       if (search) url.searchParams.set('search', search);
 
-      const res = await fetch(url.toString());
+      const res = await fetch(url.toString(), { signal: AbortSignal.timeout(1500) });
       if (res.ok) {
         return await res.json();
       }
@@ -129,7 +129,7 @@ export const api = {
 
   getAllArticlesAdmin: async (): Promise<Article[]> => {
     try {
-      const res = await fetch('/api/articles/admin');
+      const res = await fetch('/api/articles/admin', { signal: AbortSignal.timeout(1500) });
       if (res.ok) return await res.json();
     } catch (e) {}
     return LocalStore.getArticles();
@@ -137,7 +137,7 @@ export const api = {
 
   getArticleBySlug: async (slug: string): Promise<Article | null> => {
     try {
-      const res = await fetch(`/api/articles/${slug}`);
+      const res = await fetch(`/api/articles/${slug}`, { signal: AbortSignal.timeout(1500) });
       if (res.ok) return await res.json();
     } catch (e) {}
 
