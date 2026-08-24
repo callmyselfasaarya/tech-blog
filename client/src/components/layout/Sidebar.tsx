@@ -280,18 +280,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenSearch }) => {
               <ArrowUpRight className="w-3.5 h-3.5 opacity-60" />
             </a>
 
-            <a
-              href="https://twitter.com"
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center justify-between px-3 py-1.5 rounded-xl text-xs text-[#4C586F] dark:text-[#A0A9B8] hover:text-[#1C1C1E] dark:hover:text-[#F6F5F0] hover:bg-[#E8E7E2]/50 dark:hover:bg-[#1C1C1E]/50 transition-colors"
-            >
-              <div className="flex items-center gap-3">
-                <Twitter className="w-4 h-4" />
-                <span>X / Twitter</span>
-              </div>
-              <ArrowUpRight className="w-3.5 h-3.5 opacity-60" />
-            </a>
           </div>
         </div>
 
