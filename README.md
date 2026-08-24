@@ -138,11 +138,11 @@ node seed.js
 
 > **Note**: If MongoDB is not running locally, the application automatically falls back to in-memory `localStorage` mock data so you can test the frontend seamlessly without database configuration.
 
----
+<!-- ---
 
 ## 🔐 Admin Credentials
 
 Access the publication CMS at `http://localhost:5173/admin/login`:
 
 - **Email**: `editor@techniccal.com` (or `admin@aether.blog`)
-- **Password**: `admin123`
+- **Password**: `admin123` -->
