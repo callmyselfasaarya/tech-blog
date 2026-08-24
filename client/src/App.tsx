@@ -26,6 +26,7 @@ const About = lazy(() => import('./pages/About').then((m) => ({ default: m.About
 const Letters = lazy(() => import('./pages/Letters').then((m) => ({ default: m.Letters })));
 const Archive = lazy(() => import('./pages/Archive').then((m) => ({ default: m.Archive })));
 const SignUp = lazy(() => import('./pages/SignUp').then((m) => ({ default: m.SignUp })));
+const MemberPortal = lazy(() => import('./pages/MemberPortal').then((m) => ({ default: m.MemberPortal })));
 const NotFound = lazy(() => import('./pages/NotFound').then((m) => ({ default: m.NotFound })));
 
 // Lazy Loaded Admin CMS Components
@@ -37,6 +38,7 @@ const ArticleEditor = lazy(() => import('./admin/ArticleEditor').then((m) => ({ 
 const CategoriesManager = lazy(() => import('./admin/CategoriesManager').then((m) => ({ default: m.CategoriesManager })));
 const MediaManager = lazy(() => import('./admin/MediaManager').then((m) => ({ default: m.MediaManager })));
 const NewsletterManager = lazy(() => import('./admin/NewsletterManager').then((m) => ({ default: m.NewsletterManager })));
+const UsersManager = lazy(() => import('./admin/UsersManager').then((m) => ({ default: m.UsersManager })));
 const Settings = lazy(() => import('./admin/Settings').then((m) => ({ default: m.Settings })));
 
 const queryClient = new QueryClient({
@@ -70,6 +72,7 @@ export const App: React.FC = () => {
                   <Route path="categories" element={<CategoriesManager />} />
                   <Route path="media" element={<MediaManager />} />
                   <Route path="newsletter" element={<NewsletterManager />} />
+                  <Route path="users" element={<UsersManager />} />
                   <Route path="settings" element={<Settings />} />
                 </Route>
               </Routes>
@@ -138,6 +141,7 @@ export const App: React.FC = () => {
                       <Route path="/letters" element={<Letters />} />
                       <Route path="/archive" element={<Archive />} />
                       <Route path="/sign-up" element={<SignUp />} />
+                      <Route path="/account" element={<MemberPortal />} />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                   </div>

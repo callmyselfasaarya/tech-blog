@@ -5,6 +5,7 @@ import {
   BookOpen,
   Info,
   UserPlus,
+  User,
   Moon,
   Sun,
   Search,
@@ -286,15 +287,28 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenSearch }) => {
         {/* MEMBERSHIP */}
         <div>
           <div className="text-[10px] font-mono tracking-widest text-[#7E8798] dark:text-[#6B7485] uppercase mb-2 px-3">
-            MEMBERSHIP
+            READER & MEMBER TRACK
           </div>
-          <Link
-            to="/sign-up"
-            className="flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium text-[#4C586F] dark:text-[#A0A9B8] hover:bg-[#E8E7E2]/60 dark:hover:bg-[#1C1C1E]/60 transition-colors"
-          >
-            <UserPlus className="w-4 h-4" />
-            <span>Join Insider</span>
-          </Link>
+          <div className="space-y-0.5">
+            <Link
+              to="/account"
+              className={`flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium transition-colors ${
+                isActive('/account')
+                  ? 'bg-white dark:bg-[#222225] text-[#1C1C1E] dark:text-[#F6F5F0] shadow-sm font-semibold'
+                  : 'text-[#4C586F] dark:text-[#A0A9B8] hover:bg-[#E8E7E2]/60 dark:hover:bg-[#1C1C1E]/60'
+              }`}
+            >
+              <User className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+              <span>Member Portal</span>
+            </Link>
+            <Link
+              to="/sign-up"
+              className="flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium text-[#4C586F] dark:text-[#A0A9B8] hover:bg-[#E8E7E2]/60 dark:hover:bg-[#1C1C1E]/60 transition-colors"
+            >
+              <UserPlus className="w-4 h-4" />
+              <span>Join Insider</span>
+            </Link>
+          </div>
         </div>
       </div>
 

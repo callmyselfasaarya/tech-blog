@@ -66,12 +66,17 @@ export interface Subscriber {
   source?: string;
 }
 
+export type UserRole = 'READER' | 'MEMBER' | 'EDITOR' | 'ADMIN' | 'SUPER_ADMIN';
+
 export interface User {
   id: string;
   name: string;
   email: string;
-  role: 'ADMIN' | 'EDITOR';
+  role: UserRole;
   avatar?: string;
+  membershipStatus?: 'free' | 'pro' | 'insider';
+  savedArticles?: string[]; // Array of article IDs
+  createdAt?: string;
 }
 
 export interface MediaItem {

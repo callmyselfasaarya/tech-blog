@@ -239,11 +239,51 @@ export const INITIAL_MEDIA: MediaItem[] = [
   { id: 'med-2', filename: 'ai-architecture.jpg', url: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80', mimeType: 'image/jpeg', size: 2202009, uploadedAt: '2026-08-21' },
 ];
 
-export const INITIAL_USER: User = {
-  id: 'usr-1',
-  name: 'Techniccal Admin',
-  email: 'editor@techniccal.com',
-  role: 'ADMIN',
-  avatar: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=300&q=80'
-};
+export const INITIAL_USERS: User[] = [
+  {
+    id: 'usr-super-1',
+    name: 'Elena Rostova',
+    email: 'superadmin@techniccal.com',
+    role: 'SUPER_ADMIN',
+    avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&q=80',
+    createdAt: '2026-01-10'
+  },
+  {
+    id: 'usr-admin-1',
+    name: 'Julian Vance',
+    email: 'admin@techniccal.com',
+    role: 'ADMIN',
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80',
+    createdAt: '2026-02-14'
+  },
+  {
+    id: 'usr-editor-1',
+    name: 'Marcus Sterling',
+    email: 'editor@techniccal.com',
+    role: 'EDITOR',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80',
+    createdAt: '2026-03-01'
+  },
+  {
+    id: 'usr-member-1',
+    name: 'Sophia Thorne',
+    email: 'member@techniccal.com',
+    role: 'MEMBER',
+    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=300&q=80',
+    membershipStatus: 'pro',
+    savedArticles: ['art-pinned-01', 'art-01'],
+    createdAt: '2026-04-12'
+  },
+  {
+    id: 'usr-reader-1',
+    name: 'David Miller',
+    email: 'reader@techniccal.com',
+    role: 'READER',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80',
+    membershipStatus: 'free',
+    createdAt: '2026-05-20'
+  }
+];
+
+export const INITIAL_USER: User = INITIAL_USERS[0];
 export const MOCK_USER = INITIAL_USER;

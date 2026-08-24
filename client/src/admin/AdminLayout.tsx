@@ -11,7 +11,9 @@ import {
   Globe, 
   Plus, 
   Sun, 
-  Moon 
+  Moon,
+  Users as UsersIcon,
+  ShieldCheck
 } from 'lucide-react';
 import { api } from '../services/api';
 import { User } from '../types';
@@ -41,14 +43,17 @@ export const AdminLayout: React.FC = () => {
 
   if (!user && location.pathname !== '/admin/login') return null;
 
-  const navItems = [
-    { label: 'DASHBOARD', path: '/admin', icon: LayoutDashboard },
-    { label: 'ARTICLES', path: '/admin/articles', icon: FileText },
-    { label: 'CATEGORIES', path: '/admin/categories', icon: FolderTree },
-    { label: 'MEDIA', path: '/admin/media', icon: ImageIcon },
-    { label: 'NEWSLETTER', path: '/admin/newsletter', icon: Mail },
-    { label: 'SETTINGS', path: '/admin/settings', icon: SettingsIcon },
+  const allNavItems = [
+    { label: 'DASHBOARD', path: '/admin', icon: LayoutDashboard, roles: ['SUPER_ADMIN', 'ADMIN', 'EDITOR'] },
+    { label: 'ARTICLES', path: '/admin/articles', icon: FileText, roles: ['SUPER_ADMIN', 'ADMIN', 'EDITOR'] },
+    { label: 'CATEGORIES', path: '/admin/categories', icon: FolderTree, roles: ['SUPER_ADMIN', 'ADMIN'] },
+    { label: 'MEDIA', path: '/admin/media', icon: ImageIcon, roles: ['SUPER_ADMIN', 'ADMIN', 'EDITOR'] },
+    { label: 'NEWSLETTER', path: '/admin/newsletter', icon: Mail, roles: ['SUPER_ADMIN', 'ADMIN'] },
+    { label: 'USERS & ROLES', path: '/admin/users', icon: UsersIcon, roles: ['SUPER_ADMIN'] },
+    { label: 'SETTINGS', path: '/admin/settings', icon: SettingsIcon, roles: ['SUPER_ADMIN', 'ADMIN'] },
   ];
+
+  const navItems = allNavItems.filter(item => user && item.roles.includes(user.role));
 
   return (
     <div className="min-h-screen bg-[#F3F1EA] dark:bg-[#121212] text-[#1A1A1A] dark:text-[#ECECEC] flex flex-col md:flex-row">

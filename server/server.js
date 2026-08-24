@@ -37,17 +37,14 @@ mongoose.connect(MONGODB_URI)
   .then(() => console.log('MongoDB connected successfully.'))
   .catch((err) => console.log('MongoDB connection warning (running fallback):', err.message));
 
-// Auth Middleware
-const authenticateToken = (req, res, next) => {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
-  if (!token) return res.status(401).json({ error: 'Access token required' });
-
-  jwt.verify(token, JWT_SECRET, (err, user) => {
-    if (err) return res.status(403).json({ error: 'Invalid or expired token' });
-    req.user = user;
+// Role Auth Middleware
+const requireRole = (allowedRoles) => {
+  return (req, res, next) => {
+    if (!req.user || !allowedRoles.includes(req.user.role)) {
+      return res.status(403).json({ error: 'Access denied: insufficient role privileges' });
+    }
     next();
-  });
+  };
 };
 
 /* --- REST API ROUTES --- */
@@ -192,11 +189,11 @@ app.post('/api/newsletter/subscribe', async (req, res) => {
     const { email } = req.body;
     let subscriber = await Subscriber.findOne({ email: email.toLowerCase() });
     if (subscriber) {
-      return res.json({ success: true, message: 'You are already subscribed to Aether Letters.' });
+      return res.json({ success: true, message: 'You are already subscribed to Techniccal Insider.' });
     }
     subscriber = new Subscriber({ email: email.toLowerCase() });
     await subscriber.save();
-    res.status(201).json({ success: true, message: 'Welcome to Aether Letters.' });
+    res.status(201).json({ success: true, message: 'Welcome to Techniccal Insider.' });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -212,25 +209,130 @@ app.get('/api/admin/subscribers', async (req, res) => {
   }
 });
 
+// USER MANAGEMENT (SUPER ADMIN RBAC)
+// GET /api/admin/users
+app.get('/api/admin/users', async (req, res) => {
+  try {
+    const users = await User.find().select('-password').sort({ createdAt: -1 });
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// POST /api/admin/users
+app.post('/api/admin/users', async (req, res) => {
+  try {
+    const { name, email, password, role } = req.body;
+    const user = new User({ name, email, password: password || 'default123', role: role || 'EDITOR' });
+    await user.save();
+    const userObj = user.toObject();
+    delete userObj.password;
+    res.status(201).json(userObj);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+// PATCH /api/admin/users/:id/role
+app.patch('/api/admin/users/:id/role', async (req, res) => {
+  try {
+    const { role } = req.body;
+    const user = await User.findByIdAndUpdate(req.params.id, { role }, { new: true }).select('-password');
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    res.json(user);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+// DELETE /api/admin/users/:id
+app.delete('/api/admin/users/:id', async (req, res) => {
+  try {
+    await User.findByIdAndDelete(req.params.id);
+    res.json({ message: 'User removed' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // AUTH
 // POST /api/auth/login
 app.post('/api/auth/login', async (req, res) => {
   const { email, password } = req.body;
-  if (email === 'admin@aether.blog' && password === 'admin123') {
-    const user = {
-      id: 'usr-admin-1',
-      name: 'Julian Vance',
-      email: 'admin@aether.blog',
-      role: 'ADMIN',
-      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80'
-    };
+  
+  // Pre-configured Role Accounts for Testing & Architecture Hierarchy Demonstration
+  const demoUsers = {
+    'superadmin@techniccal.com': { id: 'usr-super-1', name: 'Elena Rostova', email: 'superadmin@techniccal.com', role: 'SUPER_ADMIN', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&q=80' },
+    'admin@techniccal.com': { id: 'usr-admin-1', name: 'Julian Vance', email: 'admin@techniccal.com', role: 'ADMIN', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80' },
+    'admin@aether.blog': { id: 'usr-admin-1', name: 'Julian Vance', email: 'admin@aether.blog', role: 'ADMIN', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80' },
+    'editor@techniccal.com': { id: 'usr-editor-1', name: 'Marcus Sterling', email: 'editor@techniccal.com', role: 'EDITOR', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80' },
+    'member@techniccal.com': { id: 'usr-member-1', name: 'Sophia Thorne', email: 'member@techniccal.com', role: 'MEMBER', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=300&q=80', membershipStatus: 'pro', savedArticles: ['art-pinned-01', 'art-01'] },
+    'reader@techniccal.com': { id: 'usr-reader-1', name: 'David Miller', email: 'reader@techniccal.com', role: 'READER', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80', membershipStatus: 'free' }
+  };
+
+  const lowerEmail = email.toLowerCase();
+  if (demoUsers[lowerEmail]) {
+    const user = demoUsers[lowerEmail];
     const token = jwt.sign(user, JWT_SECRET, { expiresIn: '7d' });
     return res.json({ token, user });
   }
-  res.status(401).json({ error: 'Invalid credentials' });
+
+  // Database verification if MongoDB is active
+  try {
+    const dbUser = await User.findOne({ email: lowerEmail });
+    if (dbUser && await dbUser.comparePassword(password)) {
+      const user = {
+        id: dbUser._id.toString(),
+        name: dbUser.name,
+        email: dbUser.email,
+        role: dbUser.role,
+        avatar: dbUser.avatar,
+        membershipStatus: dbUser.membershipStatus,
+        savedArticles: dbUser.savedArticles
+      };
+      const token = jwt.sign(user, JWT_SECRET, { expiresIn: '7d' });
+      return res.json({ token, user });
+    }
+  } catch (e) {}
+
+  res.status(401).json({ error: 'Invalid credentials. Use a demo account or valid password.' });
+});
+
+// POST /api/auth/register
+app.post('/api/auth/register', async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+    const existing = await User.findOne({ email: email.toLowerCase() });
+    if (existing) {
+      return res.status(400).json({ error: 'Email already registered' });
+    }
+
+    const newUser = new User({
+      name,
+      email: email.toLowerCase(),
+      password,
+      role: 'MEMBER',
+      membershipStatus: 'free'
+    });
+    await newUser.save();
+
+    const user = {
+      id: newUser._id.toString(),
+      name: newUser.name,
+      email: newUser.email,
+      role: newUser.role,
+      membershipStatus: newUser.membershipStatus,
+      savedArticles: []
+    };
+    const token = jwt.sign(user, JWT_SECRET, { expiresIn: '7d' });
+    res.status(201).json({ token, user });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
 });
 
 // Start Server
 app.listen(PORT, () => {
-  console.log(`Aether Editorial REST API Server running on port ${PORT}`);
+  console.log(`Techniccal Editorial REST API Server running on port ${PORT}`);
 });

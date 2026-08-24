@@ -8,6 +8,8 @@ import {
   MOCK_USER 
 } from '../data/mockData';
 
+import { INITIAL_USERS } from '../data/mockData';
+
 // Local storage key helpers
 const STORAGE_KEYS = {
   ARTICLES: 'techniccal_v2_articles',
@@ -15,6 +17,8 @@ const STORAGE_KEYS = {
   NEWSLETTER: 'techniccal_v2_newsletter',
   SUBSCRIBERS: 'techniccal_v2_subscribers',
   MEDIA: 'techniccal_v2_media',
+  USERS: 'techniccal_v2_users',
+  ACTIVE_USER: 'techniccal_v2_active_user',
   AUTH: 'techniccal_v2_auth_token'
 };
 
@@ -68,6 +72,14 @@ class LocalStore {
 
   static saveMedia(media: MediaItem[]): void {
     setStored(STORAGE_KEYS.MEDIA, media);
+  }
+
+  static getUsers(): User[] {
+    return getStored(STORAGE_KEYS.USERS, INITIAL_USERS);
+  }
+
+  static saveUsers(users: User[]): void {
+    setStored(STORAGE_KEYS.USERS, users);
   }
 }
 
@@ -359,7 +371,71 @@ export const api = {
     return true;
   },
 
-  // Auth
+  // User Management (Super Admin RBAC)
+  getUsers: async (): Promise<User[]> => {
+    try {
+      const res = await fetch('/api/admin/users', { signal: AbortSignal.timeout(FAST_TIMEOUT) });
+      if (res.ok) return await res.json();
+    } catch (e) {}
+    return LocalStore.getUsers();
+  },
+
+  createUser: async (userData: { name: string; email: string; role: User['role'] }): Promise<User> => {
+    try {
+      const res = await fetch('/api/admin/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(userData)
+      });
+      if (res.ok) return await res.json();
+    } catch (e) {}
+
+    const users = LocalStore.getUsers();
+    const newUser: User = {
+      id: `usr-${Date.now()}`,
+      name: userData.name,
+      email: userData.email,
+      role: userData.role,
+      avatar: `https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80`,
+      createdAt: new Date().toISOString().split('T')[0]
+    };
+    users.unshift(newUser);
+    LocalStore.saveUsers(users);
+    return newUser;
+  },
+
+  updateUserRole: async (userId: string, role: User['role']): Promise<User> => {
+    try {
+      const res = await fetch(`/api/admin/users/${userId}/role`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ role })
+      });
+      if (res.ok) return await res.json();
+    } catch (e) {}
+
+    const users = LocalStore.getUsers();
+    const idx = users.findIndex(u => u.id === userId);
+    if (idx !== -1) {
+      users[idx].role = role;
+      LocalStore.saveUsers(users);
+      return users[idx];
+    }
+    throw new Error('User not found');
+  },
+
+  deleteUser: async (userId: string): Promise<boolean> => {
+    try {
+      const res = await fetch(`/api/admin/users/${userId}`, { method: 'DELETE' });
+      if (res.ok) return true;
+    } catch (e) {}
+
+    const users = LocalStore.getUsers();
+    LocalStore.saveUsers(users.filter(u => u.id !== userId));
+    return true;
+  },
+
+  // Auth & Roles
   login: async (email: string, password: string): Promise<{ token: string; user: User }> => {
     try {
       const res = await fetch('/api/auth/login', {
@@ -370,25 +446,77 @@ export const api = {
       if (res.ok) {
         const data = await res.json();
         localStorage.setItem(STORAGE_KEYS.AUTH, data.token);
+        setStored(STORAGE_KEYS.ACTIVE_USER, data.user);
         return data;
       }
     } catch (e) {}
 
-    // Mock verification
+    // Mock multi-tier role verification fallback
+    const users = LocalStore.getUsers();
+    const found = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+    
+    if (found) {
+      const token = `mock-token-${found.role.toLowerCase()}-${Date.now()}`;
+      localStorage.setItem(STORAGE_KEYS.AUTH, token);
+      setStored(STORAGE_KEYS.ACTIVE_USER, found);
+      return { token, user: found };
+    }
+
     if (email === 'admin@aether.blog' && password === 'admin123') {
+      const adminUser = users.find(u => u.role === 'ADMIN') || INITIAL_USERS[1];
       const token = 'mock-jwt-token-aether-admin-2026';
       localStorage.setItem(STORAGE_KEYS.AUTH, token);
-      return { token, user: MOCK_USER };
+      setStored(STORAGE_KEYS.ACTIVE_USER, adminUser);
+      return { token, user: adminUser };
     }
-    throw new Error('Invalid email or password. Use admin@aether.blog / admin123');
+
+    throw new Error('Invalid email or password. Use demo account selector on login page.');
+  },
+
+  loginAsRole: (role: User['role']): User => {
+    const users = LocalStore.getUsers();
+    let target = users.find(u => u.role === role);
+    if (!target) {
+      target = INITIAL_USERS.find(u => u.role === role) || INITIAL_USERS[0];
+    }
+    const token = `mock-token-${role.toLowerCase()}-active`;
+    localStorage.setItem(STORAGE_KEYS.AUTH, token);
+    setStored(STORAGE_KEYS.ACTIVE_USER, target);
+    return target;
   },
 
   getCurrentUser: (): User | null => {
     const token = localStorage.getItem(STORAGE_KEYS.AUTH);
-    return token ? MOCK_USER : null;
+    if (!token) return null;
+    return getStored<User | null>(STORAGE_KEYS.ACTIVE_USER, INITIAL_USERS[0]);
   },
 
   logout: (): void => {
     localStorage.removeItem(STORAGE_KEYS.AUTH);
+    localStorage.removeItem(STORAGE_KEYS.ACTIVE_USER);
+  },
+
+  // Member Bookmark / Saved Articles
+  toggleSaveArticle: (articleId: string): string[] => {
+    const user = api.getCurrentUser();
+    if (!user) return [];
+    const currentSaved = user.savedArticles || [];
+    const isSaved = currentSaved.includes(articleId);
+    const updated = isSaved 
+      ? currentSaved.filter(id => id !== articleId)
+      : [...currentSaved, articleId];
+
+    user.savedArticles = updated;
+    setStored(STORAGE_KEYS.ACTIVE_USER, user);
+
+    // Update in local users array
+    const users = LocalStore.getUsers();
+    const idx = users.findIndex(u => u.id === user.id);
+    if (idx !== -1) {
+      users[idx].savedArticles = updated;
+      LocalStore.saveUsers(users);
+    }
+
+    return updated;
   }
 };

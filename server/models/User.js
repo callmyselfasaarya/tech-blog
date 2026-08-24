@@ -5,8 +5,14 @@ const UserSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true, lowercase: true },
   password: { type: String, required: true },
-  role: { type: String, enum: ['ADMIN', 'EDITOR'], default: 'ADMIN' },
-  avatar: { type: String }
+  role: { 
+    type: String, 
+    enum: ['READER', 'MEMBER', 'EDITOR', 'ADMIN', 'SUPER_ADMIN'], 
+    default: 'MEMBER' 
+  },
+  avatar: { type: String },
+  membershipStatus: { type: String, enum: ['free', 'pro', 'insider'], default: 'free' },
+  savedArticles: [{ type: String }]
 }, { timestamps: true });
 
 UserSchema.pre('save', async function (next) {

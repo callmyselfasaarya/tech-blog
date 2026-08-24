@@ -27,6 +27,15 @@ export const Login: React.FC = () => {
     }
   };
 
+  const handleQuickRoleLogin = (role: 'SUPER_ADMIN' | 'ADMIN' | 'EDITOR' | 'MEMBER') => {
+    api.loginAsRole(role);
+    if (role === 'MEMBER') {
+      navigate('/account');
+    } else {
+      navigate('/admin');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#F6F5F0] dark:bg-[#141416] flex items-center justify-center p-4">
       <motion.div
@@ -34,13 +43,50 @@ export const Login: React.FC = () => {
         animate={{ opacity: 1, scale: 1 }}
         className="w-full max-w-md bg-white dark:bg-[#222225] border border-[#E1E1E1] dark:border-[#2C2C30] rounded-3xl p-8 shadow-xl"
       >
-        <div className="text-center mb-8 flex flex-col items-center">
+        <div className="text-center mb-6 flex flex-col items-center">
           <Link to="/" className="mb-3">
             <TechniccalStackedLogo size="md" />
           </Link>
           <p className="text-xs font-mono tracking-widest text-[#7E8798] uppercase">
-            PUBLICATION CMS LOGIN
+            PUBLICATION & PORTAL AUTHENTICATION
           </p>
+        </div>
+
+        {/* Quick Role Tester Buttons */}
+        <div className="mb-6 p-4 bg-[#F6F5F0] dark:bg-[#141416] border border-[#E1E1E1] dark:border-[#2C2C30] rounded-2xl">
+          <p className="text-[10px] font-mono text-[#7E8798] uppercase tracking-wider mb-2 font-bold text-center">
+            ⚡ Quick Test Role Selector (Architecture Demo)
+          </p>
+          <div className="grid grid-cols-2 gap-2 text-[11px] font-mono">
+            <button
+              type="button"
+              onClick={() => handleQuickRoleLogin('SUPER_ADMIN')}
+              className="px-2.5 py-2 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl text-center transition-colors cursor-pointer"
+            >
+              Super Admin
+            </button>
+            <button
+              type="button"
+              onClick={() => handleQuickRoleLogin('ADMIN')}
+              className="px-2.5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-center transition-colors cursor-pointer"
+            >
+              Admin
+            </button>
+            <button
+              type="button"
+              onClick={() => handleQuickRoleLogin('EDITOR')}
+              className="px-2.5 py-2 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-xl text-center transition-colors cursor-pointer"
+            >
+              Editor
+            </button>
+            <button
+              type="button"
+              onClick={() => handleQuickRoleLogin('MEMBER')}
+              className="px-2.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl text-center transition-colors cursor-pointer"
+            >
+              Member
+            </button>
+          </div>
         </div>
 
         {error && (
@@ -93,7 +139,7 @@ export const Login: React.FC = () => {
           </button>
 
           <div className="pt-4 text-center text-[11px] text-[#7E8798] font-mono">
-            Default Credentials: editor@techniccal.com / admin123
+            Default Credentials: superadmin@techniccal.com / admin123
           </div>
         </form>
       </motion.div>

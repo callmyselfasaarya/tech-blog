@@ -23,6 +23,38 @@ Techniccal features a precision design system based on official brand guidelines
 
 ---
 
+## 🏛️ System Architecture & Role Hierarchy
+
+```text
+                    TECHNICCAL
+                         │
+              ┌──────────┴──────────┐
+              │                     │
+        Public Website          Authentication
+              │                     │
+       Articles / Search       ┌────┴─────┐
+       Categories / About      │           │
+       Newsletter             Reader      Admin
+                               │           │
+                            Member       Editor
+                                           │
+                                        Admin
+                                           │
+                                      Super Admin
+```
+
+### Access Control Matrix (RBAC)
+
+| Role | Access Level | Description & Privileges |
+| :--- | :--- | :--- |
+| **Reader** | Public Website | Browse articles, view categories, search, read newsletter issues. |
+| **Member** | Reader Track | Signed-in reader profile, saved articles reading list (`/account`), newsletter settings. |
+| **Editor** | Admin Track | CMS Access: Create and edit draft articles, upload media items. |
+| **Admin** | Admin Track | CMS Access: Create, edit, publish, pin, delete articles, manage categories & subscribers. |
+| **Super Admin** | System Admin | Full system control: Manage team users & roles (`/admin/users`), RBAC configuration. |
+
+---
+
 ## ✨ Features
 
 - 📰 **Framer Memoir Inspired UI**: Warm off-white editorial aesthetic with a 3-column card grid, smooth hover arrows (`↗`), and sticky navigation sidebar.
