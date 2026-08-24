@@ -14,11 +14,12 @@ const mediaRoutes = require('./routes/mediaRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/techniccal-blog';
+const MONGODB_URI = process.env.DATABASE_URL || process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/techniccal-blog';
 
 // CORS configuration supporting credentials & cookies
 const allowedOrigins = [
-  process.env.CLIENT_URL || 'http://localhost:5173',
+  process.env.FRONTEND_URL || process.env.CLIENT_URL || 'http://localhost:5173',
+  'https://techniccal.com',
   'http://localhost:3000',
   'http://localhost:5173'
 ];

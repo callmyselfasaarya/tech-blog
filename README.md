@@ -68,12 +68,28 @@ Content for Techniccal is authored and managed via **Sanity Studio v3**:
 - **Dataset**: `production`
 - **Studio Directory**: `./studio-techniccal`
 
-### Sanity TypeScript Schemas
-1. `article`: Title, slug, excerpt, content, cover image, category reference, author reference, tags, reading time, status (`published`, `draft`, `archived`), featured, pinned.
-2. `category`: Category name, slug, description.
-3. `author`: Author name, slug, avatar image, bio, role.
-4. `subscriber`: Newsletter subscriber records and status.
-5. `settings`: Global site title and publication description.
+### Sanity CORS Origins Management
+
+Sanity requires explicit, trusted CORS origins for browser applications accessing the Content Lake:
+
+```bash
+cd studio-techniccal
+
+# 1. Local Development Origin (Allow credentials)
+npx sanity cors add http://localhost:5173 --credentials
+
+# 2. Production Domain Origins (Explicit non-wildcard origins)
+npx sanity cors add https://techniccal.com --credentials
+npx sanity cors add https://www.techniccal.com --credentials
+npx sanity cors add https://techniccal.sanity.studio --credentials
+
+# 3. List active CORS Origins
+npx sanity cors list
+```
+
+> [!WARNING]
+> **Avoid Broad Wildcards**: Never use broad wildcards like `https://*.vercel.app` for authenticated requests. Sanity explicitly warns against broad wildcard origins with credentials to prevent token leakage and unauthorized cross-origin requests.
+
 
 ### Running Sanity Studio
 ```bash
@@ -166,3 +182,26 @@ cd studio-techniccal
 npm install
 npm run dev      # Start Sanity Studio v3 CMS at http://localhost:3333
 ```
+
+---
+
+## ☁️ Cloud Hosting & Railway Environment Setup
+
+> [!CAUTION]
+> **Never upload `.env` files to GitHub**. Your production environment variables must be configured directly inside your cloud hosting platform's dashboard (e.g. Railway, Render, Fly.io, Vercel).
+
+### Production Variables Checklist (Railway / Hosting Provider)
+
+| Environment Variable | Description | Example Production Value |
+| :--- | :--- | :--- |
+| `NODE_ENV` | Production environment flag | `production` |
+| `DATABASE_URL` | MongoDB Connection URI | `mongodb+srv://user:pass@cluster.mongodb.net/dbname` |
+| `JWT_ACCESS_SECRET` | Secret key for 15m access tokens | `your-high-entropy-production-access-secret` |
+| `JWT_REFRESH_SECRET` | Secret key for 7d refresh tokens | `your-high-entropy-production-refresh-secret` |
+| `SANITY_PROJECT_ID` | Sanity Studio Project ID | `pbxpf8xj` |
+| `SANITY_DATASET` | Sanity Studio Dataset | `production` |
+| `SANITY_API_TOKEN` | Sanity Write Token | `sk-production-write-token` |
+| `FRONTEND_URL` | Production Web Origin (for CORS & Reset links) | `https://techniccal.com` |
+| `SMTP_HOST` | Transactional Mail Host | `smtp.mailgun.org` |
+| `SMTP_USER` | SMTP Username | `postmaster@techniccal.com` |
+| `SMTP_PASSWORD` | SMTP Password | `your-smtp-password` |

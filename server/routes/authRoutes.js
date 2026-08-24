@@ -7,7 +7,8 @@ const { authenticate, JWT_SECRET } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-const REFRESH_SECRET = process.env.REFRESH_SECRET || 'techniccal-refresh-secret-2026-production';
+const REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || process.env.REFRESH_SECRET || 'techniccal-refresh-secret-2026-production';
+const FRONTEND_URL = process.env.FRONTEND_URL || process.env.CLIENT_URL || 'http://localhost:5173';
 
 // Helper to issue access & refresh tokens
 function generateTokens(user) {
@@ -258,7 +259,7 @@ router.post('/forgot-password', async (req, res) => {
 
     await user.save();
 
-    const resetUrl = `${process.env.CLIENT_URL || 'http://localhost:5173'}/reset-password?token=${resetToken}&email=${encodeURIComponent(user.email)}`;
+    const resetUrl = `${FRONTEND_URL}/reset-password?token=${resetToken}&email=${encodeURIComponent(user.email)}`;
 
     res.json({
       success: true,
@@ -310,7 +311,7 @@ router.post('/send-verification', authenticate, async (req, res) => {
 
     await req.user.save();
 
-    const verifyUrl = `${process.env.CLIENT_URL || 'http://localhost:5173'}/verify-email?token=${token}`;
+    const verifyUrl = `${FRONTEND_URL}/verify-email?token=${token}`;
 
     res.json({
       success: true,

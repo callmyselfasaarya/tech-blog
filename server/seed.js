@@ -6,7 +6,7 @@ const Category = require('./models/Category');
 const Subscriber = require('./models/Subscriber');
 const Media = require('./models/Media');
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/techniccal-blog';
+const MONGODB_URI = process.env.DATABASE_URL || process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/techniccal-blog';
 
 const SEED_USERS = [
   {

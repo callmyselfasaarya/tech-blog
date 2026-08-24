@@ -129,6 +129,19 @@ export function validatePasswordStrength(password: string): { isValid: boolean; 
 // Fast 200ms API timeout signal helper
 const FAST_TIMEOUT = 200;
 
+// API Base URL from Vite environment variables (VITE_API_URL or VITE_API_BASE_URL)
+const API_BASE_URL = import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || '/api';
+
+export function getEndpointUrl(path: string): string {
+  const cleanPath = path.startsWith('/') ? path : `/${path}`;
+  if (API_BASE_URL.startsWith('http://') || API_BASE_URL.startsWith('https://')) {
+    const base = API_BASE_URL.endsWith('/') ? API_BASE_URL.slice(0, -1) : API_BASE_URL;
+    // Strip redundant leading /api if base already ends with /api or domain is API host
+    return `${base}${cleanPath.startsWith('/api') && base.endsWith('/api') ? cleanPath.substring(4) : cleanPath}`;
+  }
+  return cleanPath;
+}
+
 // Helper to construct Auth headers for API calls
 function getAuthHeaders(headers: Record<string, string> = {}): Record<string, string> {
   const token = localStorage.getItem(STORAGE_KEYS.AUTH);
