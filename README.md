@@ -308,9 +308,14 @@ npm run dev      # Start Sanity Studio v3 CMS at http://localhost:3333
 
 ---
 
-## 🔑 Seed Test Accounts
+## 🔑 Seed Test Accounts & Production Management
 
-The `npm run seed` script creates test accounts for testing RBAC:
+### 🛠️ Local Development Seeding
+During development, populate your local database with initial mock articles, categories, and test accounts:
+```bash
+cd server
+npm run seed
+```
 
 | Role | Email | Password | Access Level |
 | :--- | :--- | :--- | :--- |
@@ -319,3 +324,24 @@ The `npm run seed` script creates test accounts for testing RBAC:
 | **Editor** | `editor@techniccal.com` | `EditorPass2026!` | Draft Editing & Media Uploads |
 | **Member** | `member@techniccal.com` | `MemberPass2026!` | Profile & Saved Articles List |
 | **Reader** | `reader@techniccal.com` | `ReaderPass2026!` | Standard Reading Access |
+
+---
+
+### 🛡️ Production Database Workflow
+
+> [!CAUTION]
+> `npm run seed` automatically aborts in production (`NODE_ENV=production`) to prevent accidental default account creation or database overwrites.
+
+#### 1. Create a Production Super Admin (Custom Credentials)
+Execute `create-admin` with custom environment variables:
+```bash
+cd server
+ADMIN_EMAIL="admin@techniccal.com" ADMIN_PASSWORD="your-secure-production-password" npm run create-admin
+```
+
+#### 2. Purge Development Test Accounts from Production
+If default test accounts were migrated or seeded previously, purge them instantly:
+```bash
+cd server
+npm run purge-test-accounts
+```

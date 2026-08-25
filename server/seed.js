@@ -8,6 +8,15 @@ const Media = require('./models/Media');
 
 const MONGODB_URI = process.env.DATABASE_URL || process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/techniccal-blog';
 
+// Production Safety Guard: Block accidental default seeding in production
+const forceSeed = process.argv.includes('--force');
+if (process.env.NODE_ENV === 'production' && !forceSeed) {
+  console.error('\n❌ [SAFETY ABORT] Refusing to seed default test accounts into PRODUCTION database!');
+  console.error('   To create a production Super Admin with custom credentials, run:');
+  console.error('   npm run create-admin\n');
+  process.exit(1);
+}
+
 const SEED_USERS = [
   {
     name: 'Elena Rostova',

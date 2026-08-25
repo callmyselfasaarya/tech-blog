@@ -358,6 +358,9 @@ export const api = {
   // Categories
   getCategories: async (): Promise<Category[]> => {
     try {
+      const sanityCategories = await sanityFetch<Category[]>(GROQ_QUERIES.ALL_CATEGORIES);
+      if (sanityCategories && sanityCategories.length > 0) return sanityCategories;
+
       const res = await fetch('/api/categories', { signal: AbortSignal.timeout(FAST_TIMEOUT) });
       if (res.ok) return await res.json();
     } catch (e) {}
