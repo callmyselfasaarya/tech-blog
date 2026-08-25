@@ -83,18 +83,20 @@ app.use((err, req, res, next) => {
 });
 
 // Database Connection & Server Listener
+const HOST = '0.0.0.0';
+
 mongoose.connect(MONGODB_URI)
   .then(() => {
     console.log(`[Techniccal API Server] MongoDB connected cleanly to database: ${mongoose.connection.name}`);
-    app.listen(PORT, () => {
-      console.log(`[Techniccal API Server] Listening on http://localhost:${PORT}`);
+    app.listen(PORT, HOST, () => {
+      console.log(`[Techniccal API Server] Listening on http://${HOST}:${PORT}`);
     });
   })
   .catch((err) => {
     console.warn(`[Techniccal API Server] MongoDB connection warning: ${err.message}`);
     console.warn('[Techniccal API Server] Starting server in offline/fallback mode...');
-    app.listen(PORT, () => {
-      console.log(`[Techniccal API Server] Listening on http://localhost:${PORT} (Offline Mode)`);
+    app.listen(PORT, HOST, () => {
+      console.log(`[Techniccal API Server] Listening on http://${HOST}:${PORT} (Offline Mode)`);
     });
   });
 

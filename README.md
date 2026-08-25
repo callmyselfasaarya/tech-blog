@@ -185,23 +185,11 @@ npm run dev      # Start Sanity Studio v3 CMS at http://localhost:3333
 
 ---
 
-## ☁️ Cloud Hosting & Railway Environment Setup
+### Quick Railway Deployment Setup
 
-> [!CAUTION]
-> **Never upload `.env` files to GitHub**. Your production environment variables must be configured directly inside your cloud hosting platform's dashboard (e.g. Railway, Render, Fly.io, Vercel).
+1. **Link Repository to Railway**: Connect GitHub repo `tech-blog`.
+2. **Set Root Directory**: In Railway Service Settings, set **Root Directory** to `server`.
+3. **Add Environment Variables**: In Railway **Variables** tab, add `DATABASE_URL`, `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`, `FRONTEND_URL`, `SANITY_PROJECT_ID`, `SANITY_DATASET`.
+4. **Generate Public Domain**: In Railway **Networking**, click **Generate Domain** (e.g. `https://tech-blog-server.up.railway.app`).
 
-### Production Variables Checklist (Railway / Hosting Provider)
-
-| Environment Variable | Description | Example Production Value |
-| :--- | :--- | :--- |
-| `NODE_ENV` | Production environment flag | `production` |
-| `DATABASE_URL` | MongoDB Connection URI | `mongodb+srv://user:pass@cluster.mongodb.net/dbname` |
-| `JWT_ACCESS_SECRET` | Secret key for 15m access tokens | `your-high-entropy-production-access-secret` |
-| `JWT_REFRESH_SECRET` | Secret key for 7d refresh tokens | `your-high-entropy-production-refresh-secret` |
-| `SANITY_PROJECT_ID` | Sanity Studio Project ID | `pbxpf8xj` |
-| `SANITY_DATASET` | Sanity Studio Dataset | `production` |
-| `SANITY_API_TOKEN` | Sanity Write Token | `sk-production-write-token` |
-| `FRONTEND_URL` | Production Web Origin (for CORS & Reset links) | `https://techniccal.com` |
-| `SMTP_HOST` | Transactional Mail Host | `smtp.mailgun.org` |
-| `SMTP_USER` | SMTP Username | `postmaster@techniccal.com` |
-| `SMTP_PASSWORD` | SMTP Password | `your-smtp-password` |
+For detailed step-by-step instructions, view [RAILWAY_DEPLOYMENT.md](file:///c:/Users/91994/Desktop/Projects/tech-blog/RAILWAY_DEPLOYMENT.md).
