@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, X, ArrowRight, CornerDownLeft, Clock } from 'lucide-react';
+import { Search, X, CornerDownLeft, Clock, Command } from 'lucide-react';
 import { Article } from '../../types';
 import { api } from '../../services/api';
+import { Badge } from '../ui/Badge';
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -17,7 +18,6 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
-  // Focus input when opened
   useEffect(() => {
     if (isOpen) {
       setTimeout(() => inputRef.current?.focus(), 50);
@@ -31,7 +31,6 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
     setResults(articles.slice(0, 5));
   };
 
-  // Perform instant search
   useEffect(() => {
     if (!isOpen) return;
 
@@ -49,7 +48,6 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
     performSearch();
   }, [query, isOpen]);
 
-  // Keyboard navigation & global Cmd+K listener
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
@@ -82,37 +80,37 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
 
   return (
     <AnimatePresence>
-      <div data-lenis-prevent className="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-24 px-4 bg-[#121212]/60 backdrop-blur-sm">
+      <div data-lenis-prevent className="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-24 px-4 bg-black/60 backdrop-blur-xs">
         <motion.div
           initial={{ opacity: 0, scale: 0.96, y: -10 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.96, y: -10 }}
           transition={{ duration: 0.15 }}
-          className="w-full max-w-2xl bg-[#FAF9F5] dark:bg-[#1A1A1A] border border-[#E8E5DC] dark:border-[#333333] rounded-sm shadow-2xl overflow-hidden"
+          className="w-full max-w-2xl bg-white dark:bg-[#1C1C1E] border border-[#E1E1E1] dark:border-[#2C2C30] rounded-2xl shadow-2xl overflow-hidden"
         >
           {/* Input Header Bar */}
-          <div className="flex items-center px-4 border-b border-[#E8E5DC] dark:border-[#262626]">
-            <Search className="w-5 h-5 text-[#9E9A8E] dark:text-[#6E6E6E] shrink-0" />
+          <div className="flex items-center px-4 py-1 border-b border-[#E1E1E1] dark:border-[#2C2C30]">
+            <Search className="w-4 h-4 text-[#7E8798] dark:text-[#A0A9B8] shrink-0" />
             <input
               ref={inputRef}
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search by title, topic, tag, or content..."
-              className="w-full py-4 px-3 bg-transparent text-base text-[#1A1A1A] dark:text-[#ECECEC] placeholder-[#9E9A8E] dark:placeholder-[#6E6E6E] focus:outline-none font-sans"
+              placeholder="Search tech articles, topics, or guides..."
+              className="w-full py-3.5 px-3 bg-transparent text-sm text-[#1C1C1E] dark:text-[#F6F5F0] placeholder-[#7E8798] dark:placeholder-[#6B7485] focus:outline-none font-sans"
             />
             <button
               onClick={onClose}
-              className="p-1.5 text-[#9E9A8E] dark:text-[#6E6E6E] hover:text-[#1A1A1A] dark:hover:text-[#ECECEC]"
+              className="p-1 rounded-lg text-[#7E8798] hover:bg-[#F4F2EE] dark:hover:bg-[#2C2C30] hover:text-[#1C1C1E] dark:hover:text-[#F6F5F0] transition-colors cursor-pointer"
             >
-              <X className="w-5 h-5" />
+              <X className="w-4 h-4" />
             </button>
           </div>
 
           {/* Results List */}
-          <div data-lenis-prevent className="max-h-[60vh] overflow-y-auto p-2 divide-y divide-[#F3F1EA] dark:divide-[#222222]">
+          <div data-lenis-prevent className="max-h-[55vh] overflow-y-auto p-2 space-y-1">
             {results.length === 0 ? (
-              <div className="py-12 text-center text-xs font-mono text-[#9E9A8E] dark:text-[#6E6E6E]">
+              <div className="py-12 text-center text-xs text-[#7E8798] dark:text-[#A0A9B8]">
                 No articles matching "{query}"
               </div>
             ) : (
@@ -126,33 +124,32 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
                       onClose();
                     }}
                     onMouseEnter={() => setSelectedIndex(idx)}
-                    className={`p-3.5 rounded-sm transition-colors cursor-pointer flex items-center justify-between ${
+                    className={`p-3.5 rounded-xl transition-all cursor-pointer flex items-center justify-between ${
                       isSelected
-                        ? 'bg-[#F3F1EA] dark:bg-[#262626]'
-                        : 'hover:bg-[#F3F1EA]/50 dark:hover:bg-[#222222]'
+                        ? 'bg-[#F4F2EE] dark:bg-[#2C2C30] text-[#1C1C1E] dark:text-white'
+                        : 'hover:bg-[#F4F2EE]/60 dark:hover:bg-[#2C2C30]/50 text-[#1C1C1E] dark:text-[#F6F5F0]'
                     }`}
                   >
-                    <div className="pr-4">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-[10px] font-mono tracking-wider uppercase text-[#9E9A8E] dark:text-[#6E6E6E]">
+                    <div className="pr-4 space-y-1">
+                      <div className="flex items-center gap-2">
+                        <Badge variant="secondary" className="text-[10px]">
                           {article.category}
-                        </span>
-                        <span className="text-xs text-[#9E9A8E] dark:text-[#6E6E6E]">·</span>
-                        <span className="text-[10px] font-mono text-[#9E9A8E] dark:text-[#6E6E6E] flex items-center gap-1">
+                        </Badge>
+                        <span className="text-[11px] text-[#7E8798] dark:text-[#A0A9B8] flex items-center gap-1 font-sans">
                           <Clock className="w-3 h-3" />
                           {article.readingTime}
                         </span>
                       </div>
-                      <h4 className="font-serif text-lg font-medium text-[#1A1A1A] dark:text-[#ECECEC] leading-snug">
+                      <h4 className="font-display font-semibold text-sm sm:text-base leading-snug">
                         {article.title}
                       </h4>
-                      <p className="text-xs text-[#6B685F] dark:text-[#A0A0A0] line-clamp-1 mt-0.5 font-light">
+                      <p className="text-xs text-[#7E8798] dark:text-[#A0A9B8] line-clamp-1 font-sans">
                         {article.excerpt}
                       </p>
                     </div>
 
-                    <div className="shrink-0 text-[#9E9A8E] dark:text-[#6E6E6E]">
-                      {isSelected ? <CornerDownLeft className="w-4 h-4 text-[#1A1A1A] dark:text-[#ECECEC]" /> : <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100" />}
+                    <div className="shrink-0 text-[#7E8798] dark:text-[#A0A9B8]">
+                      {isSelected && <CornerDownLeft className="w-4 h-4 text-[#1C1C1E] dark:text-white" />}
                     </div>
                   </div>
                 );
@@ -160,14 +157,26 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
             )}
           </div>
 
-          {/* Footer Shortcuts */}
-          <div className="px-4 py-2.5 bg-[#F3F1EA] dark:bg-[#141414] border-t border-[#E8E5DC] dark:border-[#262626] flex items-center justify-between text-[11px] font-mono text-[#9E9A8E] dark:text-[#6E6E6E]">
+          {/* Command Footer */}
+          <div className="px-4 py-2.5 bg-[#F6F5F0] dark:bg-[#141416] border-t border-[#E1E1E1] dark:border-[#2C2C30] flex items-center justify-between text-[11px] text-[#7E8798] dark:text-[#A0A9B8] font-sans">
             <div className="flex items-center gap-3">
-              <span><kbd className="px-1 py-0.5 bg-[#FAF9F5] dark:bg-[#222] border rounded">↑</kbd> <kbd className="px-1 py-0.5 bg-[#FAF9F5] dark:bg-[#222] border rounded">↓</kbd> navigate</span>
-              <span><kbd className="px-1 py-0.5 bg-[#FAF9F5] dark:bg-[#222] border rounded">↵</kbd> select</span>
-              <span><kbd className="px-1 py-0.5 bg-[#FAF9F5] dark:bg-[#222] border rounded">esc</kbd> close</span>
+              <span className="flex items-center gap-1">
+                <kbd className="px-1.5 py-0.5 bg-white dark:bg-[#222225] border border-[#E1E1E1] dark:border-[#2C2C30] rounded text-[10px]">↑</kbd>
+                <kbd className="px-1.5 py-0.5 bg-white dark:bg-[#222225] border border-[#E1E1E1] dark:border-[#2C2C30] rounded text-[10px]">↓</kbd>
+                Navigate
+              </span>
+              <span className="flex items-center gap-1">
+                <kbd className="px-1.5 py-0.5 bg-white dark:bg-[#222225] border border-[#E1E1E1] dark:border-[#2C2C30] rounded text-[10px]">↵</kbd>
+                Select
+              </span>
+              <span className="flex items-center gap-1">
+                <kbd className="px-1.5 py-0.5 bg-white dark:bg-[#222225] border border-[#E1E1E1] dark:border-[#2C2C30] rounded text-[10px]">Esc</kbd>
+                Close
+              </span>
             </div>
-            <span>{results.length} results</span>
+            <span className="flex items-center gap-1">
+              <Command className="w-3 h-3" /> Search
+            </span>
           </div>
         </motion.div>
       </div>

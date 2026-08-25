@@ -30,3 +30,5 @@ coverage/
 # IDE & Editor Settings
 .vscode/
 .idea/
+
+client/components.json

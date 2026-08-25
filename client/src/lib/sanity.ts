@@ -6,10 +6,10 @@ export const SANITY_DATASET = import.meta.env.VITE_SANITY_DATASET || 'production
 export const SANITY_API_VERSION = import.meta.env.VITE_SANITY_API_VERSION || '2026-03-01';
 
 export const client = createClient({
-  projectId: import.meta.env.VITE_SANITY_PROJECT_ID || 'pbxpf8xj',
-  dataset: import.meta.env.VITE_SANITY_DATASET || 'production',
-  apiVersion: import.meta.env.VITE_SANITY_API_VERSION || '2026-03-01',
-  useCdn: false,
+  projectId: SANITY_PROJECT_ID,
+  dataset: SANITY_DATASET,
+  apiVersion: SANITY_API_VERSION,
+  useCdn: true, // Enabled CDN for high availability and public access in deployed environments
 });
 
 export const sanityClient = client;
@@ -17,62 +17,76 @@ export const sanityClient = client;
 const builder = imageUrlBuilder(sanityClient);
 
 export function urlForImage(source: any) {
-  return builder.image(source);
+  if (!source) return '';
+  try {
+    return builder.image(source).url();
+  } catch (e) {
+    return '';
+  }
 }
 
-export async function sanityFetch<T>(query: string, params: Record<string, any> = {}): Promise<T> {
+export async function sanityFetch<T>(query: string, params: Record<string, any> = {}): Promise<T | null> {
   try {
     const data = await sanityClient.fetch<T>(query, params);
     return data;
   } catch (error) {
-    console.error('SANITY CLIENT FETCH ERROR:', error);
-    throw error;
+    console.warn('SANITY CLIENT FETCH NOTICE (Falling back gracefully):', error);
+    return null;
   }
 }
 
 export const GROQ_QUERIES = {
-  ALL_ARTICLES: `*[_type == "article" && !(_id in path("drafts.**"))] | order(publishedAt desc, _createdAt desc) {
+  // Query both "article" and "post" document types with field normalization
+  ALL_ARTICLES: `*[_type in ["article", "post"] && !(_id in path("drafts.**"))] | order(publishedAt desc, _createdAt desc) {
     "id": _id,
     title,
     "slug": slug.current,
-    excerpt,
-    content,
-    "coverImage": coverImage.asset->url,
-    "category": category->name,
+    "excerpt": coalesce(excerpt, pt::text(body), ""),
+    "content": coalesce(content, body, ""),
+    "coverImage": coalesce(coverImage.asset->url, image.asset->url, ""),
+    "category": coalesce(category->name, "General"),
     tags,
     publishedAt,
     readingTime,
     featured,
     pinned,
     status,
-    "author": author->{
+    "author": coalesce(author->{
       name,
       "avatar": avatar.asset->url,
       bio,
       role
-    }
+    }, {
+      "name": "Techniccal Editorial",
+      "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80",
+      "role": "Author"
+    })
   }`,
 
-  ARTICLE_BY_SLUG: `*[_type == "article" && slug.current == $slug][0] {
+  ARTICLE_BY_SLUG: `*[_type in ["article", "post"] && slug.current == $slug][0] {
     "id": _id,
     title,
     "slug": slug.current,
-    excerpt,
-    content,
-    "coverImage": coverImage.asset->url,
-    "category": category->name,
+    "excerpt": coalesce(excerpt, pt::text(body), ""),
+    "content": coalesce(content, body, ""),
+    "coverImage": coalesce(coverImage.asset->url, image.asset->url, ""),
+    "category": coalesce(category->name, "General"),
     tags,
     publishedAt,
     readingTime,
     featured,
     pinned,
     status,
-    "author": author->{
+    "author": coalesce(author->{
       name,
       "avatar": avatar.asset->url,
       bio,
       role
-    }
+    }, {
+      "name": "Techniccal Editorial",
+      "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80",
+      "role": "Author"
+    })
   }`,
 
   ALL_CATEGORIES: `*[_type == "category"] | order(name asc) {

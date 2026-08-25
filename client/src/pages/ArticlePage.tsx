@@ -24,6 +24,10 @@ import { TableOfContents } from '../components/blog/TableOfContents';
 import { ArticleComments } from '../components/blog/ArticleComments';
 import { Skeleton } from '../components/ui/Skeleton';
 import { BlurFade } from '../components/ui/BlurFade';
+import { Avatar } from '../components/ui/avatar';
+import { Badge } from '../components/ui/Badge';
+import { Card, CardContent } from '../components/ui/card';
+import { Tooltip } from '../components/ui/tooltip';
 
 export const ArticlePage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -154,10 +158,10 @@ export const ArticlePage: React.FC = () => {
             <div className="inline-flex flex-wrap items-center justify-center gap-3 sm:gap-5 px-5 py-2.5 rounded-2xl bg-white dark:bg-[#222225] border border-[#E1E1E1] dark:border-[#2C2C30] text-xs text-[#7E8798] dark:text-[#A0A9B8]">
               {/* Author Info */}
               <div className="flex items-center gap-2">
-                <img
+                <Avatar
                   src={article.author.avatar}
                   alt={article.author.name}
-                  className="w-5 h-5 rounded-full object-cover"
+                  size="sm"
                 />
                 <span className="font-semibold text-[#1C1C1E] dark:text-[#F6F5F0]">
                   {article.author.name}

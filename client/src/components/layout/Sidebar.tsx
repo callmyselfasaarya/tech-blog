@@ -131,6 +131,20 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenSearch }) => {
           </button>
         </div>
 
+        {/* Quick Command Search Trigger */}
+        <button
+          onClick={onOpenSearch}
+          className="w-full flex items-center justify-between px-3 py-2 text-xs text-[#7E8798] dark:text-[#A0A9B8] bg-white dark:bg-[#222225] border border-[#E1E1E1] dark:border-[#2C2C30] rounded-xl hover:border-[#1C1C1E]/30 dark:hover:border-white/30 transition-all cursor-pointer shadow-xs"
+        >
+          <div className="flex items-center gap-2">
+            <Search className="w-3.5 h-3.5 text-[#7E8798]" />
+            <span>Search...</span>
+          </div>
+          <kbd className="px-1.5 py-0.5 text-[10px] font-mono bg-[#F4F2EE] dark:bg-[#1C1C1E] border border-[#E1E1E1] dark:border-[#2C2C30] rounded text-[#7E8798]">
+            ⌘K
+          </kbd>
+        </button>
+
         {/* Primary Navigation */}
         <nav className="space-y-1">
           <Link

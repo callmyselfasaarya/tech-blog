@@ -185,13 +185,16 @@ export const api = {
     return LocalStore.getCategories();
   },
 
-  // Articles (Development Mode - Transparent Sanity Fetching)
+  // Articles (Dual Mode - Transparent Sanity Fetching with Fallback)
   getArticles: async (category?: string, search?: string): Promise<Article[]> => {
     try {
-      const sanityArticles = await sanityFetch<Article[]>(GROQ_QUERIES.ALL_ARTICLES);
-      console.log('SANITY ARTICLES:', sanityArticles);
+      let articles = await sanityFetch<Article[]>(GROQ_QUERIES.ALL_ARTICLES);
+      if (!articles || articles.length === 0) {
+        articles = api.getArticlesSync(category, search);
+        return articles;
+      }
 
-      let filtered = sanityArticles || [];
+      let filtered = articles;
       if (category && category.toUpperCase() !== 'ALL') {
         const cat = category.toUpperCase();
         filtered = filtered.filter(a => {
@@ -214,8 +217,8 @@ export const api = {
       }
       return filtered;
     } catch (error) {
-      console.error('SANITY FETCH FAILED:', error);
-      throw error;
+      console.warn('Sanity fetch fallback active:', error);
+      return api.getArticlesSync(category, search);
     }
   },
 

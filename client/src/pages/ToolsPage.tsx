@@ -1,12 +1,15 @@
 import React from 'react';
 import { BlurFade } from '../components/ui/BlurFade';
-import { Terminal, Wrench, Code2, Cpu, Server, Database, ArrowUpRight } from 'lucide-react';
+import { Terminal, Wrench, Code2, Cpu, Database, ArrowUpRight } from 'lucide-react';
+import { Card, CardContent } from '../components/ui/card';
+import { Badge } from '../components/ui/Badge';
 
 export const ToolsPage: React.FC = () => {
   React.useEffect(() => {
     window.scrollTo(0, 0);
     document.title = 'Developer Tools & Stack — Techniccal';
   }, []);
+
   const toolCategories = [
     {
       name: 'Languages & Runtimes',
@@ -51,10 +54,10 @@ export const ToolsPage: React.FC = () => {
       {/* Header Banner */}
       <section className="mb-14 text-center max-w-3xl mx-auto space-y-4">
         <BlurFade delay={0.05} yOffset={12}>
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#E8E7E2] dark:bg-[#222225] border border-[#E1E1E1] dark:border-[#2C2C30] text-xs font-mono font-medium text-[#4C586F] dark:text-[#A0A9B8]">
-            <Wrench className="w-4 h-4 text-[#3B719F]" />
+          <Badge variant="pinned" className="px-4 py-1.5 text-xs font-mono font-medium rounded-full">
+            <Wrench className="w-4 h-4 mr-1 text-[#3B719F]" />
             <span>/tools</span>
-          </div>
+          </Badge>
         </BlurFade>
 
         <BlurFade delay={0.12} yOffset={18}>
@@ -91,22 +94,26 @@ export const ToolsPage: React.FC = () => {
                       href={t.link}
                       target="_blank"
                       rel="noreferrer"
-                      className="p-5 rounded-2xl bg-white dark:bg-[#222225] border border-[#E1E1E1] dark:border-[#2C2C30] hover:shadow-md transition-all group flex flex-col justify-between"
+                      className="group block"
                     >
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between">
-                          <span className="text-[11px] font-mono px-2 py-0.5 rounded-md bg-[#E8E7E2] dark:bg-[#141416] text-[#4C586F] dark:text-[#A0A9B8]">
-                            {t.tag}
-                          </span>
-                          <ArrowUpRight className="w-4 h-4 text-[#7E8798] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                        </div>
-                        <h3 className="font-display font-semibold text-base text-[#1C1C1E] dark:text-[#F6F5F0] group-hover:text-[#3B719F] transition-colors">
-                          {t.name}
-                        </h3>
-                        <p className="text-xs text-[#4C586F] dark:text-[#A0A9B8] leading-relaxed">
-                          {t.desc}
-                        </p>
-                      </div>
+                      <Card className="p-5 hover:border-[#1C1C1E]/30 dark:hover:border-white/30 hover:shadow-md transition-all h-full">
+                        <CardContent className="p-0 space-y-2.5 flex flex-col justify-between h-full">
+                          <div>
+                            <div className="flex items-center justify-between mb-2">
+                              <Badge variant="secondary" className="text-[10px]">
+                                {t.tag}
+                              </Badge>
+                              <ArrowUpRight className="w-4 h-4 text-[#7E8798] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                            </div>
+                            <h3 className="font-display font-semibold text-base text-[#1C1C1E] dark:text-[#F6F5F0] group-hover:text-[#3B719F] dark:group-hover:text-[#60A5FA] transition-colors">
+                              {t.name}
+                            </h3>
+                          </div>
+                          <p className="text-xs text-[#4C586F] dark:text-[#A0A9B8] leading-relaxed">
+                            {t.desc}
+                          </p>
+                        </CardContent>
+                      </Card>
                     </a>
                   ))}
                 </div>
