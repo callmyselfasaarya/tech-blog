@@ -9,7 +9,7 @@ export const client = createClient({
   projectId: import.meta.env.VITE_SANITY_PROJECT_ID || 'pbxpf8xj',
   dataset: import.meta.env.VITE_SANITY_DATASET || 'production',
   apiVersion: import.meta.env.VITE_SANITY_API_VERSION || '2026-03-01',
-  useCdn: true,
+  useCdn: false,
 });
 
 export const sanityClient = client;
@@ -20,27 +20,18 @@ export function urlForImage(source: any) {
   return builder.image(source);
 }
 
-export async function sanityFetch<T>(query: string, params: Record<string, any> = {}): Promise<T | null> {
+export async function sanityFetch<T>(query: string, params: Record<string, any> = {}): Promise<T> {
   try {
     const data = await sanityClient.fetch<T>(query, params);
     return data;
-  } catch (e) {
-    // Fallback to fetch API if client encounters runtime issue
-    try {
-      const encodedQuery = encodeURIComponent(query);
-      const url = `https://${SANITY_PROJECT_ID}.api.sanity.io/v${SANITY_API_VERSION}/data/query/${SANITY_DATASET}?query=${encodedQuery}`;
-      const res = await fetch(url, { signal: AbortSignal.timeout(3000) });
-      if (res.ok) {
-        const json = await res.json();
-        return json.result as T;
-      }
-    } catch (err) {}
+  } catch (error) {
+    console.error('SANITY CLIENT FETCH ERROR:', error);
+    throw error;
   }
-  return null;
 }
 
 export const GROQ_QUERIES = {
-  ALL_ARTICLES: `*[_type == "article" && status == "published"] | order(publishedAt desc) {
+  ALL_ARTICLES: `*[_type == "article" && !(_id in path("drafts.**"))] | order(publishedAt desc, _createdAt desc) {
     "id": _id,
     title,
     "slug": slug.current,

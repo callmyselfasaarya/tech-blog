@@ -185,50 +185,38 @@ export const api = {
     return LocalStore.getCategories();
   },
 
-  // Articles
+  // Articles (Development Mode - Transparent Sanity Fetching)
   getArticles: async (category?: string, search?: string): Promise<Article[]> => {
     try {
-      // First attempt to query Sanity Studio CMS dataset
       const sanityArticles = await sanityFetch<Article[]>(GROQ_QUERIES.ALL_ARTICLES);
-      if (sanityArticles && sanityArticles.length > 0) {
-        let filtered = sanityArticles;
-        if (category && category.toUpperCase() !== 'ALL') {
-          const cat = category.toUpperCase();
-          filtered = filtered.filter(a => {
-            const artCat = (a.category || '').toUpperCase();
-            if (artCat === cat || artCat.includes(cat)) return true;
-            if (cat === 'AI' && (artCat.includes('AI') || artCat.includes('MACHINE LEARNING'))) return true;
-            if (cat === 'PROGRAMMING' && (artCat.includes('PROGRAMMING') || artCat.includes('SOFTWARE') || artCat.includes('SYSTEMS'))) return true;
-            if (cat === 'CAREER' && (artCat.includes('CAREER') || artCat.includes('JOBS') || artCat.includes('INTERVIEW'))) return true;
-            if (cat === 'PROJECTS' && (artCat.includes('PROJECT') || artCat.includes('TUTORIAL'))) return true;
-            if (cat === 'TOOLS' && (artCat.includes('TOOL') || artCat.includes('DEVELOPER'))) return true;
-            return false;
-          });
-        }
-        if (search && search.trim()) {
-          const q = search.toLowerCase().trim();
-          filtered = filtered.filter(a => 
-            a.title.toLowerCase().includes(q) ||
-            a.excerpt.toLowerCase().includes(q)
-          );
-        }
-        return filtered;
-      }
+      console.log('SANITY ARTICLES:', sanityArticles);
 
-      // Attempt REST call if available
-      const url = new URL('/api/articles', window.location.origin);
-      if (category && category !== 'ALL') url.searchParams.set('category', category);
-      if (search) url.searchParams.set('search', search);
-
-      const res = await fetch(url.toString(), { signal: AbortSignal.timeout(FAST_TIMEOUT) });
-      if (res.ok) {
-        return await res.json();
+      let filtered = sanityArticles || [];
+      if (category && category.toUpperCase() !== 'ALL') {
+        const cat = category.toUpperCase();
+        filtered = filtered.filter(a => {
+          const artCat = (a.category || '').toUpperCase();
+          if (artCat === cat || artCat.includes(cat)) return true;
+          if (cat === 'AI' && (artCat.includes('AI') || artCat.includes('MACHINE LEARNING'))) return true;
+          if (cat === 'PROGRAMMING' && (artCat.includes('PROGRAMMING') || artCat.includes('SOFTWARE') || artCat.includes('SYSTEMS'))) return true;
+          if (cat === 'CAREER' && (artCat.includes('CAREER') || artCat.includes('JOBS') || artCat.includes('INTERVIEW'))) return true;
+          if (cat === 'PROJECTS' && (artCat.includes('PROJECT') || artCat.includes('TUTORIAL'))) return true;
+          if (cat === 'TOOLS' && (artCat.includes('TOOL') || artCat.includes('DEVELOPER'))) return true;
+          return false;
+        });
       }
-    } catch (e) {
-      // Fallback to LocalStore
+      if (search && search.trim()) {
+        const q = search.toLowerCase().trim();
+        filtered = filtered.filter(a => 
+          a.title.toLowerCase().includes(q) ||
+          a.excerpt.toLowerCase().includes(q)
+        );
+      }
+      return filtered;
+    } catch (error) {
+      console.error('SANITY FETCH FAILED:', error);
+      throw error;
     }
-
-    return api.getArticlesSync(category, search);
   },
 
   getAllArticlesAdmin: async (): Promise<Article[]> => {

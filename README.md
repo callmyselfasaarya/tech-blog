@@ -1,6 +1,33 @@
 # Techniccal — Software Architecture, AI & Engineering Journal
 
-> **Techniccal** is a modern, high-signal technology publication and headless CMS platform built with React 18, TypeScript, Vite, Tailwind CSS, Framer Motion, and Sanity Studio v3.
+> **Techniccal** is a modern, production-grade technology publication and headless CMS platform. Built with React 18, TypeScript, Vite, Tailwind CSS, Framer Motion, Express.js, MongoDB, and Sanity Studio v3.
+
+---
+
+## 📌 Table of Contents
+
+- [🌟 Overview \& Mission](#-overview--mission)
+- [🎨 Brand Identity \& Design System](#-brand-identity--design-system)
+- [🏛️ Workspace Monorepo Architecture](#-workspace-monorepo-architecture)
+- [🗺️ Complete Website Route Hierarchy](#-complete-website-route-hierarchy)
+- [📝 15-Point Article Anatomy Specification](#-15-point-article-anatomy-specification)
+- [🎨 Sanity Studio Headless CMS (`studio-techniccal`)](#-sanity-studio-headless-cms-studio-techniccal)
+- [👑 5-Tier Role-Based Access Control (RBAC)](#-5-tier-role-based-access-control-rbac)
+- [🔐 Security \& Authentication Architecture](#-security--authentication-architecture)
+- [⚙️ Environment Variables Reference](#️-environment-variables-reference)
+- [☁️ Production Deployment Guides](#️-production-deployment-guides)
+- [🚀 Quickstart \& Local Development](#-quickstart--local-development)
+- [🔑 Seed Test Accounts](#-seed-test-accounts)
+
+---
+
+## 🌟 Overview & Mission
+
+**Techniccal** delivers high-signal, deep-dive engineering blueprints, software architecture patterns, machine learning insights, and career strategies. It is architected for maximum speed, security, and editorial clarity.
+
+- **Frontend**: React 18 + Vite + TypeScript SPA with Framer Motion micro-animations and Lenis smooth scrolling.
+- **Backend API**: Express.js REST API with MongoDB/Mongoose ORM, JWT dual-token authentication, and role-based access control.
+- **Headless CMS**: Sanity Studio v3 (`pbxpf8xj` / `production`) for real-time editorial content authoring.
 
 ---
 
@@ -17,87 +44,170 @@ Techniccal features a precision design system built around an engineering grid a
   - **Muted Electric Blue**: `#3B719F` (Interactive elements)
 - **Typography System**:
   - **Headings & Display**: `Manrope` (Geometric Sans)
-  - **Editorial & Body**: `Source Serif 4` (Serif Accent for long-form reading)
+  - **Editorial Body**: `Source Serif 4` (High-readability serif accent)
   - **Interface UI**: `Inter`
-  - **Code & Specs**: `JetBrains Mono`
+  - **Code & Technical Specs**: `JetBrains Mono`
 
 ---
 
-## 🏛️ Directory Structure & Workspace Architecture
+## 🏛️ Workspace Monorepo Architecture
 
 ```text
 tech-blog/ (Workspace Root)
-├── client/                 # Web Application (React 18 + Vite + Tailwind CSS)
+├── client/                 # Web Application (React 18 + Vite + Tailwind CSS + TypeScript)
 │   ├── src/
-│   │   ├── components/     # UI, Layout, Logo & Navigation components
+│   │   ├── admin/          # Admin CMS management views & dashboards
+│   │   ├── components/     # UI, Layout, Logo, Navigation & Article components
 │   │   ├── context/        # Auth, Theme, and Lenis smooth scroll providers
 │   │   ├── data/           # Initial mock datasets & fallbacks
-│   │   ├── lib/            # Sanity client & GROQ query helpers
+│   │   ├── lib/            # Sanity client & GROQ query helpers (sanity.ts)
 │   │   ├── pages/          # Public editorial views & member portal
-│   │   ├── services/       # Unified API client service layer
-│   │   └── types/          # TypeScript interfaces & types
+│   │   ├── services/       # Unified API client service layer (api.ts)
+│   │   ├── types/          # TypeScript interfaces & type definitions
+│   │   └── vite-env.d.ts   # Vite environment variable type declarations
+│   ├── .env.example        # Client environment variable template
 │   └── package.json
 │
-├── server/                 # Production API Backend (Express + MongoDB + JWT Auth)
-│   ├── middleware/         # Auth & RBAC guard middlewares
+├── server/                 # Production REST API Backend (Express + MongoDB + JWT Auth)
+│   ├── middleware/         # Auth & RBAC guard middlewares (authMiddleware.js)
 │   ├── models/             # Mongoose schemas (User, Article, Category, Subscriber, Media)
-│   ├── routes/             # REST routes (auth, articles, categories, newsletter, user, media)
+│   ├── routes/             # REST API routes (auth, articles, categories, newsletter, user, media)
 │   ├── uploads/            # Media assets storage directory
-│   ├── server.js           # Production Express server entry point
+│   ├── .env.example        # Server secret environment template
+│   ├── railway.json        # Service-level Railway deployment configuration
+│   ├── Procfile            # Web process start specification
 │   ├── seed.js             # Database seeding script for initial setup
+│   ├── server.js           # Production Express server entry point (0.0.0.0 binding)
 │   └── package.json
 │
 ├── studio-techniccal/      # Standalone Headless CMS (Sanity Studio v3)
 │   ├── schemaTypes/        # Sanity TypeScript schemas (article, category, author, subscriber, settings)
 │   ├── sanity.config.ts    # Studio configuration (Project: pbxpf8xj, Dataset: production)
-│   ├── sanity.cli.ts       # CLI options & deployment config
+│   ├── sanity.cli.ts       # CLI options & deployment config (studioHost: techniccal)
 │   └── package.json
 │
-├── .env.example            # Master environment variable template
+├── .env.example            # Master root environment template
+├── .gitignore              # Git ignore rules protecting all .env files and build outputs
+├── Procfile                # Master Railway / Heroku process declaration
+├── railway.json            # Master Railway deployment configuration
+├── RAILWAY_DEPLOYMENT.md   # Step-by-step Railway backend deployment guide
 └── README.md               # Master Project Documentation
-
 ```
+
+---
+
+## 🗺️ Complete Website Route Hierarchy
+
+Techniccal enforces the following clean URL route structure:
+
+```text
+techniccal.com
+│
+├── /                       # Homepage (Hero dispatch, featured blueprints, latest articles, newsletter)
+├── /blog                   # All Articles Library (Filter by search query & category tags)
+├── /ai                     # AI & Machine Learning Dispatches
+├── /programming            # Software Architecture & Programming Articles
+├── /career                 # Tech Careers, Software Engineering Roles & Interviews
+├── /projects               # Hands-On Project Blueprints & Technical Tutorials
+├── /tools                  # Essential Developer Tools & Productivity Workflows
+├── /newsletter             # Newsletter Archive & Direct Email Dispatch Subscription
+├── /about                  # Editorial Mission, Vision, and Core Contributors
+├── /contact                # Inquiries, Sponsorships & Editorial Contacts
+│
+├── /article/:slug          # Individual Article Post Reader (15-point specification)
+├── /account                # Member Profile Portal (Saved reading list, newsletter preferences)
+├── /login                  # Member Sign In
+├── /register               # Member Registration
+├── /forgot-password        # Password Reset Request
+├── /reset-password         # Hashed Password Reset Confirmation View
+├── /verify-email           # Email Verification Confirmation View
+│
+└── /admin                  # Administrative CMS Management Portal (Requires Admin / Editor Role)
+    ├── /admin/login        # Dedicated Admin Authentication
+    ├── /admin/articles     # Article Content Management & Publishing
+    ├── /admin/categories   # Category Taxonomy Editor
+    ├── /admin/subscribers  # Subscriber List & Export Tools
+    └── /admin/users        # RBAC User Role Management (Super Admin only)
+```
+
+---
+
+## 📝 15-Point Article Anatomy Specification
+
+Every published dispatch at `/article/:slug` adheres strictly to this 15-point architectural standard:
+
+1. **Title**: Clear, high-impact headline.
+2. **Author**: Author avatar, name, and publication role (`AuthorInfo`).
+3. **Published Date**: Exact ISO publication timestamp and relative time formatting.
+4. **Updated Date**: Revision timestamp ensuring technical accuracy.
+5. **Featured Image**: High-resolution cover photo with optimized aspect ratio and image captions.
+6. **Introduction**: Executive summary abstract framing key technical takeaways.
+7. **Table of Contents**: Sticky desktop sidebar + collapsible mobile drawer TOC with smooth heading jump links.
+8. **Main Content**: Rich editorial content rendered with high-readability typography (`Source Serif 4`).
+9. **Code Examples**: `JetBrains Mono` code blocks with syntax highlighting and instant one-click copy button.
+10. **Images / Diagrams**: Interactive architectural diagrams, flowcharts, and technical screenshots.
+11. **Related Articles**: 3-column curated grid of contextual follow-up dispatches.
+12. **Newsletter CTA**: Dedicated inline email subscription box.
+13. **Author Information Card**: Expanded author bio, credentials, and social links (X/Twitter, GitHub, LinkedIn).
+14. **Comments / Discussion**: Community discussion board with member authentication.
+15. **Share Buttons**: Sticky social sharing bar (X/Twitter, LinkedIn, Copy Link).
 
 ---
 
 ## 🎨 Sanity Studio Headless CMS (`studio-techniccal`)
 
-Content for Techniccal is authored and managed via **Sanity Studio v3**:
+Editorial content is managed in real-time via **Sanity Studio v3**:
 
 - **Project ID**: `pbxpf8xj`
 - **Dataset**: `production`
-- **Studio Directory**: `./studio-techniccal`
+- **Studio Host**: [https://techniccal.sanity.studio](https://techniccal.sanity.studio)
+
+### Sanity TypeScript Schemas
+1. `article`: Title, slug, excerpt, content, cover image, category reference, author reference, tags, reading time, status (`published`, `draft`, `archived`), featured, pinned.
+2. `category`: Category name, slug, description.
+3. `author`: Author name, slug, avatar image, bio, role.
+4. `subscriber`: Newsletter subscriber records and status.
+5. `settings`: Global publication metadata.
+
+### Transparent GROQ Query Strategy
+In `client/src/lib/sanity.ts`, `ALL_ARTICLES` queries all published documents using `!(_id in path("drafts.**"))`:
+
+```groq
+*[_type == "article" && !(_id in path("drafts.**"))] | order(publishedAt desc, _createdAt desc) {
+  "id": _id,
+  title,
+  "slug": slug.current,
+  excerpt,
+  content,
+  "coverImage": coverImage.asset->url,
+  "category": category->name,
+  tags,
+  publishedAt,
+  readingTime,
+  featured,
+  pinned,
+  status,
+  "author": author->{
+    name,
+    "avatar": avatar.asset->url,
+    bio,
+    role
+  }
+}
+```
 
 ### Sanity CORS Origins Management
-
-Sanity requires explicit, trusted CORS origins for browser applications accessing the Content Lake:
-
 ```bash
 cd studio-techniccal
 
 # 1. Local Development Origin (Allow credentials)
 npx sanity cors add http://localhost:5173 --credentials
 
-# 2. Production Domain Origins (Explicit non-wildcard origins)
+# 2. Production Domain Origins
 npx sanity cors add https://techniccal.com --credentials
 npx sanity cors add https://www.techniccal.com --credentials
 npx sanity cors add https://techniccal.sanity.studio --credentials
-
-# 3. List active CORS Origins
-npx sanity cors list
 ```
-
-> [!WARNING]
-> **Avoid Broad Wildcards**: Never use broad wildcards like `https://*.vercel.app` for authenticated requests. Sanity explicitly warns against broad wildcard origins with credentials to prevent token leakage and unauthorized cross-origin requests.
-
-
-### Running Sanity Studio
-```bash
-cd studio-techniccal
-npm install
-npm run dev
-```
-Studio will launch locally at `http://localhost:3333`.
 
 ---
 
@@ -105,61 +215,74 @@ Studio will launch locally at `http://localhost:3333`.
 
 Techniccal enforces a strict 5-tier role hierarchy across the frontend and API layers:
 
-```text
-                    TECHNICCAL
-                         │
-              ┌──────────┴──────────┐
-              │                     │
-        Public Website          Authentication
-              │                     │
-       Articles / Search       ┌────┴─────┐
-       Categories / About      │           │
-       Newsletter             Reader      Admin
-                                │           │
-                             Member       Editor
-                                           │
-                                        Admin
-                                           │
-                                      Super Admin
-```
-
-### Access Control Matrix
-
 | Role | Access Level | Description & Privileges |
 | :--- | :--- | :--- |
 | **Reader** | Public Website | Browse articles, view categories, search dispatches, read newsletter issues. |
-| **Member** | Reader Track | Signed-in reader profile, saved articles reading list (`/account`), newsletter settings. |
+| **Member** | Reader Track | Signed-in profile, saved reading list (`/account`), newsletter preferences. |
 | **Editor** | Admin Track | CMS Access: Create and edit draft articles, upload media items. |
 | **Admin** | Admin Track | CMS Access: Create, edit, publish, pin, delete articles, manage categories & subscribers. |
-| **Super Admin** | System Admin | Full system control: Manage team users & roles (`/admin/users`), RBAC configuration. |
+| **Super Admin** | System Admin | Full system control: Manage team users & roles (`/admin/users`), system settings. |
 
 ---
 
-## 🔐 Security Architecture
+## 🔐 Security & Authentication Architecture
 
 1. **Dual-Token System (Access + Refresh Tokens)**:
    - **Access Token**: 15-minute lifespan, transmitted via `Authorization: Bearer <accessToken>` header.
    - **Refresh Token**: 7-day lifespan, stored in a secure `httpOnly`, `sameSite: 'lax'` cookie.
-   - **Token Rotation**: Each refresh invalidates the previous refresh token and issues a rotated refresh token cookie to prevent replay attacks.
+   - **Token Rotation**: Each refresh invalidates the previous refresh token and issues a rotated refresh token cookie.
 2. **Dedicated Admin Authentication (`POST /api/auth/admin/login`)**:
-   - Separate endpoint that explicitly verifies `EDITOR`, `ADMIN`, or `SUPER_ADMIN` role privileges before issuing administrative sessions. Rejects `MEMBER` or `READER` roles with `403 Forbidden`.
-3. **SHA-256 Hashed Email Verification**:
-   - Verification tokens are generated using 32-byte crypto hex and hashed with SHA-256 before persisting (`emailVerificationTokenHash`). Raw tokens are never stored in the database.
-4. **Rate Limiting**:
-   - Sliding-window IP-based rate limiter protects authentication routes against brute-force attempts.
+   - Separate endpoint that explicitly verifies `EDITOR`, `ADMIN`, or `SUPER_ADMIN` privileges before issuing administrative sessions.
+3. **SHA-256 Hashed Email Verification & Password Resets**:
+   - Security tokens are generated using 32-byte crypto hex and hashed with SHA-256 (`emailVerificationTokenHash`, `resetPasswordToken`). Raw tokens are never stored in the database.
 
 ---
 
-## ✨ Features & Pages
+## ⚙️ Environment Variables Reference
 
-- **Editorial Home (`/`)**: Featured hero article, pinned blueprints, latest dispatches, and newsletter signup.
-- **Article Reader (`/article/:slug`)**: High-readability serif typography, reading progress bar, code syntax highlighting, author details.
-- **Category Feeds (`/ai`, `/programming`, `/career`, `/tools`)**: Topic-specific dispatches and category navigation.
-- **Global Search (`Cmd+K`)**: Instant search overlay filtering articles across title, excerpt, category, and tags.
-- **Member Portal (`/account`)**: User account dashboard, saved articles reading list, and newsletter preferences.
-- **Security Views**: Password Reset (`/reset-password?token=...`) and Email Verification (`/verify-email?token=...`).
+### Frontend Public Environment (`client/.env`)
+```env
+VITE_SANITY_PROJECT_ID=pbxpf8xj
+VITE_SANITY_DATASET=production
+VITE_SANITY_API_VERSION=2026-03-01
+VITE_API_URL=http://localhost:5000
+```
+
+### Backend Private Secrets (`server/.env`)
+```env
+PORT=5000
+NODE_ENV=development
+DATABASE_URL=mongodb://127.0.0.1:27017/techniccal-blog
+JWT_ACCESS_SECRET=techniccal-local-access-secret-2026
+JWT_REFRESH_SECRET=techniccal-local-refresh-secret-2026
+SANITY_PROJECT_ID=pbxpf8xj
+SANITY_DATASET=production
+SANITY_API_TOKEN=sk-local-dev-sanity-token
+FRONTEND_URL=http://localhost:5173
+```
 
 ---
+
+## ☁️ Production Deployment Guides
+
+### 1. Railway Backend Deployment (`server`)
+1. Connect GitHub repo `tech-blog` to Railway.
+2. In Service Settings, set **Root Directory** to `server`.
+3. Add production environment variables in the Railway **Variables** tab (`DATABASE_URL`, `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`, `FRONTEND_URL`, `SANITY_PROJECT_ID`, `SANITY_DATASET`).
+4. Generate domain in **Networking** (e.g. `https://tech-blog-server.up.railway.app`).
+
+> For full Railway steps, see `RAILWAY_DEPLOYMENT.md`.
+
+### 2. Sanity Studio Deployment (`studio-techniccal`)
+```bash
+cd studio-techniccal
+npx sanity deploy
+```
+Studio will deploy to `https://techniccal.sanity.studio`.
+
+---
+
+## 🚀 Quickstart & Local Development
 
 ### 1. API Backend Server (`server`)
 ```bash
@@ -185,11 +308,14 @@ npm run dev      # Start Sanity Studio v3 CMS at http://localhost:3333
 
 ---
 
-### Quick Railway Deployment Setup
+## 🔑 Seed Test Accounts
 
-1. **Link Repository to Railway**: Connect GitHub repo `tech-blog`.
-2. **Set Root Directory**: In Railway Service Settings, set **Root Directory** to `server`.
-3. **Add Environment Variables**: In Railway **Variables** tab, add `DATABASE_URL`, `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`, `FRONTEND_URL`, `SANITY_PROJECT_ID`, `SANITY_DATASET`.
-4. **Generate Public Domain**: In Railway **Networking**, click **Generate Domain** (e.g. `https://tech-blog-server.up.railway.app`).
+The `npm run seed` script creates test accounts for testing RBAC:
 
-For detailed step-by-step instructions, view [RAILWAY_DEPLOYMENT.md](file:///c:/Users/91994/Desktop/Projects/tech-blog/RAILWAY_DEPLOYMENT.md).
+| Role | Email | Password | Access Level |
+| :--- | :--- | :--- | :--- |
+| **Super Admin** | `superadmin@techniccal.com` | `SuperAdminPass2026!` | Complete System Control |
+| **Admin** | `admin@techniccal.com` | `AdminPass2026!` | Content Publishing & Categories |
+| **Editor** | `editor@techniccal.com` | `EditorPass2026!` | Draft Editing & Media Uploads |
+| **Member** | `member@techniccal.com` | `MemberPass2026!` | Profile & Saved Articles List |
+| **Reader** | `reader@techniccal.com` | `ReaderPass2026!` | Standard Reading Access |
