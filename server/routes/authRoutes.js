@@ -9,6 +9,28 @@ const router = express.Router();
 
 const REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || process.env.REFRESH_SECRET || 'techniccal-refresh-secret-2026-production';
 const FRONTEND_URL = process.env.FRONTEND_URL || process.env.CLIENT_URL || 'http://localhost:5173';
+const IS_PROD = process.env.NODE_ENV === 'production';
+
+// Production Cookie Configuration
+const ACCESS_TOKEN_COOKIE_OPTIONS = {
+  httpOnly: true,
+  secure: IS_PROD,
+  sameSite: 'lax',
+  maxAge: 15 * 60 * 1000 // 15 minutes
+};
+
+const REFRESH_TOKEN_COOKIE_OPTIONS = {
+  httpOnly: true,
+  secure: IS_PROD,
+  sameSite: 'lax',
+  maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+};
+
+const CLEAR_COOKIE_OPTIONS = {
+  httpOnly: true,
+  secure: IS_PROD,
+  sameSite: 'lax'
+};
 
 // Helper to issue access & refresh tokens
 function generateTokens(user) {
@@ -54,8 +76,8 @@ router.post('/register', async (req, res) => {
     user.refreshTokens.push({ token: refreshToken });
     await user.save();
 
-    res.cookie('accessToken', accessToken, { httpOnly: true, secure: process.env.NODE_ENV === 'production', maxAge: 15 * 60 * 1000 });
-    res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: process.env.NODE_ENV === 'production', maxAge: 7 * 24 * 60 * 60 * 1000 });
+    res.cookie('accessToken', accessToken, ACCESS_TOKEN_COOKIE_OPTIONS);
+    res.cookie('refreshToken', refreshToken, REFRESH_TOKEN_COOKIE_OPTIONS);
 
     res.status(201).json({
       token: accessToken,
@@ -100,8 +122,8 @@ router.post('/login', async (req, res) => {
     user.refreshTokens.push({ token: refreshToken });
     await user.save();
 
-    res.cookie('accessToken', accessToken, { httpOnly: true, secure: process.env.NODE_ENV === 'production', maxAge: 15 * 60 * 1000 });
-    res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: process.env.NODE_ENV === 'production', maxAge: 7 * 24 * 60 * 60 * 1000 });
+    res.cookie('accessToken', accessToken, ACCESS_TOKEN_COOKIE_OPTIONS);
+    res.cookie('refreshToken', refreshToken, REFRESH_TOKEN_COOKIE_OPTIONS);
 
     res.json({
       token: accessToken,
@@ -151,8 +173,8 @@ router.post('/admin/login', async (req, res) => {
     user.refreshTokens.push({ token: refreshToken });
     await user.save();
 
-    res.cookie('accessToken', accessToken, { httpOnly: true, secure: process.env.NODE_ENV === 'production', maxAge: 15 * 60 * 1000 });
-    res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: process.env.NODE_ENV === 'production', maxAge: 7 * 24 * 60 * 60 * 1000 });
+    res.cookie('accessToken', accessToken, ACCESS_TOKEN_COOKIE_OPTIONS);
+    res.cookie('refreshToken', refreshToken, REFRESH_TOKEN_COOKIE_OPTIONS);
 
     res.json({
       token: accessToken,
@@ -205,8 +227,8 @@ router.post('/refresh', async (req, res) => {
     user.refreshTokens.push({ token: newRefreshToken });
     await user.save();
 
-    res.cookie('accessToken', newAccessToken, { httpOnly: true, secure: process.env.NODE_ENV === 'production', maxAge: 15 * 60 * 1000 });
-    res.cookie('refreshToken', newRefreshToken, { httpOnly: true, secure: process.env.NODE_ENV === 'production', maxAge: 7 * 24 * 60 * 60 * 1000 });
+    res.cookie('accessToken', newAccessToken, ACCESS_TOKEN_COOKIE_OPTIONS);
+    res.cookie('refreshToken', newRefreshToken, REFRESH_TOKEN_COOKIE_OPTIONS);
 
     res.json({
       accessToken: newAccessToken,
@@ -365,8 +387,8 @@ router.post('/logout', async (req, res) => {
     } catch (e) {}
   }
 
-  res.clearCookie('accessToken');
-  res.clearCookie('refreshToken');
+  res.clearCookie('accessToken', CLEAR_COOKIE_OPTIONS);
+  res.clearCookie('refreshToken', CLEAR_COOKIE_OPTIONS);
   res.json({ success: true, message: 'Signed out successfully.' });
 });
 

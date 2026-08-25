@@ -18,20 +18,14 @@ const MONGODB_URI = process.env.DATABASE_URL || process.env.MONGODB_URI || 'mong
 
 // CORS configuration supporting credentials & cookies
 const allowedOrigins = [
-  process.env.FRONTEND_URL || process.env.CLIENT_URL || 'http://localhost:5173',
-  'https://techniccal.com',
-  'http://localhost:3000',
-  'http://localhost:5173'
-];
+  process.env.FRONTEND_URL,
+  "https://www.techniccal.vercel.com",
+  "https://techniccal.com",
+  "http://localhost:5173"
+].filter(Boolean);
 
 app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin) || process.env.NODE_ENV !== 'production') {
-      callback(null, true);
-    } else {
-      callback(null, true); // Allow configured origins
-    }
-  },
+  origin: allowedOrigins,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
