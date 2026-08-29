@@ -3,12 +3,15 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowUpRight, Clock } from 'lucide-react';
 import { Article } from '../../types';
+import { slugify } from '../../lib/utils';
 
 interface ArticleRowProps {
   article: Article;
 }
 
 export const ArticleRow: React.FC<ArticleRowProps> = ({ article }) => {
+  const targetSlug = slugify(article.slug || article.title);
+
   return (
     <motion.article 
       initial={{ opacity: 0, y: 8 }}
@@ -16,7 +19,7 @@ export const ArticleRow: React.FC<ArticleRowProps> = ({ article }) => {
       transition={{ duration: 0.25 }}
       className="group py-7 border-b border-[#E8E5DC] dark:border-[#262626] first:pt-2 last:border-b-0"
     >
-      <Link to={`/article/${article.slug}`} className="block">
+      <Link to={`/article/${targetSlug}`} className="block">
         <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
           <div className="flex-1 pr-0 md:pr-8">
             {/* Category Header Tag */}

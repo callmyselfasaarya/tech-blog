@@ -4,6 +4,7 @@ import { Clock, ArrowUpRight, Bookmark } from 'lucide-react';
 import { Article } from '../../types';
 import { Badge } from '../ui/Badge';
 import { Card, CardFooter } from '../ui/card';
+import { slugify } from '../../lib/utils';
 
 export interface ArticleCardProps {
   article: Article;
@@ -16,11 +17,14 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
   variant = 'standard',
   onBookmark,
 }) => {
+  const targetSlug = slugify(article.slug || article.title);
+
   const formattedReadTime = article.readingTime
     ? typeof article.readingTime === 'number'
       ? `${article.readingTime} MIN READ`
       : article.readingTime.toUpperCase().replace(' READ', '') + ' READ'
     : '5 MIN READ';
+
 
   if (variant === 'featured') {
     return (
@@ -35,7 +39,7 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
           </span>
         </div>
 
-        <Link to={`/article/${article.slug}`} className="group block">
+        <Link to={`/article/${targetSlug}`} className="group block">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             <div className={`${article.coverImage ? 'lg:col-span-7' : 'lg:col-span-12'} space-y-4`}>
               <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#1C1C1E] dark:text-[#F6F5F0] leading-[1.12] group-hover:text-[#3B719F] transition-colors">
@@ -79,7 +83,7 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
   if (variant === 'horizontal') {
     return (
       <Card className="p-4 group border-[#E1E1E1] dark:border-[#2C2C30] bg-white dark:bg-[#222225] hover:border-[#3B719F] transition-all rounded-lg">
-        <Link to={`/article/${article.slug}`} className="flex flex-col sm:flex-row items-center gap-4">
+        <Link to={`/article/${targetSlug}`} className="flex flex-col sm:flex-row items-center gap-4">
           {article.coverImage && (
             <div className="w-full sm:w-48 aspect-[16/10] shrink-0 rounded-md overflow-hidden bg-[#E8E7E2] dark:bg-[#252528] border border-[#E1E1E1] dark:border-[#2C2C30]">
               <img src={article.coverImage} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
@@ -106,7 +110,7 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
   if (variant === 'compact') {
     return (
       <div className="py-3 border-b border-[#E1E1E1] dark:border-[#2C2C30] group">
-        <Link to={`/article/${article.slug}`} className="flex items-start justify-between gap-3">
+        <Link to={`/article/${targetSlug}`} className="flex items-start justify-between gap-3">
           <div>
             <span className="text-[10px] font-mono text-[#3B719F] uppercase font-bold">{article.category}</span>
             <h4 className="font-display font-medium text-sm text-[#1C1C1E] dark:text-[#F6F5F0] group-hover:text-[#3B719F] transition-colors leading-snug line-clamp-2 mt-0.5">
@@ -122,7 +126,7 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
   if (variant === 'related') {
     return (
       <Card className="p-4 border-[#E1E1E1] dark:border-[#2C2C30] bg-white dark:bg-[#222225] hover:border-[#3B719F] transition-all rounded-lg flex flex-col justify-between h-full group">
-        <Link to={`/article/${article.slug}`} className="space-y-2 block">
+        <Link to={`/article/${targetSlug}`} className="space-y-2 block">
           <span className="text-[10px] font-mono text-[#3B719F] uppercase font-bold">{article.category}</span>
           <h4 className="font-display font-semibold text-sm text-[#1C1C1E] dark:text-[#F6F5F0] group-hover:text-[#3B719F] transition-colors leading-snug line-clamp-2">
             {article.title}
@@ -139,7 +143,7 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
   // Standard Variant
   return (
     <Card className="p-4 group border-[#E1E1E1] dark:border-[#2C2C30] hover:border-[#3B719F] hover:shadow-sm transition-all duration-300 flex flex-col justify-between h-full bg-white dark:bg-[#222225] rounded-lg">
-      <Link to={`/article/${article.slug}`} className="block flex-1">
+      <Link to={`/article/${targetSlug}`} className="block flex-1">
         {article.coverImage && (
           <div className="overflow-hidden rounded-md aspect-[16/10] relative mb-3.5 bg-[#E8E7E2] dark:bg-[#252528] border border-[#E1E1E1] dark:border-[#2C2C30]">
             <img

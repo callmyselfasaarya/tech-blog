@@ -5,6 +5,7 @@ import { Search, X, CornerDownLeft, Clock, Command } from 'lucide-react';
 import { Article } from '../../types';
 import { api } from '../../services/api';
 import { Badge } from '../ui/Badge';
+import { slugify } from '../../lib/utils';
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -21,42 +22,27 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
   useEffect(() => {
     if (isOpen) {
       setTimeout(() => inputRef.current?.focus(), 50);
-      setQuery('');
-      loadInitial();
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
     }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
   }, [isOpen]);
 
-  const loadInitial = async () => {
-    const articles = await api.getArticles();
-    setResults(articles.slice(0, 5));
-  };
-
   useEffect(() => {
-    if (!isOpen) return;
-
-    const performSearch = async () => {
-      if (!query.trim()) {
-        const articles = await api.getArticles();
-        setResults(articles.slice(0, 5));
-      } else {
-        const searched = await api.getArticles(undefined, query);
-        setResults(searched);
-      }
+    if (query.trim()) {
+      const searchResults = api.getArticlesSync(undefined, query);
+      setResults(searchResults);
       setSelectedIndex(0);
-    };
-
-    performSearch();
-  }, [query, isOpen]);
+    } else {
+      setResults([]);
+    }
+  }, [query]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault();
-        if (isOpen) onClose();
-      }
-
-      if (!isOpen) return;
-
       if (e.key === 'Escape') {
         onClose();
       } else if (e.key === 'ArrowDown') {
@@ -67,7 +53,9 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
         setSelectedIndex((prev) => (results.length > 0 ? (prev - 1 + results.length) % results.length : 0));
       } else if (e.key === 'Enter' && results[selectedIndex]) {
         e.preventDefault();
-        navigate(`/article/${results[selectedIndex].slug}`);
+        const target = results[selectedIndex];
+        const targetSlug = slugify(target.slug || target.title);
+        navigate(`/article/${targetSlug}`);
         onClose();
       }
     };
@@ -80,47 +68,51 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
 
   return (
     <AnimatePresence>
-      <div data-lenis-prevent className="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-24 px-4 bg-black/60 backdrop-blur-xs">
+      <div className="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-24 px-4 bg-black/60 backdrop-blur-xs">
         <motion.div
-          initial={{ opacity: 0, scale: 0.96, y: -10 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.96, y: -10 }}
-          transition={{ duration: 0.15 }}
+          initial={{ opacity: 0, scale: 0.96 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.96 }}
           className="w-full max-w-2xl bg-white dark:bg-[#1C1C1E] border border-[#E1E1E1] dark:border-[#2C2C30] rounded-2xl shadow-2xl overflow-hidden"
         >
-          {/* Input Header Bar */}
-          <div className="flex items-center px-4 py-1 border-b border-[#E1E1E1] dark:border-[#2C2C30]">
-            <Search className="w-4 h-4 text-[#7E8798] dark:text-[#A0A9B8] shrink-0" />
+          {/* Search Header Input */}
+          <div className="p-4 border-b border-[#E1E1E1] dark:border-[#2C2C30] flex items-center gap-3">
+            <Search className="w-5 h-5 text-[#3B719F] shrink-0" />
             <input
               ref={inputRef}
               type="text"
+              placeholder="Search articles, categories, topics, or system design tags..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search tech articles, topics, or guides..."
-              className="w-full py-3.5 px-3 bg-transparent text-sm text-[#1C1C1E] dark:text-[#F6F5F0] placeholder-[#7E8798] dark:placeholder-[#6B7485] focus:outline-none font-sans"
+              className="w-full bg-transparent text-sm font-sans text-[#1C1C1E] dark:text-[#F6F5F0] placeholder-[#7E8798] focus:outline-none"
             />
             <button
               onClick={onClose}
-              className="p-1 rounded-lg text-[#7E8798] hover:bg-[#F4F2EE] dark:hover:bg-[#2C2C30] hover:text-[#1C1C1E] dark:hover:text-[#F6F5F0] transition-colors cursor-pointer"
+              className="p-1.5 rounded-lg text-[#7E8798] hover:bg-[#F6F5F0] dark:hover:bg-[#222225] transition-colors cursor-pointer"
             >
               <X className="w-4 h-4" />
             </button>
           </div>
 
           {/* Results List */}
-          <div data-lenis-prevent className="max-h-[55vh] overflow-y-auto p-2 space-y-1">
-            {results.length === 0 ? (
-              <div className="py-12 text-center text-xs text-[#7E8798] dark:text-[#A0A9B8]">
-                No articles matching "{query}"
+          <div className="max-h-[60vh] overflow-y-auto p-2">
+            {query.trim() === '' ? (
+              <div className="py-12 text-center text-xs font-mono text-[#7E8798]">
+                Type to begin searching across Techniccal publication database.
+              </div>
+            ) : results.length === 0 ? (
+              <div className="py-12 text-center text-xs font-mono text-[#7E8798]">
+                No technical dispatches matched your query "{query}".
               </div>
             ) : (
               results.map((article, idx) => {
                 const isSelected = idx === selectedIndex;
+                const targetSlug = slugify(article.slug || article.title);
                 return (
                   <div
                     key={article.id}
                     onClick={() => {
-                      navigate(`/article/${article.slug}`);
+                      navigate(`/article/${targetSlug}`);
                       onClose();
                     }}
                     onMouseEnter={() => setSelectedIndex(idx)}

@@ -1,5 +1,6 @@
 import { createClient } from '@sanity/client';
 import imageUrlBuilder from '@sanity/image-url';
+import { slugify } from './utils';
 
 export const SANITY_PROJECT_ID = import.meta.env.VITE_SANITY_PROJECT_ID || 'pbxpf8xj';
 export const SANITY_DATASET = import.meta.env.VITE_SANITY_DATASET || 'production';
@@ -73,6 +74,14 @@ function normalizeSanityArticle(item: any): any {
     return item;
   }
 
+  // Ensure slug is clean slugified string
+  const rawSlug = typeof item.slug === 'string' ? item.slug : item.slug?.current || '';
+  if (rawSlug) {
+    item.slug = slugify(rawSlug);
+  } else if (item.title) {
+    item.slug = slugify(item.title);
+  }
+
   // Normalize content/body if it's PortableText array
   if (item.content && Array.isArray(item.content)) {
     item.content = portableTextToMarkdown(item.content);
@@ -126,7 +135,7 @@ export const GROQ_QUERIES = {
     })
   }`,
 
-  ARTICLE_BY_SLUG: `*[_type in ["article", "post"] && slug.current == $slug][0] {
+  ARTICLE_BY_SLUG: `*[_type in ["article", "post"] && (slug.current == $slug || slug.current == $slugified || title == $slug || _id == $slug)][0] {
     "id": _id,
     title,
     "slug": slug.current,

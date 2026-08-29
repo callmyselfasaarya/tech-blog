@@ -7,6 +7,7 @@ import { BlurFade } from '../ui/BlurFade';
 import { Card, CardContent, CardFooter } from '../ui/card';
 import { Badge } from '../ui/Badge';
 import { Tooltip } from '../ui/tooltip';
+import { slugify } from '../../lib/utils';
 
 interface ArticleListProps {
   articles: Article[];
@@ -47,10 +48,12 @@ export const ArticleList: React.FC<ArticleListProps> = ({ articles, isLoading })
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {articles.map((article, idx) => (
-        <BlurFade key={article.id} delay={0.04 * idx} yOffset={20}>
-          <Card className="p-[14px] sm:p-4 group border-[#E7E6E1] dark:border-[#27272A] hover:border-[#121214]/30 dark:hover:border-white/30 hover:shadow-lg transition-all duration-300 flex flex-col justify-between h-full bg-white dark:bg-[#18181B] rounded-2xl">
-            <Link to={`/article/${article.slug}`} className="block flex-1">
+      {articles.map((article, idx) => {
+        const targetSlug = slugify(article.slug || article.title);
+        return (
+          <BlurFade key={article.id} delay={0.04 * idx} yOffset={20}>
+            <Card className="p-[14px] sm:p-4 group border-[#E7E6E1] dark:border-[#27272A] hover:border-[#121214]/30 dark:hover:border-white/30 hover:shadow-lg transition-all duration-300 flex flex-col justify-between h-full bg-white dark:bg-[#18181B] rounded-2xl">
+              <Link to={`/article/${targetSlug}`} className="block flex-1">
               {/* Card Thumbnail Image Container */}
               <div className="overflow-hidden rounded-xl aspect-[16/11] relative mb-3.5 bg-[#F2F1EC] dark:bg-[#121215] border border-[#E7E6E1] dark:border-[#27272A]">
                 {article.coverImage ? (
@@ -118,7 +121,8 @@ export const ArticleList: React.FC<ArticleListProps> = ({ articles, isLoading })
             </CardFooter>
           </Card>
         </BlurFade>
-      ))}
+      );
+    })}
     </div>
   );
 };

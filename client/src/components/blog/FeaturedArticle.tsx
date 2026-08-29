@@ -4,12 +4,15 @@ import { motion } from 'framer-motion';
 import { Badge } from '../ui/Badge';
 import { Article } from '../../types';
 import { ArrowUpRight, Clock } from 'lucide-react';
+import { slugify } from '../../lib/utils';
 
 interface FeaturedArticleProps {
   article: Article;
 }
 
 export const FeaturedArticle: React.FC<FeaturedArticleProps> = ({ article }) => {
+  const targetSlug = slugify(article.slug || article.title);
+
   return (
     <section className="mb-14 pb-12 border-b border-[#E7E6E1] dark:border-[#27272A]">
       <div className="flex items-center gap-2 mb-4">
@@ -20,7 +23,7 @@ export const FeaturedArticle: React.FC<FeaturedArticleProps> = ({ article }) => 
         </span>
       </div>
 
-      <Link to={`/article/${article.slug}`} className="group block">
+      <Link to={`/article/${targetSlug}`} className="group block">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Main Editorial Text Column */}
           <div className={`${article.coverImage ? 'lg:col-span-7' : 'lg:col-span-12'}`}>

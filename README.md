@@ -1,54 +1,57 @@
 # Techniccal — Software Architecture, AI & Engineering Journal
 
-> **Techniccal** is a modern, high-performance technology publication and headless CMS platform designed for high-signal engineering dispatches, software architecture blueprints, AI research, and career insights. Built with React 19, Vite 6, TypeScript, Tailwind CSS v4, Framer Motion, Express.js, MongoDB, and Sanity Studio v3.
+> **Techniccal** is a minimalist personal author website, independent technical publication, and headless CMS platform. Inspired by the editorial feel of modern writer publications, it delivers high-signal software engineering dispatches, distributed systems architecture blueprints, AI research notes, and tech culture essays with generous whitespace and zero clutter.
 
 ---
 
 ## 📌 Table of Contents
 
-- [🌟 Overview \& Key Highlights](#-overview--key-highlights)
-- [🎨 Brand Identity \& Design System](#-brand-identity--design-system)
-- [🏛️ Workspace Monorepo Architecture](#-workspace-monorepo-architecture)
-- [🗺️ Complete Website Route Hierarchy](#-complete-website-route-hierarchy)
+- [🌟 Overview & Site Details](#-overview--site-details)
+- [🎨 Brand Identity & Design Aesthetic](#-brand-identity--design-aesthetic)
+- [🗺️ Complete Website Structure & Pages](#-complete-website-structure--pages)
 - [📝 15-Point Article Anatomy Specification](#-15-point-article-anatomy-specification)
 - [🎨 Sanity Studio Headless CMS (`studio-techniccal`)](#-sanity-studio-headless-cms-studio-techniccal)
+- [🏛️ Workspace Monorepo Architecture](#-workspace-monorepo-architecture)
 - [👑 5-Tier Role-Based Access Control (RBAC)](#-5-tier-role-based-access-control-rbac)
-- [🔐 Security \& Authentication Architecture](#-security--authentication-architecture)
+- [🔐 Security & Authentication Architecture](#-security--authentication-architecture)
 - [⚙️ Environment Variables Reference](#️-environment-variables-reference)
-- [☁️ Production Deployment Guides](#️-production-deployment-guides)
-- [🚀 Quickstart \& Local Development](#-quickstart--local-development)
-- [🔑 Seed Test Accounts \& Production Management](#-seed-test-accounts--production-management)
+- [🚀 Quickstart & Local Development](#-quickstart--local-development)
 
 ---
 
-## 🌟 Overview & Key Highlights
+## 🌟 Overview & Site Details
 
-**Techniccal** is an open-source, production-grade technical journal and publishing engine. It delivers deep-dive software engineering articles, distributed systems tutorials, machine learning benchmarks, and developer workflows with zero bloat and instant page loads.
+**Techniccal** is built to showcase technical writing and software engineering dispatches with an editorial emphasis on readability, typography, and subtle micro-animations.
 
-### Core Stack & Features
-- **Frontend App (`client/`)**: React 19 + Vite 6 + TypeScript SPA with Tailwind CSS v4, TanStack Query v5 state management, Framer Motion micro-animations, and Lenis smooth scrolling.
-- **Backend API (`server/`)**: Express.js REST API powered by Node.js, MongoDB / Mongoose v8, dual-token JWT authentication (Access & HTTP-only Refresh tokens), SHA-256 hashed token rotation, and RBAC guards.
-- **Headless CMS (`studio-techniccal/`)**: Sanity Studio v3 (`pbxpf8xj` / `production`) for real-time editorial content authoring, structured schemas, GROQ query API, and asset pipeline.
-- **Admin CMS Dashboard**: Built-in React administrative control panel (`/admin`) for managing articles, category taxonomies, subscriber lists, media uploads, and user roles.
+### Site Profile & Brand Details
+- **Site Name**: Techniccal
+- **Tagline**: Software Architecture, AI & Engineering Journal
+- **Author Identity**: Techniccal Editorial / Software Engineer · AI Builder · Writer
+- **Location**: From Tamil Nadu with ♡
+- **Primary Topics**: Software Engineering, Artificial Intelligence, Systems, Technology, Startups, Productivity, Design, and Personal Experiments.
+- **Brand Personality**: Thoughtful, technical, intelligent, understated, modern, editorial, human.
 
 ---
 
-## 🎨 Brand Identity & Design System
+## 🎨 Brand Identity & Design Aesthetic
 
-Techniccal features a technical precision design system rooted in an engineering grid aesthetic:
+Techniccal enforces a calm paper-like editorial aesthetic avoiding generic SaaS tropes (no heavy gradients, no neon colors, no rounded card clutter):
 
-- **Geometric T Monogram**: Custom SVG vector monogram engineered with grid crosshairs, dashed alignment guides, and clean geometric wings.
-- **Editorial Palette**:
-  - **Deep Obsidian**: `#1C1C1E` / `#09090B` (Primary dark canvas & high-contrast surfaces)
-  - **Editorial Cream**: `#F6F5F0` / `#FBFBFA` (Warm paper background for daylight reading)
-  - **Technical Graphite**: `#4C586F` (Subtitles & metadata label accents)
-  - **Electric Cobalt**: `#3B719F` (Interactive callouts, tag badges, and accents)
-  - **Border Gray**: `#E1E1E1` / `#2C2C30` (Precise architectural grid borders)
-- **Typography Matrix**:
-  - **Headings & Display**: `Manrope` / `Geist` (Modern geometric sans)
-  - **Editorial Body**: `Source Serif 4` (Optimized serif typeface for technical reading)
-  - **Interface UI**: `Inter` (Clean navigational UI)
-  - **Code & Specs**: `JetBrains Mono` (Monospaced code blocks and metadata specs)
+- **Palette**:
+  - **Paper Light**: `#FBFBFA` / `#FAF9F5` (Warm off-white background)
+  - **Dark Canvas**: `#0C0C0D` / `#121214` (Deep obsidian dark mode)
+  - **Primary Ink**: `#1C1C1E` / `#F6F5F0` (High-contrast typography)
+  - **Secondary Text**: `#4C586F` / `#8E8E93` (Muted gray subtitles & metadata)
+  - **Technical Cobalt**: `#3B719F` / `#5B9AD5` (Monospaced tag highlights & links)
+  - **Border Gray**: `#E1E1E1` / `#2C2C30` (Precise paper grid borders)
+- **Typography**:
+  - **Serif Headings**: `font-serif` (Editorial headlines & article titles)
+  - **Sans Interface**: `font-sans` (Clean UI text & navigation)
+  - **Monospace Metadata**: `font-mono` (Category tags, dates, reading times, code blocks)
+- **Motion Principles**:
+  - Soft scroll reveals with `BlurFade` (`opacity: 0 -> 1`, `y: 16px -> 0px`).
+  - Active tab spring sliding pill indicators (`layoutId="activeCategoryPill"`).
+  - Subtle card hover scale (`scale-105`) & arrow slide animations.
 
 ---
 

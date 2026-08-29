@@ -58,7 +58,15 @@ router.get('/admin', authenticate, authorize('EDITOR', 'ADMIN', 'SUPER_ADMIN'), 
 // 3. Get Article by Slug
 router.get('/:slug', async (req, res) => {
   try {
-    const article = await Article.findOne({ slug: req.params.slug });
+    const rawSlug = req.params.slug;
+    const slugifiedParam = rawSlug.toLowerCase().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '');
+    const article = await Article.findOne({
+      $or: [
+        { slug: rawSlug },
+        { slug: slugifiedParam },
+        { title: new RegExp(`^${rawSlug.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') }
+      ]
+    });
     if (!article) {
       return res.status(404).json({ error: 'Article not found.' });
     }
@@ -72,6 +80,7 @@ router.get('/:slug', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch article: ' + error.message });
   }
 });
+
 
 // 4. Create Article (Editor+)
 router.post('/', authenticate, authorize('EDITOR', 'ADMIN', 'SUPER_ADMIN'), async (req, res) => {

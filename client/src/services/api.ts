@@ -227,14 +227,39 @@ export const api = {
   },
 
   getArticleBySlug: async (slug: string): Promise<Article | null> => {
+    const cleanSlug = slugify(slug);
     try {
-      const sanityArticle = await sanityFetch<Article>(GROQ_QUERIES.ARTICLE_BY_SLUG, { slug });
+      const sanityArticle = await sanityFetch<Article>(GROQ_QUERIES.ARTICLE_BY_SLUG, { slug, slugified: cleanSlug });
       if (sanityArticle) return sanityArticle;
     } catch (e) {
       console.warn('Sanity getArticleBySlug error:', e);
     }
+
+    try {
+      const res = await fetch(`/api/articles/${encodeURIComponent(cleanSlug || slug)}`, {
+        signal: AbortSignal.timeout(FAST_TIMEOUT)
+      });
+      if (res.ok) {
+        const article = await res.json();
+        if (article) return { ...article, slug: slugify(article.slug || article.title) };
+      }
+    } catch (e) {}
+
+    const localArticles = LocalStore.getArticles();
+    const match = localArticles.find(
+      (a) =>
+        a.slug === cleanSlug ||
+        slugify(a.slug || '') === cleanSlug ||
+        slugify(a.title || '') === cleanSlug ||
+        a.id === slug
+    );
+    if (match) {
+      return { ...match, slug: slugify(match.slug || match.title) };
+    }
+
     return null;
   },
+
 
   createArticle: async (articleData: Partial<Article>): Promise<Article> => {
     try {
