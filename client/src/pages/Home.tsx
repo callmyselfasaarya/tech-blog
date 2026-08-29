@@ -6,7 +6,7 @@ import { api } from '../services/api';
 import { motion } from 'framer-motion';
 
 export const Home: React.FC = () => {
-  const [articles, setArticles] = useState<Article[]>(() => api.getArticlesSync('ALL'));
+  const [articles, setArticles] = useState<Article[]>([]);
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -63,7 +63,7 @@ export const Home: React.FC = () => {
   }, [articles]);
 
   const socialLinks = [
-    { label: 'GitHub', url: 'https://github.com/callmyselfasaarya' },
+    { label: 'GitHub', url: 'https://github.com/callmyselfasaarya/tech-blog' },
     { label: 'LinkedIn', url: 'https://linkedin.com' },
     { label: 'X (Twitter)', url: 'https://x.com' },
     { label: 'Email', url: 'mailto:hello@example.com' },

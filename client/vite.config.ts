@@ -17,6 +17,11 @@ export default defineConfig({
       '/api': {
         target: 'http://localhost:5000',
         changeOrigin: true,
+        configure: (proxy) => {
+          proxy.on('error', (_err, _req, _res) => {
+            // Silently swallow ECONNREFUSED proxy errors when Express dev server is offline
+          });
+        },
       },
     },
   },

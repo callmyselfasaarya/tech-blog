@@ -21,7 +21,7 @@ export const About: React.FC = () => {
             About me
           </h1>
           <p className="text-lg sm:text-xl text-[#4C586F] dark:text-[#A0A9B8] font-sans leading-relaxed">
-            Software engineer, AI builder, and technical writer based in Tamil Nadu. Exploring systems, artificial intelligence, and software craftsmanship.
+            Software Engineer, AI Builder, and Technical Writer based in India. Exploring Systems, Artificial Intelligence, and Software Craftsmanship.
           </p>
         </div>
 
@@ -29,13 +29,13 @@ export const About: React.FC = () => {
         <div className="md:col-span-4 space-y-2">
           <div className="aspect-[4/5] rounded-xl overflow-hidden border border-[#E1E1E1] dark:border-[#2C2C30] bg-[#E8E7E2] dark:bg-[#1A1A1D]">
             <img
-              src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80"
-              alt="Techniccal"
+              src="/Aarya.jpeg"
+              alt="Aarya Lekshmanan"
               className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500"
             />
           </div>
           <p className="text-[11px] font-mono text-[#6E6E73] dark:text-[#8E8E93] text-center">
-            Techniccal — Engineering & Blog
+            Aarya Lekshmanan — Engineering & Blog
           </p>
         </div>
       </motion.section>

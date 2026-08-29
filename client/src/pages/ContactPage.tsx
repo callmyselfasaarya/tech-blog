@@ -25,8 +25,8 @@ export const ContactPage: React.FC = () => {
   };
 
   const socialLinks = [
-    { label: 'Email', url: 'mailto:hello@example.com', icon: Mail },
-    { label: 'LinkedIn', url: 'https://linkedin.com', icon: Linkedin },
+    { label: 'Email', url: 'mailto:thisisaarya@gmail.com', icon: Mail },
+    { label: 'LinkedIn', url: 'https://linkedin.com/aarya-lekshmanan', icon: Linkedin },
     { label: 'GitHub', url: 'https://github.com/callmyselfasaarya', icon: Github },
     { label: 'X (Twitter)', url: 'https://x.com', icon: Twitter },
   ];

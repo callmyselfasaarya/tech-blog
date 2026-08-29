@@ -8,28 +8,32 @@ interface BlurFadeProps {
   yOffset?: number;
   blur?: string;
   className?: string;
+  inView?: boolean;
 }
 
 export const BlurFade: React.FC<BlurFadeProps> = ({
   children,
   delay = 0,
-  duration = 0.3,
-  yOffset = 10,
-  blur = '2px',
+  duration = 0.5,
+  yOffset = 16,
+  blur = '4px',
   className = '',
+  inView = false,
 }) => {
+  const motionProps = inView
+    ? {
+        initial: { opacity: 0, y: yOffset, filter: `blur(${blur})` },
+        whileInView: { opacity: 1, y: 0, filter: 'blur(0px)' },
+        viewport: { once: true, margin: '-50px' },
+      }
+    : {
+        initial: { opacity: 0, y: yOffset, filter: `blur(${blur})` },
+        animate: { opacity: 1, y: 0, filter: 'blur(0px)' },
+      };
+
   return (
     <motion.div
-      initial={{
-        opacity: 0.95,
-        y: yOffset,
-        filter: `blur(${blur})`,
-      }}
-      animate={{
-        opacity: 1,
-        y: 0,
-        filter: 'blur(0px)',
-      }}
+      {...motionProps}
       transition={{
         duration,
         delay,
@@ -41,3 +45,4 @@ export const BlurFade: React.FC<BlurFadeProps> = ({
     </motion.div>
   );
 };
+

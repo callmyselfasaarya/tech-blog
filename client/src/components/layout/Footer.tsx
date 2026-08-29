@@ -117,22 +117,22 @@ export const Footer: React.FC = () => {
             <span className="text-[10px] font-mono font-bold tracking-widest text-[#3B719F] uppercase block mb-3">CONNECT</span>
             <ul className="space-y-2.5 font-mono text-xs text-[#4C586F] dark:text-[#A0A9B8]">
               <li>
-                <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#1C1C1E] dark:hover:text-[#F6F5F0] transition-colors">
+                <a href="https://github.com/callmyselfasaarya" target="_blank" rel="noopener noreferrer" className="hover:text-[#1C1C1E] dark:hover:text-[#F6F5F0] transition-colors">
                   GitHub ↗
                 </a>
               </li>
               <li>
-                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#1C1C1E] dark:hover:text-[#F6F5F0] transition-colors">
+                <a href="https://linkedin.com/in/aarya-lekshmanan" target="_blank" rel="noopener noreferrer" className="hover:text-[#1C1C1E] dark:hover:text-[#F6F5F0] transition-colors">
                   LinkedIn ↗
                 </a>
               </li>
               <li>
-                <a href="https://x.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#1C1C1E] dark:hover:text-[#F6F5F0] transition-colors">
+                <a href="https://x.com/_its_aarya_" target="_blank" rel="noopener noreferrer" className="hover:text-[#1C1C1E] dark:hover:text-[#F6F5F0] transition-colors">
                   X (Twitter) ↗
                 </a>
               </li>
               <li>
-                <a href="mailto:hello@example.com" className="hover:text-[#1C1C1E] dark:hover:text-[#F6F5F0] transition-colors">
+                <a href="mailto:thisisaarya29@gmail.com" className="hover:text-[#1C1C1E] dark:hover:text-[#F6F5F0] transition-colors">
                   Email Me ↗
                 </a>
               </li>

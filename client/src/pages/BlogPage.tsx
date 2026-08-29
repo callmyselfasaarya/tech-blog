@@ -68,19 +68,29 @@ export const BlogPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
         {/* Category Pills */}
         <div className="flex flex-wrap items-center gap-2 font-mono text-xs">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
-              className={`px-3 py-1.5 rounded-full transition-all cursor-pointer ${
-                selectedCategory === cat
-                  ? 'bg-[#1C1C1E] text-white dark:bg-[#F6F5F0] dark:text-[#1C1C1E] font-bold'
-                  : 'bg-[#FAF9F5] dark:bg-[#141416] text-[#6E6E73] dark:text-[#98989F] border border-[#E1E1E1] dark:border-[#2C2C30] hover:border-[#3B719F]'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
+          {categories.map((cat) => {
+            const isSelected = selectedCategory === cat;
+            return (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                className={`relative px-3.5 py-1.5 rounded-full transition-colors cursor-pointer ${
+                  isSelected
+                    ? 'text-white dark:text-[#1C1C1E] font-bold'
+                    : 'text-[#6E6E73] dark:text-[#98989F] hover:text-[#1C1C1E] dark:hover:text-[#F6F5F0] bg-[#FAF9F5] dark:bg-[#141416] border border-[#E1E1E1] dark:border-[#2C2C30]'
+                }`}
+              >
+                {isSelected && (
+                  <motion.div
+                    layoutId="activeCategoryPill"
+                    className="absolute inset-0 bg-[#1C1C1E] dark:bg-[#F6F5F0] rounded-full -z-0"
+                    transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                  />
+                )}
+                <span className="relative z-10">{cat}</span>
+              </button>
+            );
+          })}
         </div>
 
         {/* Search Bar */}
