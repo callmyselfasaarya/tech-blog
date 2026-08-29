@@ -22,6 +22,17 @@ export const TechniccalMonogram: React.FC<{ className?: string; color?: string }
       className={className}
       aria-label="Techniccal Geometric T Monogram"
     >
+      {/* Background Engineering Grid Ticks */}
+      <line x1="50" y1="5" x2="50" y2="95" stroke={color} strokeWidth="0.75" strokeDasharray="2 2" opacity="0.35" />
+      <line x1="5" y1="18" x2="95" y2="18" stroke={color} strokeWidth="0.75" strokeDasharray="2 2" opacity="0.35" />
+      <line x1="5" y1="36" x2="95" y2="36" stroke={color} strokeWidth="0.75" strokeDasharray="2 2" opacity="0.25" />
+      <line x1="5" y1="86" x2="95" y2="86" stroke={color} strokeWidth="0.75" strokeDasharray="2 2" opacity="0.25" />
+
+      {/* Grid Intersection Crosshairs */}
+      <circle cx="50" cy="18" r="1.5" fill={color} opacity="0.5" />
+      <circle cx="10" cy="18" r="1.5" fill={color} opacity="0.5" />
+      <circle cx="90" cy="18" r="1.5" fill={color} opacity="0.5" />
+
       {/* Left Wing & Stem */}
       <path
         d="M 10 18 H 47 V 36 C 47 52 44 66 44 86 H 31 V 48 C 31 34 24 34 10 34 V 18 Z"
@@ -131,11 +142,12 @@ export const TechniccalCompactLogo: React.FC<{ size?: 'sm' | 'md' | 'lg' }> = ({
 export const TechniccalLogo: React.FC<{
   form?: 'horizontal' | 'wordmark' | 'stacked' | 'badge';
   size?: 'sm' | 'md' | 'lg';
+  variant?: 'light' | 'dark' | 'auto';
   showSubtitle?: boolean;
   className?: string;
-}> = ({ form = 'horizontal', size = 'md', showSubtitle = true, className = '' }) => {
+}> = ({ form = 'horizontal', size = 'md', variant = 'auto', showSubtitle = true, className = '' }) => {
   if (form === 'wordmark') {
-    return <TechniccalWordmarkLogo size={size} className={className} />;
+    return <TechniccalWordmarkLogo size={size} variant={variant} className={className} />;
   }
 
   if (form === 'stacked') {
@@ -151,9 +163,17 @@ export const TechniccalLogo: React.FC<{
     <div className={`flex items-center gap-2.5 select-none ${className}`}>
       <TechniccalCompactLogo size={size} />
       <div className="flex flex-col">
-        <TechniccalWordmarkLogo size={size === 'sm' ? 'sm' : size === 'lg' ? 'lg' : 'md'} />
+        <TechniccalWordmarkLogo size={size === 'sm' ? 'sm' : size === 'lg' ? 'lg' : 'md'} variant={variant} />
         {showSubtitle && (
-          <span className="text-[10px] font-mono text-[#4C586F] dark:text-[#A8A29A] leading-none tracking-wider uppercase mt-0.5">
+          <span
+            className={`text-[10px] font-mono leading-none tracking-wider uppercase mt-0.5 ${
+              variant === 'light'
+                ? 'text-[#A0A9B8]'
+                : variant === 'dark'
+                ? 'text-[#4C586F]'
+                : 'text-[#4C586F] dark:text-[#A8A29A]'
+            }`}
+          >
             Engineering Journal
           </span>
         )}

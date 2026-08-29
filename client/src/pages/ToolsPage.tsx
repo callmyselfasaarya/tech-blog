@@ -50,24 +50,24 @@ export const ToolsPage: React.FC = () => {
   ];
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-8 py-10">
+    <div className="max-w-5xl mx-auto px-4 sm:px-8 py-10 font-sans">
       {/* Header Banner */}
       <section className="mb-14 text-center max-w-3xl mx-auto space-y-4">
         <BlurFade delay={0.05} yOffset={12}>
-          <Badge variant="pinned" className="px-4 py-1.5 text-xs font-mono font-medium rounded-full">
-            <Wrench className="w-4 h-4 mr-1 text-[#3B719F]" />
+          <Badge variant="pinned" className="px-4 py-1.5 text-xs font-mono font-medium rounded-full bg-[#F2F1EC] dark:bg-[#18181B] text-[#121214] dark:text-[#FAFAFA] border border-[#E7E6E1] dark:border-[#27272A]">
+            <Wrench className="w-4 h-4 mr-1 text-[#2563EB] dark:text-[#3B82F6]" />
             <span>/tools</span>
           </Badge>
         </BlurFade>
 
         <BlurFade delay={0.12} yOffset={18}>
-          <h1 className="font-display font-semibold text-4xl sm:text-6xl text-[#1C1C1E] dark:text-[#F6F5F0] tracking-tight">
+          <h1 className="font-display font-semibold text-4xl sm:text-6xl text-[#121214] dark:text-[#FAFAFA] tracking-tight">
             Developer Stack & Tools
           </h1>
         </BlurFade>
 
         <BlurFade delay={0.2} yOffset={16}>
-          <p className="text-base sm:text-lg text-[#4C586F] dark:text-[#A0A9B8] font-sans leading-relaxed">
+          <p className="text-base sm:text-lg text-[#4A4A52] dark:text-[#A1A1AA] font-sans leading-relaxed">
             A curated inventory of the open-source libraries, compilers, inference engines, and developer tools used to write Techniccal benchmarks.
           </p>
         </BlurFade>
@@ -80,9 +80,9 @@ export const ToolsPage: React.FC = () => {
           return (
             <BlurFade key={cat.name} delay={0.25 + idx * 0.1} yOffset={18}>
               <div>
-                <div className="flex items-center gap-2.5 mb-6 pb-2 border-b border-[#E1E1E1] dark:border-[#2C2C30]">
-                  <Icon className="w-5 h-5 text-[#1C1C1E] dark:text-[#F6F5F0]" />
-                  <h2 className="font-display font-semibold text-xl text-[#1C1C1E] dark:text-[#F6F5F0]">
+                <div className="flex items-center gap-2.5 mb-6 pb-2 border-b border-[#E7E6E1] dark:border-[#27272A]">
+                  <Icon className="w-5 h-5 text-[#121214] dark:text-[#FAFAFA]" />
+                  <h2 className="font-display font-semibold text-xl text-[#121214] dark:text-[#FAFAFA]">
                     {cat.name}
                   </h2>
                 </div>
@@ -96,20 +96,20 @@ export const ToolsPage: React.FC = () => {
                       rel="noreferrer"
                       className="group block"
                     >
-                      <Card className="p-5 hover:border-[#1C1C1E]/30 dark:hover:border-white/30 hover:shadow-md transition-all h-full">
+                      <Card className="p-5 border-[#E7E6E1] dark:border-[#27272A] bg-white dark:bg-[#18181B] hover:border-[#121214]/30 dark:hover:border-white/30 hover:shadow-md transition-all rounded-2xl h-full">
                         <CardContent className="p-0 space-y-2.5 flex flex-col justify-between h-full">
                           <div>
                             <div className="flex items-center justify-between mb-2">
-                              <Badge variant="secondary" className="text-[10px]">
+                              <Badge variant="secondary" className="text-[10px] bg-[#F2F1EC] dark:bg-[#09090B] text-[#121214] dark:text-[#FAFAFA] border border-[#E7E6E1] dark:border-[#27272A]">
                                 {t.tag}
                               </Badge>
-                              <ArrowUpRight className="w-4 h-4 text-[#7E8798] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                              <ArrowUpRight className="w-4 h-4 text-[#74747E] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                             </div>
-                            <h3 className="font-display font-semibold text-base text-[#1C1C1E] dark:text-[#F6F5F0] group-hover:text-[#3B719F] dark:group-hover:text-[#60A5FA] transition-colors">
+                            <h3 className="font-display font-semibold text-base text-[#121214] dark:text-[#FAFAFA] group-hover:text-[#2563EB] dark:group-hover:text-[#3B82F6] transition-colors">
                               {t.name}
                             </h3>
                           </div>
-                          <p className="text-xs text-[#4C586F] dark:text-[#A0A9B8] leading-relaxed">
+                          <p className="text-xs text-[#4A4A52] dark:text-[#A1A1AA] leading-relaxed">
                             {t.desc}
                           </p>
                         </CardContent>

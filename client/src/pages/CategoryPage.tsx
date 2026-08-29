@@ -42,15 +42,15 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({
   const getIcon = () => {
     switch (category.toLowerCase()) {
       case 'ai':
-        return <Cpu className="w-6 h-6 text-[#3B719F]" />;
+        return <Cpu className="w-4 h-4 text-blue-600 dark:text-blue-400" />;
       case 'programming':
-        return <Terminal className="w-6 h-6 text-[#1C1C1E] dark:text-white" />;
+        return <Terminal className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />;
       case 'career':
-        return <Briefcase className="w-6 h-6 text-[#4C586F]" />;
+        return <Briefcase className="w-4 h-4 text-amber-600 dark:text-amber-400" />;
       case 'projects':
-        return <Code className="w-6 h-6 text-[#3B719F]" />;
+        return <Code className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />;
       default:
-        return <Terminal className="w-6 h-6" />;
+        return <Terminal className="w-4 h-4" />;
     }
   };
 
@@ -59,20 +59,20 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({
       {/* Category Header Banner */}
       <section className="mb-12 text-center max-w-3xl mx-auto space-y-4">
         <BlurFade delay={0.05} yOffset={12}>
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#E8E7E2] dark:bg-[#222225] border border-[#E1E1E1] dark:border-[#2C2C30] text-xs font-mono font-medium text-[#4C586F] dark:text-[#A0A9B8]">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#F2F1EC] dark:bg-[#18181B] border border-[#E7E6E1] dark:border-[#27272A] text-xs font-mono font-medium text-[#4A4A52] dark:text-[#A1A1AA]">
             {getIcon()}
             <span>/{category.toLowerCase()}</span>
           </div>
         </BlurFade>
 
         <BlurFade delay={0.12} yOffset={18}>
-          <h1 className="font-display font-semibold text-4xl sm:text-6xl text-[#1C1C1E] dark:text-[#F6F5F0] tracking-tight">
+          <h1 className="font-display font-semibold text-4xl sm:text-6xl text-[#121214] dark:text-[#FAFAFA] tracking-tight">
             {title}
           </h1>
         </BlurFade>
 
         <BlurFade delay={0.2} yOffset={16}>
-          <p className="text-base sm:text-lg text-[#4C586F] dark:text-[#A0A9B8] font-sans leading-relaxed">
+          <p className="text-base sm:text-lg text-[#4A4A52] dark:text-[#A1A1AA] font-sans leading-relaxed">
             {description}
           </p>
         </BlurFade>

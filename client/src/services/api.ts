@@ -1,29 +1,19 @@
 import { Article, Category, NewsletterIssue, Subscriber, User, MediaItem } from '../types';
-import { 
-  INITIAL_ARTICLES, 
-  INITIAL_CATEGORIES, 
-  INITIAL_NEWSLETTER_ISSUES, 
-  INITIAL_SUBSCRIBERS, 
-  INITIAL_MEDIA,
-  MOCK_USER 
-} from '../data/mockData';
-
-import { INITIAL_USERS } from '../data/mockData';
 import { sanityFetch, GROQ_QUERIES } from '../lib/sanity';
 
 // Local storage key helpers
 const STORAGE_KEYS = {
-  ARTICLES: 'techniccal_v2_articles',
-  CATEGORIES: 'techniccal_v2_categories',
-  NEWSLETTER: 'techniccal_v2_newsletter',
-  SUBSCRIBERS: 'techniccal_v2_subscribers',
-  MEDIA: 'techniccal_v2_media',
-  USERS: 'techniccal_v2_users',
-  ACTIVE_USER: 'techniccal_v2_active_user',
-  AUTH: 'techniccal_v2_auth_token'
+  ARTICLES: 'techniccal_v3_articles',
+  CATEGORIES: 'techniccal_v3_categories',
+  NEWSLETTER: 'techniccal_v3_newsletter',
+  SUBSCRIBERS: 'techniccal_v3_subscribers',
+  MEDIA: 'techniccal_v3_media',
+  USERS: 'techniccal_v3_users',
+  ACTIVE_USER: 'techniccal_v3_active_user',
+  AUTH: 'techniccal_v3_auth_token'
 };
 
-// Initialize Storage with mock data if empty
+// Initialize Storage with empty fallback if empty
 function getStored<T>(key: string, initial: T): T {
   try {
     const item = localStorage.getItem(key);
@@ -44,7 +34,7 @@ function setStored<T>(key: string, value: T): void {
 // In-Memory Fallback Store
 class LocalStore {
   static getArticles(): Article[] {
-    return getStored(STORAGE_KEYS.ARTICLES, INITIAL_ARTICLES);
+    return getStored(STORAGE_KEYS.ARTICLES, []);
   }
 
   static saveArticles(articles: Article[]): void {
@@ -52,7 +42,7 @@ class LocalStore {
   }
 
   static getCategories(): Category[] {
-    return getStored(STORAGE_KEYS.CATEGORIES, INITIAL_CATEGORIES);
+    return getStored(STORAGE_KEYS.CATEGORIES, []);
   }
 
   static saveCategories(categories: Category[]): void {
@@ -60,7 +50,7 @@ class LocalStore {
   }
 
   static getSubscribers(): Subscriber[] {
-    return getStored(STORAGE_KEYS.SUBSCRIBERS, INITIAL_SUBSCRIBERS);
+    return getStored(STORAGE_KEYS.SUBSCRIBERS, []);
   }
 
   static saveSubscribers(subs: Subscriber[]): void {
@@ -68,7 +58,7 @@ class LocalStore {
   }
 
   static getMedia(): MediaItem[] {
-    return getStored(STORAGE_KEYS.MEDIA, INITIAL_MEDIA);
+    return getStored(STORAGE_KEYS.MEDIA, []);
   }
 
   static saveMedia(media: MediaItem[]): void {
@@ -76,7 +66,7 @@ class LocalStore {
   }
 
   static getUsers(): User[] {
-    return getStored(STORAGE_KEYS.USERS, INITIAL_USERS);
+    return getStored(STORAGE_KEYS.USERS, []);
   }
 
   static saveUsers(users: User[]): void {
@@ -284,6 +274,12 @@ export const api = {
       excerpt: articleData.excerpt || title,
       content,
       coverImage: articleData.coverImage || 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=1200&q=80',
+      author: articleData.author || {
+        name: 'Techniccal Editorial Desk',
+        avatar: '',
+        bio: 'Engineering research and technical analysis publication.',
+        role: 'Editorial Desk'
+      },
       category: articleData.category || 'WRITING',
       tags: articleData.tags || ['Article'],
       publishedAt: articleData.publishedAt || new Date().toISOString().split('T')[0],
@@ -292,9 +288,8 @@ export const api = {
       pinned: articleData.pinned || false,
       status: articleData.status || 'draft',
       views: 0,
-      author: articleData.author || INITIAL_ARTICLES[0].author,
       seo: articleData.seo || {
-        title: `${title} — Aether Editorial`,
+        title: `${title} — Techniccal Editorial`,
         description: articleData.excerpt || title,
         keywords: articleData.tags || ['writing']
       }
@@ -477,7 +472,11 @@ export const api = {
   },
 
   getNewsletterIssues: async (): Promise<NewsletterIssue[]> => {
-    return INITIAL_NEWSLETTER_ISSUES;
+    try {
+      const res = await fetch('/api/newsletter/issues', { signal: AbortSignal.timeout(FAST_TIMEOUT) });
+      if (res.ok) return await res.json();
+    } catch (e) {}
+    return [];
   },
 
   // Media Library
@@ -718,30 +717,22 @@ export const api = {
     const found = users.find(u => u.email.toLowerCase() === email.toLowerCase());
     
     if (found) {
-      const token = `mock-token-${found.role.toLowerCase()}-${Date.now()}`;
+      const token = `token-${found.role.toLowerCase()}-${Date.now()}`;
       localStorage.setItem(STORAGE_KEYS.AUTH, token);
       setStored(STORAGE_KEYS.ACTIVE_USER, found);
       return { token, user: found };
     }
 
-    if (email === 'admin@aether.blog' && password === 'admin123') {
-      const adminUser = users.find(u => u.role === 'ADMIN') || INITIAL_USERS[1];
-      const token = 'mock-jwt-token-aether-admin-2026';
-      localStorage.setItem(STORAGE_KEYS.AUTH, token);
-      setStored(STORAGE_KEYS.ACTIVE_USER, adminUser);
-      return { token, user: adminUser };
-    }
-
-    throw new Error('Invalid email or password. Use demo account selector on login page.');
+    throw new Error('Invalid email or password.');
   },
 
   loginAsRole: (role: User['role']): User => {
     const users = LocalStore.getUsers();
     let target = users.find(u => u.role === role);
     if (!target) {
-      target = INITIAL_USERS.find(u => u.role === role) || INITIAL_USERS[0];
+      throw new Error(`No local user account found for role ${role}. Please log in via API backend.`);
     }
-    const token = `mock-token-${role.toLowerCase()}-active`;
+    const token = `token-${role.toLowerCase()}-active`;
     localStorage.setItem(STORAGE_KEYS.AUTH, token);
     setStored(STORAGE_KEYS.ACTIVE_USER, target);
     return target;
@@ -798,7 +789,7 @@ export const api = {
   getCurrentUser: (): User | null => {
     const token = localStorage.getItem(STORAGE_KEYS.AUTH);
     if (!token) return null;
-    return getStored<User | null>(STORAGE_KEYS.ACTIVE_USER, INITIAL_USERS[0]);
+    return getStored<User | null>(STORAGE_KEYS.ACTIVE_USER, null);
   },
 
   logout: async (): Promise<void> => {

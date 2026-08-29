@@ -9,7 +9,7 @@ export const client = createClient({
   projectId: SANITY_PROJECT_ID,
   dataset: SANITY_DATASET,
   apiVersion: SANITY_API_VERSION,
-  useCdn: true, // Enabled CDN for high availability and public access in deployed environments
+  useCdn: true
 });
 
 export const sanityClient = client;

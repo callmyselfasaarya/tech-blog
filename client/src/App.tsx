@@ -27,6 +27,8 @@ const About = lazy(() => import('./pages/About').then((m) => ({ default: m.About
 const Letters = lazy(() => import('./pages/Letters').then((m) => ({ default: m.Letters })));
 const Archive = lazy(() => import('./pages/Archive').then((m) => ({ default: m.Archive })));
 const SignUp = lazy(() => import('./pages/SignUp').then((m) => ({ default: m.SignUp })));
+const LoginUser = lazy(() => import('./pages/LoginUser').then((m) => ({ default: m.LoginUser })));
+const ForgotPassword = lazy(() => import('./pages/ForgotPassword').then((m) => ({ default: m.ForgotPassword })));
 const MemberPortal = lazy(() => import('./pages/MemberPortal').then((m) => ({ default: m.MemberPortal })));
 const ResetPassword = lazy(() => import('./pages/ResetPassword').then((m) => ({ default: m.ResetPassword })));
 const VerifyEmail = lazy(() => import('./pages/VerifyEmail').then((m) => ({ default: m.VerifyEmail })));
@@ -63,7 +65,7 @@ export const App: React.FC = () => {
       <LenisProvider>
         <AuthProvider>
           <ThemeProvider>
-          <Suspense fallback={<div className="min-h-screen bg-[#F4F2F0] dark:bg-[#161514]" />}>
+          <Suspense fallback={<div className="min-h-screen bg-[#FBFBFA] dark:bg-[#09090B]" />}>
             {isAdminRoute ? (
               /* Admin CMS Routing Frame */
               <Routes>
@@ -82,7 +84,7 @@ export const App: React.FC = () => {
               </Routes>
             ) : (
               /* Public Editorial Reader Frame */
-              <div className="min-h-screen flex flex-col lg:flex-row bg-[#F4F2F0] dark:bg-[#161514] text-[#1A1918] dark:text-[#F4F2F0] transition-colors duration-300">
+              <div className="min-h-screen flex flex-col lg:flex-row bg-[#FBFBFA] dark:bg-[#09090B] text-[#121214] dark:text-[#FAFAFA] transition-colors duration-300">
                 {/* Desktop Fixed Left Sidebar */}
                 <div className="hidden lg:block">
                   <Sidebar onOpenSearch={() => setIsSearchOpen(true)} />
@@ -144,6 +146,9 @@ export const App: React.FC = () => {
                       <Route path="/article/:slug" element={<ArticlePage />} />
                       <Route path="/letters" element={<Letters />} />
                       <Route path="/archive" element={<Archive />} />
+                      <Route path="/login" element={<LoginUser />} />
+                      <Route path="/register" element={<SignUp />} />
+                      <Route path="/forgot-password" element={<ForgotPassword />} />
                       <Route path="/sign-up" element={<SignUp />} />
                       <Route path="/account" element={<MemberPortal />} />
                       <Route path="/reset-password" element={<ResetPassword />} />
@@ -153,7 +158,7 @@ export const App: React.FC = () => {
                   </div>
 
                   {/* Editorial Footer */}
-                  <div className="max-w-4xl mx-auto w-full px-4 sm:px-8">
+                  <div className="max-w-7xl mx-auto w-full px-4 sm:px-8">
                     <Footer />
                   </div>
                 </main>

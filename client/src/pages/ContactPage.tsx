@@ -64,70 +64,69 @@ export const ContactPage: React.FC = () => {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <label className="block text-xs font-sans text-[#4C586F] dark:text-[#A0A9B8] mb-1.5">
-                    Your Name *
+                <div className="space-y-1.5">
+                  <label className="block text-xs font-mono text-[#4C586F] dark:text-[#A0A9B8] font-semibold">
+                    YOUR NAME
                   </label>
                   <input
                     type="text"
-                    placeholder="Ada Lovelace"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     required
-                    className="w-full px-4 py-2.5 text-xs rounded-xl bg-[#F6F5F0] dark:bg-[#141416] border border-[#E1E1E1] dark:border-[#2C2C30] text-[#1C1C1E] dark:text-[#F6F5F0] placeholder-[#7E8798] focus:outline-none focus:ring-1 focus:ring-[#1C1C1E]"
+                    placeholder="Alex Rivera"
+                    className="w-full px-4 py-2.5 text-xs font-mono rounded bg-[#F6F5F0] dark:bg-[#1C1C1E] border border-[#E1E1E1] dark:border-[#2C2C30] text-[#1C1C1E] dark:text-[#F6F5F0] placeholder-[#7E8798] focus:outline-none focus:ring-1 focus:ring-[#3B719F]"
                   />
                 </div>
 
-                <div>
-                  <label className="block text-xs font-sans text-[#4C586F] dark:text-[#A0A9B8] mb-1.5">
-                    Work Email *
+                <div className="space-y-1.5">
+                  <label className="block text-xs font-mono text-[#4C586F] dark:text-[#A0A9B8] font-semibold">
+                    EMAIL ADDRESS
                   </label>
                   <input
                     type="email"
-                    placeholder="ada@company.com"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     required
-                    className="w-full px-4 py-2.5 text-xs rounded-xl bg-[#F6F5F0] dark:bg-[#141416] border border-[#E1E1E1] dark:border-[#2C2C30] text-[#1C1C1E] dark:text-[#F6F5F0] placeholder-[#7E8798] focus:outline-none focus:ring-1 focus:ring-[#1C1C1E]"
+                    placeholder="alex@organization.com"
+                    className="w-full px-4 py-2.5 text-xs font-mono rounded bg-[#F6F5F0] dark:bg-[#1C1C1E] border border-[#E1E1E1] dark:border-[#2C2C30] text-[#1C1C1E] dark:text-[#F6F5F0] placeholder-[#7E8798] focus:outline-none focus:ring-1 focus:ring-[#3B719F]"
                   />
                 </div>
 
-                <div>
-                  <label className="block text-xs font-sans text-[#4C586F] dark:text-[#A0A9B8] mb-1.5">
-                    Inquiry Topic
+                <div className="space-y-1.5">
+                  <label className="block text-xs font-mono text-[#4C586F] dark:text-[#A0A9B8] font-semibold">
+                    INQUIRY CATEGORY
                   </label>
                   <select
                     value={formData.subject}
                     onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                    className="w-full px-4 py-2.5 text-xs rounded-xl bg-[#F6F5F0] dark:bg-[#141416] border border-[#E1E1E1] dark:border-[#2C2C30] text-[#1C1C1E] dark:text-[#F6F5F0] focus:outline-none focus:ring-1 focus:ring-[#1C1C1E]"
+                    className="w-full px-4 py-2.5 text-xs font-mono rounded bg-[#F6F5F0] dark:bg-[#1C1C1E] border border-[#E1E1E1] dark:border-[#2C2C30] text-[#1C1C1E] dark:text-[#F6F5F0] focus:outline-none focus:ring-1 focus:ring-[#3B719F]"
                   >
-                    <option value="General Inquiry">General Technical Inquiry</option>
-                    <option value="Sponsorship">Sponsorship & Advertising</option>
-                    <option value="Editorial Contribution">Guest Writing & Editorial</option>
-                    <option value="Bug Report">Bug Report or Feedback</option>
+                    <option value="Editorial">Editorial (Article proposals & pitches)</option>
+                    <option value="Partnerships">Partnerships (Technical collaborations)</option>
+                    <option value="Sponsorship">Sponsorship (Newsletter & journal placement)</option>
+                    <option value="General">General (Questions & feedback)</option>
                   </select>
                 </div>
 
-                <div>
-                  <label className="block text-xs font-sans text-[#4C586F] dark:text-[#A0A9B8] mb-1.5">
-                    Message *
+                <div className="space-y-1.5">
+                  <label className="block text-xs font-mono text-[#4C586F] dark:text-[#A0A9B8] font-semibold">
+                    MESSAGE
                   </label>
                   <textarea
-                    rows={4}
-                    placeholder="Write your message details..."
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                     required
-                    className="w-full px-4 py-2.5 text-xs rounded-xl bg-[#F6F5F0] dark:bg-[#141416] border border-[#E1E1E1] dark:border-[#2C2C30] text-[#1C1C1E] dark:text-[#F6F5F0] placeholder-[#7E8798] focus:outline-none focus:ring-1 focus:ring-[#1C1C1E] resize-none"
+                    rows={5}
+                    placeholder="Provide detailed technical background or proposal details..."
+                    className="w-full px-4 py-2.5 text-xs font-mono rounded bg-[#F6F5F0] dark:bg-[#1C1C1E] border border-[#E1E1E1] dark:border-[#2C2C30] text-[#1C1C1E] dark:text-[#F6F5F0] placeholder-[#7E8798] focus:outline-none focus:ring-1 focus:ring-[#3B719F]"
                   />
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full py-3 px-4 text-xs font-semibold rounded-xl bg-[#1C1C1E] dark:bg-white text-white dark:text-[#1C1C1E] hover:opacity-90 transition-opacity cursor-pointer flex items-center justify-center gap-2 shadow-xs"
+                  className="w-full py-3 text-xs font-mono font-bold tracking-wider rounded bg-[#1C1C1E] dark:bg-[#F6F5F0] text-[#F6F5F0] dark:text-[#1C1C1E] hover:opacity-90 transition-opacity cursor-pointer uppercase shadow-xs flex items-center justify-center gap-2"
                 >
-                  <Send className="w-3.5 h-3.5" />
-                  Send Message
+                  <Send className="w-3.5 h-3.5" /> SEND INQUIRY
                 </button>
               </form>
             )}

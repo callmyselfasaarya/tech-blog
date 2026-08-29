@@ -20,32 +20,7 @@ interface ArticleCommentsProps {
 }
 
 export const ArticleComments: React.FC<ArticleCommentsProps> = ({ articleId, articleTitle }) => {
-  const [comments, setComments] = useState<CommentItem[]>([
-    {
-      id: 'c1',
-      name: 'Sarah Chen',
-      avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80',
-      date: '2 hours ago',
-      text: 'Great breakdown of distributed event streaming! The section on partition balancing helped me solve a rebalance storm we were facing in production.',
-      likes: 12,
-    },
-    {
-      id: 'c2',
-      name: 'Marcus Vance',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80',
-      date: '5 hours ago',
-      text: 'Would love to see a follow-up article comparing Kafka log compaction vs Redis Streams memory limits under 100k msg/sec workloads.',
-      likes: 8,
-    },
-    {
-      id: 'c3',
-      name: 'Elena Rostova',
-      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80',
-      date: '1 day ago',
-      text: 'Clear, concise, and zero fluff. Appreciate the real-world Go code examples!',
-      likes: 5,
-    },
-  ]);
+  const [comments, setComments] = useState<CommentItem[]>([]);
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');

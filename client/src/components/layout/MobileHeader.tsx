@@ -33,7 +33,7 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({ onOpenSearch }) => {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <header className="lg:hidden sticky top-0 z-40 bg-[#F6F5F0]/90 dark:bg-[#141416]/90 backdrop-blur-md border-b border-[#E1E1E1] dark:border-[#2C2C30] px-4 py-3 font-poppins">
+    <header className="lg:hidden sticky top-0 z-40 bg-[#FBFBFA]/90 dark:bg-[#09090B]/90 backdrop-blur-md border-b border-[#E7E6E1] dark:border-[#27272A] px-4 py-3 font-sans">
       <div className="flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2">
           <TechniccalLogo size="sm" />
@@ -43,7 +43,7 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({ onOpenSearch }) => {
           {onOpenSearch && (
             <button
               onClick={onOpenSearch}
-              className="p-2 rounded-xl text-[#4C586F] dark:text-[#A0A9B8] hover:bg-[#E8E7E2] dark:hover:bg-[#222225]"
+              className="p-2 rounded-xl text-[#74747E] dark:text-[#A1A1AA] hover:bg-[#F2F1EC] dark:hover:bg-[#18181B] transition-colors"
             >
               <Search className="w-5 h-5" />
             </button>
@@ -51,7 +51,7 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({ onOpenSearch }) => {
 
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="p-2 rounded-xl text-[#1C1C1E] dark:text-[#F6F5F0] hover:bg-[#E8E7E2] dark:hover:bg-[#222225]"
+            className="p-2 rounded-xl text-[#121214] dark:text-[#FAFAFA] hover:bg-[#F2F1EC] dark:hover:bg-[#18181B] transition-colors"
           >
             {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -60,13 +60,13 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({ onOpenSearch }) => {
 
       {/* Mobile Drawer */}
       {isOpen && (
-        <div className="fixed inset-x-0 top-[57px] bg-[#F6F5F0] dark:bg-[#141416] border-b border-[#E1E1E1] dark:border-[#2C2C30] p-6 shadow-xl space-y-6 max-h-[85vh] overflow-y-auto">
+        <div className="fixed inset-x-0 top-[57px] bg-[#FBFBFA] dark:bg-[#09090B] border-b border-[#E7E6E1] dark:border-[#27272A] p-6 shadow-xl space-y-6 max-h-[85vh] overflow-y-auto z-50">
           <nav className="space-y-1">
             <Link
               to="/"
               onClick={() => setIsOpen(false)}
               className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium ${
-                isActive('/') ? 'bg-white dark:bg-[#222225] font-semibold text-[#1C1C1E] dark:text-white' : 'text-[#4C586F] dark:text-[#A0A9B8]'
+                isActive('/') ? 'bg-white dark:bg-[#18181B] font-semibold text-[#121214] dark:text-white border border-[#E7E6E1] dark:border-[#27272A]' : 'text-[#4A4A52] dark:text-[#A1A1AA]'
               }`}
             >
               <Home className="w-4 h-4" /> Home
@@ -76,7 +76,7 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({ onOpenSearch }) => {
               to="/blog"
               onClick={() => setIsOpen(false)}
               className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium ${
-                isActive('/blog') ? 'bg-white dark:bg-[#222225] font-semibold text-[#1C1C1E] dark:text-white' : 'text-[#4C586F] dark:text-[#A0A9B8]'
+                isActive('/blog') ? 'bg-white dark:bg-[#18181B] font-semibold text-[#121214] dark:text-white border border-[#E7E6E1] dark:border-[#27272A]' : 'text-[#4A4A52] dark:text-[#A1A1AA]'
               }`}
             >
               <BookOpen className="w-4 h-4" /> All Articles
@@ -86,67 +86,67 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({ onOpenSearch }) => {
               to="/ai"
               onClick={() => setIsOpen(false)}
               className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium ${
-                isActive('/ai') ? 'bg-white dark:bg-[#222225] font-semibold text-[#1C1C1E] dark:text-white' : 'text-[#4C586F] dark:text-[#A0A9B8]'
+                isActive('/ai') ? 'bg-white dark:bg-[#18181B] font-semibold text-[#121214] dark:text-white border border-[#E7E6E1] dark:border-[#27272A]' : 'text-[#4A4A52] dark:text-[#A1A1AA]'
               }`}
             >
-              <Cpu className="w-4 h-4 text-[#3B719F]" /> AI Articles
+              <Cpu className="w-4 h-4 text-blue-600 dark:text-blue-400" /> AI Articles
             </Link>
 
             <Link
               to="/programming"
               onClick={() => setIsOpen(false)}
               className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium ${
-                isActive('/programming') ? 'bg-white dark:bg-[#222225] font-semibold text-[#1C1C1E] dark:text-white' : 'text-[#4C586F] dark:text-[#A0A9B8]'
+                isActive('/programming') ? 'bg-white dark:bg-[#18181B] font-semibold text-[#121214] dark:text-white border border-[#E7E6E1] dark:border-[#27272A]' : 'text-[#4A4A52] dark:text-[#A1A1AA]'
               }`}
             >
-              <Terminal className="w-4 h-4" /> Programming
+              <Terminal className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> Programming
             </Link>
 
             <Link
               to="/career"
               onClick={() => setIsOpen(false)}
               className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium ${
-                isActive('/career') ? 'bg-white dark:bg-[#222225] font-semibold text-[#1C1C1E] dark:text-white' : 'text-[#4C586F] dark:text-[#A0A9B8]'
+                isActive('/career') ? 'bg-white dark:bg-[#18181B] font-semibold text-[#121214] dark:text-white border border-[#E7E6E1] dark:border-[#27272A]' : 'text-[#4A4A52] dark:text-[#A1A1AA]'
               }`}
             >
-              <Briefcase className="w-4 h-4 text-[#4C586F]" /> Jobs / Career
+              <Briefcase className="w-4 h-4 text-amber-600 dark:text-amber-400" /> Jobs / Career
             </Link>
 
             <Link
               to="/projects"
               onClick={() => setIsOpen(false)}
               className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium ${
-                isActive('/projects') ? 'bg-white dark:bg-[#222225] font-semibold text-[#1C1C1E] dark:text-white' : 'text-[#4C586F] dark:text-[#A0A9B8]'
+                isActive('/projects') ? 'bg-white dark:bg-[#18181B] font-semibold text-[#121214] dark:text-white border border-[#E7E6E1] dark:border-[#27272A]' : 'text-[#4A4A52] dark:text-[#A1A1AA]'
               }`}
             >
-              <Code className="w-4 h-4 text-[#3B719F]" /> Projects
+              <Code className="w-4 h-4 text-indigo-600 dark:text-indigo-400" /> Projects
             </Link>
 
             <Link
               to="/tools"
               onClick={() => setIsOpen(false)}
               className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium ${
-                isActive('/tools') ? 'bg-white dark:bg-[#222225] font-semibold text-[#1C1C1E] dark:text-white' : 'text-[#4C586F] dark:text-[#A0A9B8]'
+                isActive('/tools') ? 'bg-white dark:bg-[#18181B] font-semibold text-[#121214] dark:text-white border border-[#E7E6E1] dark:border-[#27272A]' : 'text-[#4A4A52] dark:text-[#A1A1AA]'
               }`}
             >
-              <Wrench className="w-4 h-4" /> Tools
+              <Wrench className="w-4 h-4 text-purple-600 dark:text-purple-400" /> Tools
             </Link>
 
             <Link
               to="/newsletter"
               onClick={() => setIsOpen(false)}
               className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium ${
-                isActive('/newsletter') ? 'bg-white dark:bg-[#222225] font-semibold text-[#1C1C1E] dark:text-white' : 'text-[#4C586F] dark:text-[#A0A9B8]'
+                isActive('/newsletter') ? 'bg-white dark:bg-[#18181B] font-semibold text-[#121214] dark:text-white border border-[#E7E6E1] dark:border-[#27272A]' : 'text-[#4A4A52] dark:text-[#A1A1AA]'
               }`}
             >
-              <Mail className="w-4 h-4 text-[#3B719F]" /> Newsletter
+              <Mail className="w-4 h-4 text-[#2563EB] dark:text-[#3B82F6]" /> Newsletter
             </Link>
 
             <Link
               to="/about"
               onClick={() => setIsOpen(false)}
               className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium ${
-                isActive('/about') ? 'bg-white dark:bg-[#222225] font-semibold text-[#1C1C1E] dark:text-white' : 'text-[#4C586F] dark:text-[#A0A9B8]'
+                isActive('/about') ? 'bg-white dark:bg-[#18181B] font-semibold text-[#121214] dark:text-white border border-[#E7E6E1] dark:border-[#27272A]' : 'text-[#4A4A52] dark:text-[#A1A1AA]'
               }`}
             >
               <Info className="w-4 h-4" /> About
@@ -156,20 +156,20 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({ onOpenSearch }) => {
               to="/contact"
               onClick={() => setIsOpen(false)}
               className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium ${
-                isActive('/contact') ? 'bg-white dark:bg-[#222225] font-semibold text-[#1C1C1E] dark:text-white' : 'text-[#4C586F] dark:text-[#A0A9B8]'
+                isActive('/contact') ? 'bg-white dark:bg-[#18181B] font-semibold text-[#121214] dark:text-white border border-[#E7E6E1] dark:border-[#27272A]' : 'text-[#4A4A52] dark:text-[#A1A1AA]'
               }`}
             >
               <Send className="w-4 h-4" /> Contact
             </Link>
           </nav>
 
-          <div className="pt-4 border-t border-[#E1E1E1] dark:border-[#2C2C30] flex items-center justify-between">
+          <div className="pt-4 border-t border-[#E7E6E1] dark:border-[#27272A] flex items-center justify-between">
             <button
               onClick={toggleTheme}
-              className="flex items-center gap-2 text-xs font-mono text-[#7E8798]"
+              className="flex items-center gap-2 text-xs font-mono text-[#74747E]"
             >
               {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-              <span>Toggle Theme</span>
+              <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
             </button>
           </div>
         </div>

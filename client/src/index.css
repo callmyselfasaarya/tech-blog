@@ -23,17 +23,14 @@
     --brand-blue: #3B719F;
     --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
     --font-display: 'Manrope', 'Inter', system-ui, sans-serif;
-    --font-poppins: 'Poppins', 'Inter', system-ui, sans-serif;
-    --font-signature: 'Alex Brush', 'Allura', 'Great Vibes', cursive;
     --font-serif: 'Source Serif 4', Georgia, serif;
-    --font-serif-italic: 'Instrument Serif', 'Source Serif 4', Georgia, serif;
     --font-editorial: 'Source Serif 4', Georgia, serif;
     --font-mono: 'JetBrains Mono', monospace;
   }
 
   .dark {
-    --bg-primary: #141416;
-    --bg-secondary: #1C1C1E;
+    --bg-primary: #1C1C1E;
+    --bg-secondary: #252528;
     --bg-card: #222225;
     --border-subtle: #2C2C30;
     --border-strong: #3E3E44;
@@ -51,6 +48,27 @@
   html {
     @apply font-sans;
   }
+}
+
+/* Subtle Engineering Grid Aesthetic Utilities */
+.engineering-grid {
+  background-size: 32px 32px;
+  background-image: 
+    linear-gradient(to right, rgba(76, 88, 111, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(76, 88, 111, 0.05) 1px, transparent 1px);
+}
+
+.dark .engineering-grid {
+  background-image: 
+    linear-gradient(to right, rgba(225, 225, 225, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(225, 225, 225, 0.04) 1px, transparent 1px);
+}
+
+.blueprint-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
 }
 
 html {

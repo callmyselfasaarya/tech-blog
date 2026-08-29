@@ -50,23 +50,22 @@ export const BlogPage: React.FC = () => {
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-8 py-10">
       {/* Header Banner */}
-      <section className="mb-10 text-center max-w-3xl mx-auto space-y-4">
+      <section className="mb-10 text-center max-w-3xl mx-auto space-y-3">
         <BlurFade delay={0.05} yOffset={12}>
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#E8E7E2] dark:bg-[#222225] border border-[#E1E1E1] dark:border-[#2C2C30] text-xs font-mono font-medium text-[#4C586F] dark:text-[#A0A9B8]">
-            <BookOpen className="w-4 h-4 text-[#3B719F]" />
-            <span>/blog</span>
-          </div>
+          <span className="text-[10px] font-mono font-bold tracking-widest text-[#3B719F] uppercase bg-[#E8E7E2] dark:bg-[#252528] px-3 py-1 rounded border border-[#E1E1E1] dark:border-[#2C2C30]">
+            TECHNICAL ARCHIVE // DISPATCHES
+          </span>
         </BlurFade>
 
-        <BlurFade delay={0.12} yOffset={18}>
-          <h1 className="font-display font-semibold text-4xl sm:text-6xl text-[#1C1C1E] dark:text-[#F6F5F0] tracking-tight">
-            All Engineering Dispatches
+        <BlurFade delay={0.1} yOffset={16}>
+          <h1 className="font-display font-extrabold text-4xl sm:text-5xl text-[#1C1C1E] dark:text-[#F6F5F0] tracking-tight">
+            ALL DISPATCHES
           </h1>
         </BlurFade>
 
-        <BlurFade delay={0.2} yOffset={16}>
-          <p className="text-base sm:text-lg text-[#4C586F] dark:text-[#A0A9B8] font-sans leading-relaxed">
-            Browse our complete archive of software architecture breakdowns, distributed systems essays, and AI benchmarks.
+        <BlurFade delay={0.15} yOffset={16}>
+          <p className="text-base text-[#4C586F] dark:text-[#A0A9B8] font-serif">
+            A technical archive for builders.
           </p>
         </BlurFade>
       </section>
@@ -75,13 +74,13 @@ export const BlogPage: React.FC = () => {
       <BlurFade delay={0.28} yOffset={16}>
         <section className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
           <div className="relative w-full sm:w-80">
-            <Search className="w-4 h-4 text-[#7E8798] absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-[#74747E] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="text"
               placeholder="Search all tech articles..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-4 py-2.5 text-xs rounded-xl bg-white dark:bg-[#222225] border border-[#E1E1E1] dark:border-[#2C2C30] text-[#1C1C1E] dark:text-[#F6F5F0] placeholder-[#7E8798] focus:outline-none focus:ring-1 focus:ring-[#1C1C1E] transition-all"
+              className="w-full pl-9 pr-4 py-2.5 text-xs rounded-xl bg-white dark:bg-[#18181B] border border-[#E7E6E1] dark:border-[#27272A] text-[#121214] dark:text-[#FAFAFA] placeholder-[#74747E] focus:outline-none focus:ring-1 focus:ring-[#121214] dark:focus:ring-white transition-all shadow-xs"
             />
           </div>
 
@@ -89,7 +88,7 @@ export const BlogPage: React.FC = () => {
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="w-full sm:w-auto appearance-none bg-white dark:bg-[#222225] border border-[#E1E1E1] dark:border-[#2C2C30] text-[#1C1C1E] dark:text-[#F6F5F0] text-xs rounded-xl px-4 py-2.5 pr-9 font-medium cursor-pointer focus:outline-none focus:ring-1 focus:ring-[#1C1C1E]"
+              className="w-full sm:w-auto appearance-none bg-white dark:bg-[#18181B] border border-[#E7E6E1] dark:border-[#27272A] text-[#121214] dark:text-[#FAFAFA] text-xs rounded-xl px-4 py-2.5 pr-9 font-medium cursor-pointer focus:outline-none focus:ring-1 focus:ring-[#121214] dark:focus:ring-white shadow-xs"
             >
               {categories.map((cat) => (
                 <option key={cat} value={cat}>
@@ -97,7 +96,7 @@ export const BlogPage: React.FC = () => {
                 </option>
               ))}
             </select>
-            <ChevronDown className="w-4 h-4 text-[#7E8798] absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <ChevronDown className="w-4 h-4 text-[#74747E] absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
           </div>
         </section>
       </BlurFade>
