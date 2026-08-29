@@ -31,10 +31,264 @@ function setStored<T>(key: string, value: T): void {
   }
 }
 
+const INITIAL_ARTICLES: Article[] = [
+  {
+    id: 'art-1',
+    title: 'Demystifying Continuous Integration',
+    slug: 'demystifying-continuous-integration',
+    excerpt: 'How CI improves development workflows, automated testing pipelines, and team delivery velocity.',
+    content: `# Demystifying Continuous Integration
+
+Continuous Integration (CI) is the cornerstone of modern software engineering. By merging code changes frequently into a central repository and executing automated build and test scripts, teams catch integration bugs early and maintain software quality at scale.
+
+## Why Continuous Integration Matters
+
+In traditional software development, developers worked in isolation for weeks or months before attempting to merge their branches. This inevitably led to "merge hell"—endless hours spent resolving conflicting changes, broken builds, and regression bugs.
+
+CI solves this by establishing a disciplined automated workflow:
+
+1. **Automated Validation**: Every pull request triggers an automated build matrix.
+2. **Fast Feedback Loops**: Developers learn within minutes if their commits break existing tests.
+3. **High Confidence Deployments**: Maintained master/main branches are always in a releasable state.
+
+\`\`\`yaml
+# Example GitHub Actions Workflow
+name: Continuous Integration
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci
+      - run: npm test
+\`\`\`
+
+## Key Best Practices
+
+- **Keep Builds Fast**: Optimize pipeline caching to keep build times under 5 minutes.
+- **Fix Broken Builds Immediately**: Treat main branch breakages as highest priority.
+- **Maintain High Test Coverage**: Combine unit tests, integration tests, and static linting.
+`,
+    coverImage: 'https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?auto=format&fit=crop&w=1200&q=80',
+    author: {
+      name: 'Techniccal',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80',
+      bio: 'Software Engineer & Systems Architect.',
+      role: 'Author'
+    },
+    category: 'PROGRAMMING',
+    tags: ['CI/CD', 'DevOps', 'Software Architecture', 'Testing'],
+    publishedAt: '01/06/25',
+    readingTime: '6 min read',
+    featured: true,
+    pinned: true,
+    status: 'published',
+    views: 1420
+  },
+  {
+    id: 'art-2',
+    title: 'The Philosophy of AI Ethics',
+    slug: 'philosophy-of-ai-ethics',
+    excerpt: 'Exploring algorithmic accountability, human alignment, and decision transparency in modern neural systems.',
+    content: `# The Philosophy of AI Ethics
+
+As machine learning systems transition from narrow predictive tools to general cognitive assistants, the ethical implications of automated decision-making demand rigorous philosophical examination.
+
+## Alignment, Agency, and Responsibility
+
+When an autonomous system makes a consequential decision—whether approving a loan, diagnosing a medical condition, or generating code—who bears accountability?
+
+- **Interpretability vs. Accuracy**: Deep neural networks often operate as high-dimensional black boxes.
+- **Value Alignment**: Ensuring artificial intelligence objectives match human ethical principles.
+- **Data Governance**: Addressing historical bias in training sets.
+
+> "Ethical AI is not merely a technical constraint; it is a foundational philosophy of engineering human-centric technology."
+`,
+    coverImage: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=1200&q=80',
+    author: {
+      name: 'Techniccal',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80',
+      bio: 'Software Engineer & Systems Architect.',
+      role: 'Author'
+    },
+    category: 'AI',
+    tags: ['AI Ethics', 'Machine Learning', 'Philosophy', 'Alignment'],
+    publishedAt: '01/12/25',
+    readingTime: '8 min read',
+    featured: true,
+    pinned: false,
+    status: 'published',
+    views: 980
+  },
+  {
+    id: 'art-3',
+    title: 'The Role of Empathy in Design',
+    slug: 'the-role-of-empathy-in-design',
+    excerpt: 'Why understanding people is still one of the most important parts of building technology.',
+    content: `# The Role of Empathy in Design
+
+Technology exists to serve human needs. Behind every screen, button, and interface is a human being attempting to accomplish a goal, solve a problem, or express an idea.
+
+## Empathy as a Core Technical Skill
+
+Engineers often view software through the lens of algorithmic efficiency, latency, and data structures. However, true system quality emerges when technical execution meets human empathy:
+
+1. **User Intention Over System Implementation**: Interfaces should reflect user mental models, not database schemas.
+2. **Cognitive Load Reduction**: Minimizing friction, unnecessary choices, and visual noise.
+3. **Accessibility First**: Designing for diverse physical abilities, environments, and devices.
+
+> "To design effectively is to listen deeply. Empathy transforms functional software into meaningful experiences."
+`,
+    coverImage: 'https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&w=1200&q=80',
+    author: {
+      name: 'Techniccal',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80',
+      bio: 'Software Engineer & Systems Architect.',
+      role: 'Author'
+    },
+    category: 'DESIGN',
+    tags: ['Design', 'UX', 'Empathy', 'Human Factors'],
+    publishedAt: '02/10/26',
+    readingTime: '5 min read',
+    featured: true,
+    pinned: false,
+    status: 'published',
+    views: 1120
+  },
+  {
+    id: 'art-4',
+    title: 'Why Walking Clears the Mind',
+    slug: 'why-walking-clears-the-mind',
+    excerpt: 'The surprising benefits of slowing down, movement, and subconscious problem solving.',
+    content: `# Why Walking Clears the Mind
+
+Some of history's greatest thinkers—from Nietzsche and Darwin to Steve Jobs—relied on long walks to solve complex intellectual problems.
+
+## Cognitive Benefits of Walking
+
+1. **Default Mode Network (DMN)**: Walking stimulates incubation, allowing the brain to connect non-obvious ideas.
+2. **Mental Reset**: Stepping away from screens lowers cognitive fatigue and restores attention span.
+3. **Physical Rhythm**: Steady walking pace creates a meditative cadence conducive to deep thought.
+`,
+    coverImage: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1200&q=80',
+    author: {
+      name: 'Techniccal',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80',
+      bio: 'Software Engineer & Systems Architect.',
+      role: 'Author'
+    },
+    category: 'PERSONAL',
+    tags: ['Productivity', 'Mindset', 'Creativity'],
+    publishedAt: '02/03/26',
+    readingTime: '4 min read',
+    featured: false,
+    pinned: false,
+    status: 'published',
+    views: 2100
+  },
+  {
+    id: 'art-5',
+    title: 'Why Nostalgia Shapes Modern Trends',
+    slug: 'why-nostalgia-shapes-modern-trends',
+    excerpt: 'Understanding why old ideas keep returning in digital interfaces and product culture.',
+    content: `# Why Nostalgia Shapes Modern Trends
+
+From skeumorphic UI elements returning in spatial computing to analog noise textures in modern web design, nostalgia remains one of the most potent drivers of human design preferences.
+
+## The Pendulum of Design Systems
+
+Modern web design has transitioned from extreme flat design back toward warm, tactile, and expressive aesthetics:
+
+1. **Textural Warmth**: Off-white paper backgrounds, subtle grid lines, and crisp typography.
+2. **Analog Signals**: Mechanical keyboard sound design, monospaced typography, and vinyl aesthetic.
+3. **Clarity and Focus**: Stripping away unnecessary clutter to highlight pure editorial content.
+`,
+    coverImage: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80',
+    author: {
+      name: 'Techniccal',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80',
+      bio: 'Software Engineer & Systems Architect.',
+      role: 'Author'
+    },
+    category: 'CULTURE',
+    tags: ['Design', 'Nostalgia', 'UI/UX', 'Trends'],
+    publishedAt: '11/20/25',
+    readingTime: '5 min read',
+    featured: false,
+    pinned: false,
+    status: 'published',
+    views: 1250
+  },
+  {
+    id: 'art-6',
+    title: 'Why Code Reviews Are Essential',
+    slug: 'why-code-reviews-are-essential',
+    excerpt: 'The power of peer collaboration, knowledge distribution, and code quality in software engineering.',
+    content: `# Why Code Reviews Are Essential
+
+Code review is far more than a bug-finding checklist. When practiced thoughtfully, it serves as a primary vehicle for team learning, architectural alignment, and psychological safety.
+
+## Key Benefits of Reviewing Code
+
+- **Shared Context**: Prevents single points of knowledge failure across codebases.
+- **Architectural Mentorship**: Provides continuous lightweight feedback and skill growth.
+- **Higher Code Maintainability**: Ensures consistent style, readability, and test coverage.
+`,
+    coverImage: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1200&q=80',
+    author: {
+      name: 'Techniccal',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80',
+      bio: 'Software Engineer & Systems Architect.',
+      role: 'Author'
+    },
+    category: 'ENGINEERING',
+    tags: ['Engineering', 'Code Review', 'Collaboration'],
+    publishedAt: '07/01/25',
+    readingTime: '6 min read',
+    featured: false,
+    pinned: false,
+    status: 'published',
+    views: 1850
+  },
+  {
+    id: 'art-7',
+    title: 'How AI Is Changing the Way We Work',
+    slug: 'how-ai-is-changing-the-way-we-work',
+    excerpt: 'AI tools, agentic workflows, and their profound impact on developer productivity.',
+    content: `# How AI Is Changing the Way We Work
+
+Generative models and autonomous coding agents are fundamentally restructuring how software engineers brainstorm, write, test, and deploy applications.
+
+## Shifting from Manual Syntax to System Architecture
+
+Rather than replacing developers, AI tools elevate the engineer's role from raw line-by-line syntax writing to high-level system architectural orchestration and validation.
+`,
+    coverImage: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80',
+    author: {
+      name: 'Techniccal',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80',
+      bio: 'Software Engineer & Systems Architect.',
+      role: 'Author'
+    },
+    category: 'AI',
+    tags: ['AI', 'Productivity', 'Future of Work'],
+    publishedAt: '01/16/25',
+    readingTime: '6 min read',
+    featured: false,
+    pinned: false,
+    status: 'published',
+    views: 2400
+  }
+];
+
 // In-Memory Fallback Store
 class LocalStore {
   static getArticles(): Article[] {
-    return getStored(STORAGE_KEYS.ARTICLES, []);
+    return getStored(STORAGE_KEYS.ARTICLES, INITIAL_ARTICLES);
   }
 
   static saveArticles(articles: Article[]): void {

@@ -1,11 +1,29 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { TechniccalLogo } from '../ui/TechniccalLogo';
 import { BlurFade } from '../ui/BlurFade';
 import { useLenis } from '../../context/LenisContext';
+import { ArrowUp } from 'lucide-react';
 
 export const Footer: React.FC = () => {
   const lenis = useLenis();
+  const [timeString, setTimeString] = useState<string>('');
+
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date();
+      setTimeString(
+        now.toLocaleTimeString('en-US', {
+          hour: 'numeric',
+          minute: '2-digit',
+          hour12: true,
+        })
+      );
+    };
+
+    updateTime();
+    const interval = setInterval(updateTime, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   const scrollToTop = () => {
     if (lenis) {
@@ -16,69 +34,137 @@ export const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="mt-20 pt-10 pb-16 border-t border-[#E1E1E1] dark:border-[#2C2C30] text-xs font-sans text-[#4C586F] dark:text-[#A0A9B8]">
-      <BlurFade delay={0.1} yOffset={16}>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 pb-10 border-b border-[#E1E1E1] dark:border-[#2C2C30]">
-          <div className="space-y-4 md:col-span-1">
-            <Link to="/">
-              <TechniccalLogo size="md" />
+    <footer className="mt-24 pt-12 pb-16 border-t border-[#E1E1E1] dark:border-[#2C2C30] text-[#121214] dark:text-[#FAFAFA] font-sans">
+      <BlurFade delay={0.1} yOffset={12}>
+        {/* Top Header Row: Author Name & Live Time */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-8 border-b border-[#E1E1E1] dark:border-[#2C2C30]">
+          <div>
+            <Link to="/" className="font-display font-bold text-xl sm:text-2xl tracking-tight text-[#1C1C1E] dark:text-[#F6F5F0] hover:text-[#3B719F] transition-colors">
+              Techniccal
             </Link>
-            <p className="text-xs text-[#4C586F] dark:text-[#A0A9B8] leading-relaxed">
-              Engineering research & systems publication exploring high-scale software, AI reasoning engines, and software architecture.
+            <p className="text-xs font-mono text-[#6E6E73] dark:text-[#98989F] mt-0.5">
+              Software Engineer / Builder / Writer
             </p>
-            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded bg-[#E8E7E2] dark:bg-[#252528] border border-[#E1E1E1] dark:border-[#2C2C30] text-[10px] font-mono text-[#3B719F]">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="font-bold uppercase tracking-wider">SYSTEM STATUS / OPERATIONAL</span>
-            </div>
           </div>
 
-          <div>
-            <h4 className="font-mono text-[11px] uppercase tracking-wider text-[#1C1C1E] dark:text-[#F6F5F0] font-semibold mb-3">
-              Editorial Sections
-            </h4>
-            <ul className="space-y-2 text-xs font-mono">
-              <li><Link to="/" className="hover:text-[#3B719F] transition-colors">INDEX / HOME</Link></li>
-              <li><Link to="/blog" className="hover:text-[#3B719F] transition-colors">ALL DISPATCHES</Link></li>
-              <li><Link to="/ai" className="hover:text-[#3B719F] transition-colors">AI & ML SYSTEMS</Link></li>
-              <li><Link to="/programming" className="hover:text-[#3B719F] transition-colors">PROGRAMMING</Link></li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-mono text-[11px] uppercase tracking-wider text-[#1C1C1E] dark:text-[#F6F5F0] font-semibold mb-3">
-              Resources & Tools
-            </h4>
-            <ul className="space-y-2 text-xs font-mono">
-              <li><Link to="/career" className="hover:text-[#3B719F] transition-colors">CAREER & LEADERSHIP</Link></li>
-              <li><Link to="/projects" className="hover:text-[#3B719F] transition-colors">PROJECT TUTORIALS</Link></li>
-              <li><Link to="/tools" className="hover:text-[#3B719F] transition-colors">DEVELOPER STACK</Link></li>
-              <li><Link to="/newsletter" className="hover:text-[#3B719F] transition-colors">WEEKLY DISPATCH</Link></li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-mono text-[11px] uppercase tracking-wider text-[#1C1C1E] dark:text-[#F6F5F0] font-semibold mb-3">
-              Journal & Account
-            </h4>
-            <ul className="space-y-2 text-xs font-mono">
-              <li><Link to="/about" className="hover:text-[#3B719F] transition-colors">ABOUT MANIFESTO</Link></li>
-              <li><Link to="/contact" className="hover:text-[#3B719F] transition-colors">CONTACT EDITORIAL</Link></li>
-              <li><Link to="/account" className="hover:text-[#3B719F] transition-colors">MEMBER PORTAL</Link></li>
-              <li><Link to="/login" className="hover:text-[#3B719F] transition-colors">READER SIGN IN</Link></li>
-            </ul>
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#E8E7E2]/60 dark:bg-[#252528]/80 border border-[#E1E1E1] dark:border-[#2C2C30] text-xs font-mono text-[#4C586F] dark:text-[#A0A9B8]">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="font-medium text-[#1C1C1E] dark:text-[#F6F5F0]">{timeString || '12:00 PM'}</span>
+            <span className="text-[10px] text-[#8E8E93]">LOCAL TIME</span>
           </div>
         </div>
 
-        <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] font-mono text-[#4C586F] dark:text-[#A0A9B8]">
-          <span>© 2026 TECHNICALL MEDIA INC. ALL RIGHTS RESERVED. // ISSUE 026</span>
-          <button
-            onClick={scrollToTop}
-            className="hover:text-[#3B719F] transition-colors cursor-pointer flex items-center gap-1 uppercase font-bold"
-          >
-            BACK TO TOP ↑
-          </button>
+        {/* Middle Navigation Grid */}
+        <div className="py-8 grid grid-cols-2 sm:grid-cols-4 gap-6 text-sm border-b border-[#E1E1E1] dark:border-[#2C2C30]">
+          <div>
+            <span className="text-[10px] font-mono font-bold tracking-widest text-[#3B719F] uppercase block mb-3">NAVIGATION</span>
+            <ul className="space-y-2.5 font-mono text-xs text-[#4C586F] dark:text-[#A0A9B8]">
+              <li>
+                <Link to="/" className="hover:text-[#1C1C1E] dark:hover:text-[#F6F5F0] transition-colors">
+                  Home
+                </Link>
+              </li>
+              <li>
+                <Link to="/blog" className="hover:text-[#1C1C1E] dark:hover:text-[#F6F5F0] transition-colors">
+                  Posts
+                </Link>
+              </li>
+              <li>
+                <Link to="/about" className="hover:text-[#1C1C1E] dark:hover:text-[#F6F5F0] transition-colors">
+                  About
+                </Link>
+              </li>
+              <li>
+                <Link to="/contact" className="hover:text-[#1C1C1E] dark:hover:text-[#F6F5F0] transition-colors">
+                  Contact
+                </Link>
+              </li>
+              <li>
+                <Link to="/newsletter" className="hover:text-[#1C1C1E] dark:hover:text-[#F6F5F0] transition-colors">
+                  Subscribe
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <span className="text-[10px] font-mono font-bold tracking-widest text-[#3B719F] uppercase block mb-3">TOPICS</span>
+            <ul className="space-y-2.5 font-mono text-xs text-[#4C586F] dark:text-[#A0A9B8]">
+              <li>
+                <Link to="/ai" className="hover:text-[#1C1C1E] dark:hover:text-[#F6F5F0] transition-colors">
+                  AI & ML Systems
+                </Link>
+              </li>
+              <li>
+                <Link to="/programming" className="hover:text-[#1C1C1E] dark:hover:text-[#F6F5F0] transition-colors">
+                  Software Architecture
+                </Link>
+              </li>
+              <li>
+                <Link to="/projects" className="hover:text-[#1C1C1E] dark:hover:text-[#F6F5F0] transition-colors">
+                  Build Blueprints
+                </Link>
+              </li>
+              <li>
+                <Link to="/tools" className="hover:text-[#1C1C1E] dark:hover:text-[#F6F5F0] transition-colors">
+                  Developer Tools
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <span className="text-[10px] font-mono font-bold tracking-widest text-[#3B719F] uppercase block mb-3">CONNECT</span>
+            <ul className="space-y-2.5 font-mono text-xs text-[#4C586F] dark:text-[#A0A9B8]">
+              <li>
+                <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#1C1C1E] dark:hover:text-[#F6F5F0] transition-colors">
+                  GitHub ↗
+                </a>
+              </li>
+              <li>
+                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#1C1C1E] dark:hover:text-[#F6F5F0] transition-colors">
+                  LinkedIn ↗
+                </a>
+              </li>
+              <li>
+                <a href="https://x.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#1C1C1E] dark:hover:text-[#F6F5F0] transition-colors">
+                  X (Twitter) ↗
+                </a>
+              </li>
+              <li>
+                <a href="mailto:hello@example.com" className="hover:text-[#1C1C1E] dark:hover:text-[#F6F5F0] transition-colors">
+                  Email Me ↗
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <span className="text-[10px] font-mono font-bold tracking-widest text-[#3B719F] uppercase block mb-3">LOCATION</span>
+            <p className="text-xs text-[#4C586F] dark:text-[#A0A9B8] leading-relaxed font-sans">
+              Based in Tamil Nadu, India. Writing dispatches on code, engineering, and artificial intelligence.
+            </p>
+          </div>
+        </div>
+
+        {/* Bottom Tagline & Copyright */}
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-[#6E6E73] dark:text-[#98989F]">
+          <div className="flex items-center gap-2">
+            <span>From Tamil Nadu with ♡</span>
+          </div>
+
+          <div className="flex items-center gap-6">
+            <span>© 2026 Techniccal. All rights reserved.</span>
+            <button
+              onClick={scrollToTop}
+              className="hover:text-[#1C1C1E] dark:hover:text-[#F6F5F0] transition-colors cursor-pointer flex items-center gap-1 uppercase font-semibold text-[11px]"
+            >
+              Top <ArrowUp className="w-3 h-3" />
+            </button>
+          </div>
         </div>
       </BlurFade>
     </footer>
   );
 };
+

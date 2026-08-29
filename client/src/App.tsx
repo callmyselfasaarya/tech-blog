@@ -6,11 +6,10 @@ import { LenisProvider } from './context/LenisContext';
 import { AuthProvider } from './context/AuthContext';
 
 // Layout Components
-import { Sidebar } from './components/layout/Sidebar';
+import { Header } from './components/layout/Header';
 import { Footer } from './components/layout/Footer';
 
 // Lazy Loaded Layout & Overlay Components
-const MobileHeader = lazy(() => import('./components/layout/MobileHeader').then((m) => ({ default: m.MobileHeader })));
 const SearchModal = lazy(() => import('./components/blog/SearchModal').then((m) => ({ default: m.SearchModal })));
 
 // Home Page (Loaded synchronously for instant initial load)
@@ -84,14 +83,9 @@ export const App: React.FC = () => {
               </Routes>
             ) : (
               /* Public Editorial Reader Frame */
-              <div className="min-h-screen flex flex-col lg:flex-row bg-[#FBFBFA] dark:bg-[#09090B] text-[#121214] dark:text-[#FAFAFA] transition-colors duration-300">
-                {/* Desktop Fixed Left Sidebar */}
-                <div className="hidden lg:block">
-                  <Sidebar onOpenSearch={() => setIsSearchOpen(true)} />
-                </div>
-
-                {/* Mobile Top Header Navigation */}
-                <MobileHeader onOpenSearch={() => setIsSearchOpen(true)} />
+              <div className="min-h-screen flex flex-col bg-[#FBFBFA] dark:bg-[#0C0C0D] text-[#1C1C1E] dark:text-[#F6F5F0] transition-colors duration-300">
+                {/* Minimal Sticky Top Navigation */}
+                <Header />
 
                 {/* Main Center Editorial Content Area */}
                 <main className="flex-1 min-w-0 min-h-screen flex flex-col justify-between">
@@ -99,6 +93,7 @@ export const App: React.FC = () => {
                     <Routes>
                       <Route path="/" element={<Home />} />
                       <Route path="/blog" element={<BlogPage />} />
+                      <Route path="/posts" element={<BlogPage />} />
                       <Route
                         path="/ai"
                         element={
@@ -141,6 +136,7 @@ export const App: React.FC = () => {
                       />
                       <Route path="/tools" element={<ToolsPage />} />
                       <Route path="/newsletter" element={<NewsletterPage />} />
+                      <Route path="/subscribe" element={<NewsletterPage />} />
                       <Route path="/about" element={<About />} />
                       <Route path="/contact" element={<ContactPage />} />
                       <Route path="/article/:slug" element={<ArticlePage />} />

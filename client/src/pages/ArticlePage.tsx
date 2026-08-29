@@ -276,6 +276,29 @@ export const ArticlePage: React.FC = () => {
               </div>
             </BlurFade>
 
+            {/* Bottom Article Pagination: Previous & Next Article */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-6 border-t border-[#E1E1E1] dark:border-[#2C2C30] text-xs font-mono">
+              <Link
+                to="/posts"
+                className="p-4 rounded-lg border border-[#E1E1E1] dark:border-[#2C2C30] bg-white dark:bg-[#222225] hover:border-[#3B719F] transition-all group flex flex-col justify-between space-y-2"
+              >
+                <span className="text-[10px] text-[#6E6E73] dark:text-[#8E8E93] uppercase font-bold">← PREVIOUS ARTICLE</span>
+                <span className="font-display text-sm font-semibold text-[#1C1C1E] dark:text-[#F6F5F0] group-hover:text-[#3B719F] transition-colors">
+                  Demystifying Continuous Integration
+                </span>
+              </Link>
+
+              <Link
+                to="/posts"
+                className="p-4 rounded-lg border border-[#E1E1E1] dark:border-[#2C2C30] bg-white dark:bg-[#222225] hover:border-[#3B719F] transition-all group flex flex-col justify-between space-y-2 text-right"
+              >
+                <span className="text-[10px] text-[#6E6E73] dark:text-[#8E8E93] uppercase font-bold">NEXT ARTICLE →</span>
+                <span className="font-display text-sm font-semibold text-[#1C1C1E] dark:text-[#F6F5F0] group-hover:text-[#3B719F] transition-colors">
+                  The Philosophy of AI Ethics
+                </span>
+              </Link>
+            </div>
+
             {/* 14. Discussion / Comments */}
             <ArticleComments articleId={article.id} articleTitle={article.title} />
 

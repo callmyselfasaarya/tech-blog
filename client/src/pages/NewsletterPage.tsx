@@ -1,115 +1,98 @@
 import React, { useState } from 'react';
-import { BlurFade } from '../components/ui/BlurFade';
-import { Mail, CheckCircle2, ShieldCheck, Zap } from 'lucide-react';
-import { TechniccalWordmarkLogo } from '../components/ui/TechniccalLogo';
+import { motion } from 'framer-motion';
+import { Check } from 'lucide-react';
+import { api } from '../services/api';
 
 export const NewsletterPage: React.FC = () => {
-  React.useEffect(() => {
-    window.scrollTo(0, 0);
-    document.title = 'Weekly Dispatch Newsletter — Techniccal';
-  }, []);
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email) {
+    if (!email) return;
+
+    setSubmitting(true);
+    try {
+      await api.subscribeNewsletter(email);
       setSubscribed(true);
-      setTimeout(() => setSubscribed(false), 4000);
       setEmail('');
+      setTimeout(() => setSubscribed(false), 6000);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  const perks = [
-    { title: 'Zero Hype, High Signal', desc: 'No fluff or clickbait. Only architectural benchmarks, code snippets, and system design patterns.' },
-    { title: 'Weekly Technical Deep-Dives', desc: 'Delivered every Tuesday morning directly to 25,000+ senior engineers and software architects.' },
-    { title: 'Exclusive Code Repositories', desc: 'Access private GitHub benchmark repositories and Docker Compose templates.' },
-  ];
-
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-8 py-10 font-sans">
-      {/* Header Banner */}
-      <section className="mb-12 text-center max-w-2xl mx-auto space-y-4">
-        <BlurFade delay={0.05} yOffset={12}>
-          <div className="inline-block px-4 py-1 rounded-full bg-[#F2F1EC] dark:bg-[#18181B] border border-[#E7E6E1] dark:border-[#27272A] text-xs font-sans font-medium text-[#121214] dark:text-[#FAFAFA]">
-            Techniccal Dispatch
+    <div className="max-w-3xl mx-auto px-4 sm:px-8 py-16 font-sans space-y-12">
+      <motion.section
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="space-y-4 pb-8 border-b border-[#E1E1E1] dark:border-[#2C2C30]"
+      >
+        <span className="text-xs font-mono font-bold tracking-widest text-[#3B719F] dark:text-[#5B9AD5] uppercase">
+          NEWSLETTER
+        </span>
+        <h1 className="font-serif text-4xl sm:text-6xl text-[#1C1C1E] dark:text-[#F6F5F0] tracking-tight">
+          NOTES IN YOUR INBOX
+        </h1>
+        <p className="text-base sm:text-lg text-[#4C586F] dark:text-[#A0A9B8] leading-relaxed">
+          Thoughts on technology, engineering, AI and whatever I'm currently exploring.
+        </p>
+      </motion.section>
+
+      <motion.section
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.1 }}
+      >
+        <div className="p-8 sm:p-12 rounded-2xl border border-[#E1E1E1] dark:border-[#2C2C30] bg-[#FAF9F5] dark:bg-[#121214] space-y-6">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-mono font-bold text-[#3B719F] uppercase">INBOX DISPATCHES</span>
+            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#E8E7E2] dark:bg-[#202024] text-[11px] font-mono text-[#1C1C1E] dark:text-[#F6F5F0] font-semibold">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              300+ readers
+            </span>
           </div>
-        </BlurFade>
 
-        <BlurFade delay={0.12} yOffset={18}>
-          <h1 className="font-display font-semibold text-4xl sm:text-6xl text-[#121214] dark:text-[#FAFAFA] tracking-tight">
-            The Weekly Engineering Dispatch
-          </h1>
-        </BlurFade>
-
-        <BlurFade delay={0.2} yOffset={16}>
-          <p className="text-base sm:text-lg text-[#4A4A52] dark:text-[#A1A1AA] font-sans leading-relaxed">
-            Join 25,000+ engineers, software architects, and tech leads getting weekly insights on distributed systems, AI infrastructure, and developer tooling.
-          </p>
-        </BlurFade>
-      </section>
-
-      {/* Subscribe Hero Card */}
-      <BlurFade delay={0.28} yOffset={20}>
-        <div className="bg-[#F2F1EC] dark:bg-[#18181B] p-8 sm:p-14 rounded-3xl border border-[#E7E6E1] dark:border-[#27272A] text-center max-w-3xl mx-auto mb-16 shadow-xs">
-          <div className="w-12 h-12 rounded-2xl bg-white dark:bg-[#09090B] border border-[#E7E6E1] dark:border-[#27272A] flex items-center justify-center mx-auto mb-6 text-[#121214] dark:text-white shadow-xs">
-            <Mail className="w-6 h-6 text-[#2563EB] dark:text-[#3B82F6]" />
-          </div>
-
-          <h2 className="font-display font-semibold text-2xl sm:text-3xl text-[#121214] dark:text-[#FAFAFA] mb-6">
-            Subscribe to Techniccal Dispatch
-          </h2>
-
-          <div className="max-w-md mx-auto">
-            {subscribed ? (
-              <div className="p-4 bg-green-500/10 border border-green-500/20 text-green-600 dark:text-green-400 text-xs rounded-2xl font-medium">
-                Welcome! You are now subscribed to the Techniccal Weekly Dispatch.
-              </div>
-            ) : (
-              <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row items-center justify-center gap-3">
+          {subscribed ? (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300 text-xs font-mono flex items-center gap-2"
+            >
+              <Check className="w-4 h-4" />
+              <span>You're on the list! Thank you for subscribing.</span>
+            </motion.div>
+          ) : (
+            <form onSubmit={handleSubscribe} className="space-y-4 max-w-lg">
+              <div className="flex flex-col sm:flex-row items-center gap-3">
                 <input
                   type="email"
+                  required
                   placeholder="Your email address"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="w-full sm:w-80 px-5 py-3 text-sm rounded-2xl bg-white dark:bg-[#09090B] border border-[#E7E6E1] dark:border-[#27272A] text-[#121214] dark:text-[#FAFAFA] placeholder-[#74747E] focus:outline-none focus:ring-1 focus:ring-[#121214] dark:focus:ring-white shadow-xs"
+                  className="w-full sm:flex-1 px-4 py-3 text-xs font-mono rounded-xl bg-white dark:bg-[#1A1A1E] border border-[#E1E1E1] dark:border-[#2C2C30] text-[#1C1C1E] dark:text-[#F6F5F0] placeholder-[#8E8E93] focus:outline-none focus:ring-1 focus:ring-[#3B719F]"
                 />
                 <button
                   type="submit"
-                  className="w-full sm:w-auto bg-[#121214] dark:bg-white text-white dark:text-[#121214] font-medium text-sm px-8 py-3 rounded-2xl hover:opacity-90 transition-opacity cursor-pointer shrink-0 shadow-xs"
+                  disabled={submitting}
+                  className="w-full sm:w-auto px-6 py-3 text-xs font-mono font-bold tracking-wider uppercase text-white bg-[#1C1C1E] dark:bg-[#F6F5F0] dark:text-[#1C1C1E] rounded-xl hover:opacity-90 transition-opacity cursor-pointer disabled:opacity-50"
                 >
-                  Subscribe
+                  {submitting ? 'Subscribing...' : 'Subscribe'}
                 </button>
-              </form>
-            )}
-            <p className="mt-3.5 text-xs text-[#74747E] font-sans">
-              No spam. One-click unsubscribe at any time.
-            </p>
-          </div>
-        </div>
-      </BlurFade>
-
-      {/* Dispatch Perks Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
-        {perks.map((p, idx) => (
-          <BlurFade key={p.title} delay={0.35 + idx * 0.08} yOffset={16}>
-            <div className="p-6 rounded-2xl bg-white dark:bg-[#18181B] border border-[#E7E6E1] dark:border-[#27272A] shadow-xs space-y-3 h-full">
-              <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
-              <h3 className="font-display font-semibold text-base text-[#121214] dark:text-[#FAFAFA]">
-                {p.title}
-              </h3>
-              <p className="text-xs text-[#4A4A52] dark:text-[#A1A1AA] leading-relaxed">
-                {p.desc}
+              </div>
+              <p className="text-xs font-mono text-[#6E6E73] dark:text-[#8E8E93]">
+                No spam. Just occasional essays and notes.
               </p>
-            </div>
-          </BlurFade>
-        ))}
-      </div>
-
-      <div className="text-center pt-6">
-        <TechniccalWordmarkLogo size="md" />
-      </div>
+            </form>
+          )}
+        </div>
+      </motion.section>
     </div>
   );
 };
